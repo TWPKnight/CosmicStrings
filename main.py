@@ -8,7 +8,8 @@ Thomas Hyatt & Virginia d'Emilio
 import numpy as np
 import matplotlib.pyplot as plt
 import math
-from random import randint 
+from random import randint
+np.set_printoptions(threshold='nan') 
 
 class SpaceCube:
 
@@ -25,7 +26,7 @@ class SpaceCube:
         self.box=box
 
 
-class Lattice:
+class FCC_Lattice:
     def __init__(self, N):
         """
         Defining lattice with phase points at the centre of each face
@@ -45,8 +46,35 @@ class Lattice:
                     
                     
         self.faces=faces
+        
+        
+    def phaseTotal(self):
+            for plane in xrange(len(self.plaquet[:,0,0,0,0])):
+                for layer in xrange(len(self.plaquet[0,:,0,0,0])):
+                    for d1 in xrange(len(self.plaquet[0,0,:,0,0])):
+                        for d2 in xrange(len(self.plaquet[0,0,0,:,0])):    
+                            phase = 0     
+                            for p in xrange(len(self.plaquet[0,0,0,0,:]) - 1): 
+                                if (self.plaquet[plane,layer,d1,d2,p] - self.plaquet[plane,layer,d1,d2,p+1] == 1) or (self.plaquet[plane,layer,d1,d2,3] - self.plaquet[plane,layer,d1,d2,0] == 1):
+                                    phase += 3 
+                                elif (self.plaquet[plane,layer,d1,d2,p] - self.plaquet[plane,layer,d1,d2,p+1] == -1) or (self.plaquet[plane,layer,d1,d2,3] - self.plaquet[plane,layer,d1,d2,0] == -1):
+                                    phase -= 3
+                                else:
+                                    phase += 0      
+                            if (phase == 9):
+                                self.plaquet[plane,layer,d1,d2] = 5 #each value replaced with 5 if right handed
+                                self.total +=1
+                            elif (phase == -9 ):
+                                self.plaquet[plane,layer,d1,d2] = 6 #each value replaced with 6 if right handed
+                                self.total +=1
+                            else:
+                                self.plaquet[plane,layer,d1,d2] = 7 #if no string through face each value replaced with 7
+            
+            
+        
+        
 N = 10
 space = SpaceCube(N)
-print lattice.box
-lattice = Lattice(N)
+#print lattice.box
+lattice = FCC_Lattice(N)
 print lattice.faces
