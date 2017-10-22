@@ -49,26 +49,37 @@ class FCC_Lattice:
         
         
     def phaseTotal(self):
-            for plane in xrange(len(self.plaquet[:,0,0,0,0])):
-                for layer in xrange(len(self.plaquet[0,:,0,0,0])):
-                    for d1 in xrange(len(self.plaquet[0,0,:,0,0])):
-                        for d2 in xrange(len(self.plaquet[0,0,0,:,0])):    
-                            phase = 0     
-                            for p in xrange(len(self.plaquet[0,0,0,0,:]) - 1): 
-                                if (self.plaquet[plane,layer,d1,d2,p] - self.plaquet[plane,layer,d1,d2,p+1] == 1) or (self.plaquet[plane,layer,d1,d2,3] - self.plaquet[plane,layer,d1,d2,0] == 1):
+        for n in xrange(0,len(self.cells[:,0,0])):      
+            for f in xrange(0,len(self.cells[0,:,0])):  
+                 
+                            phase = 0 
+                            
+                            if (np.mod(self.cells[n,f,3] - self.cells[n,f,0],3) == 1):                                
+                                phase += 3
+                                #print self.cells[n,f] 
+                            elif (np.mod(self.cells[n,f,3] - self.cells[n,f,0],3) == 2):
+                                phase -= 3  
+                                #print self.cells[n,f] 
+                                
+                                
+                            for p in xrange(0,len(self.cells[0,0,:]) - 1): 
+                                #print self.cells[n,f,p], self.cells[n,f,p+1]
+                                if (np.mod(self.cells[n,f,p] - self.cells[n,f,p+1],3) == 1):
                                     phase += 3 
-                                elif (self.plaquet[plane,layer,d1,d2,p] - self.plaquet[plane,layer,d1,d2,p+1] == -1) or (self.plaquet[plane,layer,d1,d2,3] - self.plaquet[plane,layer,d1,d2,0] == -1):
+                                    #print self.cells[n,f] 
+                                elif (np.mod(self.cells[n,f,p] - self.cells[n,f,p+1],3) == 2):
                                     phase -= 3
-                                else:
-                                    phase += 0      
+                                    #print self.cells[n,f] 
+  
+                            #print "Phase: ",phase         
                             if (phase == 9):
-                                self.plaquet[plane,layer,d1,d2] = 5 #each value replaced with 5 if right handed
+                                self.stringpresent[n,f] = 1 #left handed
                                 self.total +=1
                             elif (phase == -9 ):
-                                self.plaquet[plane,layer,d1,d2] = 6 #each value replaced with 6 if right handed
+                                self.stringpresent[n,f] = 2 #right handed
                                 self.total +=1
                             else:
-                                self.plaquet[plane,layer,d1,d2] = 7 #if no string through face each value replaced with 7
+                                self.stringpresent[n,f] = 0  #no string
             
             
         
