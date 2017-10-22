@@ -25,7 +25,28 @@ class SpaceCube:
         self.box=box
 
 
-
+class Lattice:
+    def __init__(self, N):
+        """
+        Defining lattice with phase points at the centre of each face
+        0th elem. vertical faces
+        1st elem. central faces
+        2nd elem. horizontal faces
+        """
+        faces = np.zeros(((N-1)**3,3))
+        n=-1
+        for i in range(len(space.box[:,0,0])-1):
+            for j in range(len(space.box[0,:,0])-1):
+                for k in range(len(space.box[0,0,:])-1):
+                    n=n+1
+                    faces[n,0]= space.box[i+1,j,k]
+                    faces[n,1]=space.box[i,j+1,k]
+                    faces[n,2]=space.box[i,j,k+1]
+                    
+                    
+        self.faces=faces
 N = 10
-lattice = SpaceCube(N)
+space = SpaceCube(N)
 print lattice.box
+lattice = Lattice(N)
+print lattice.faces
