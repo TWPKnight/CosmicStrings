@@ -8,8 +8,11 @@ Thomas Hyatt & Virginia d'Emilio
 import numpy as np
 import matplotlib.pyplot as plt
 import math
+import random
 from random import randint
-np.set_printoptions(threshold='nan') 
+random.seed(987654321) 
+np.set_printoptions(threshold='nan')
+
 
 class SpaceCube:
     
@@ -114,7 +117,7 @@ class SpaceCube:
         
                                                                                                                                                                    
                                                                                                                                                            
-N = 25
+N = 15
 lattice = SpaceCube(N)
 lattice.xPlane()
 lattice.yPlane()
