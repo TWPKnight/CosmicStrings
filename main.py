@@ -29,7 +29,7 @@ class SpaceCube:
             for j in xrange(len(box[0,:,0])):
                 for k in xrange(len(box[0,0,:])):
                      box[i,j,k] = randint(0, 2)
-        total =0
+        total =0 
         faceNum=0
         self.box=box  
         self.xString=xString
@@ -40,10 +40,10 @@ class SpaceCube:
             
         self.faceDict={ 0 : [1,2,3,4],     #bottom
                         1 : [1,4,8,5],    #left
-                        2 : [1,2,6,5],    #front
+                        2 : [1,5,6,2],    #front
                         3 : [5,6,7,8],    #top
                         4 : [2,3,7,6],    #right
-                        5 : [4,3,7,8]}    #back
+                        5 : [4,8,7,3]}    #back
                         
         self.facepointsDict={ 1:np.array([0,0,0]),     #(  ni    ,  nj    ,  nk    )
                         2:np.array([1,0,0]),     #(  ni+1  ,  nj    ,  nk    )
@@ -115,9 +115,41 @@ class SpaceCube:
         else:
             return 0  #no string
         
-                                                                                                                                                                   
-                                                                                                                                                           
-N = 15
+    def check_in_out_equal(self):
+        s=0
+        for i in xrange(len(self.box[:,0,0])-1):
+            for j in xrange(len(self.box[0,:,0])-1):
+                for k in xrange(len(self.box[0,0,:])-1):    
+                    s += np.abs(self.yString[i+1,j,k]-self.yString[i,j,k] + self.zString[i,j,k+1]-self.zString[i,j,k] + self.xString[i,j+1,k]-self.xString[i,j,k])  
+        print "S = ",s              
+    
+    def check_num_strings(self):
+        num = 0
+        n0 = 0
+        n1 = 0
+        n2 = 0
+        n3 = 0
+        for i in xrange(len(self.box[:,0,0])-1):
+            for j in xrange(len(self.box[0,:,0])-1):
+                for k in xrange(len(self.box[0,0,:])-1):    
+                    num = np.abs(self.yString[i+1,j,k])+np.abs(self.yString[i,j,k]) + np.abs(self.zString[i,j,k+1])+np.abs(self.zString[i,j,k]) + np.abs(self.xString[i,j+1,k])+np.abs(self.xString[i,j,k])  
+                    if (num == 0):
+                        n0 += 1
+                    elif (num == 2):
+                        n1 += 1
+                    elif (num ==4):
+                        n2 += 1
+                    elif (num ==6):
+                        n3 += 1
+                    else:
+                        print "ERROR"
+        print "n0 = ",n0  
+        print "n1 = ",n1 
+        print "n2 = ",n2 
+        print "n3 = ",n3                                                                                                                                                                                                                                                                                                               
+        
+                                                                                                                                                                                                                                                                                                              
+N = 40
 lattice = SpaceCube(N)
 lattice.xPlane()
 lattice.yPlane()
@@ -126,4 +158,23 @@ lattice.zPlane()
 #print lattice.xString
 #print lattice.yString
 #print lattice.zString
+lattice.check_in_out_equal()
+lattice.check_num_strings()
 print "Probability = ", (1.0 * lattice.total)/(1.0*lattice.faceNum)
+"""
+print "P1:(0,0,0) = ",lattice.box[0,0,0]
+print "P2:(1,0,0) = ",lattice.box[1,0,0]
+print "P3:(1,0,1) = ",lattice.box[1,0,1]
+print "P4:(0,0,1) = ",lattice.box[0,0,1]
+print "P5:(0,1,0) = ",lattice.box[0,1,0]
+print "P6:(1,1,0) = ",lattice.box[1,1,0]
+print "P7:(1,1,1) = ",lattice.box[1,1,1]
+print "P8:(0,1,1) = ",lattice.box[0,1,1]
+print
+print "X(0,0,0) = ",lattice.xString[0,0,0]
+print "X(0,1,0) = ",lattice.xString[0,1,0]
+print "Y(0,0,0) = ",lattice.yString[0,0,0]
+print "Y(1,0,0) = ",lattice.yString[1,0,0]
+print "Z(0,0,0) = ",lattice.zString[0,0,0]
+print "Z(0,0,1) = ",lattice.zString[0,0,1]
+"""
