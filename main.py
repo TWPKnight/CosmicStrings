@@ -266,9 +266,251 @@ class SpaceCube:
             self.follow(xyz,i,j,k)
     
     def followFunc(self,i,j,k):
-        #Virginia's Code
-        return i,j,k
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+        paths = []
+        if (self.xString[i,j,k]== +1):
+            paths+=self.xString[i+1,j,k], self.yString[i,j,k], self.yString[i,j+1,k], self.zString[i,j,k], self.zString[i,j,k+1]
+            n = 0
+            for x in paths:
+                if x == 1:
+                    print(n)
+                n+=1       
+        elif (self.xString[i+1,j,k]== -1):
+            paths+=self.xString[i,j,k], self.yString[i,j,k], self.yString[i,j+1,k], self.zString[i,j,k], self.zString[i,j,k+1]
+             n = 0
+            for x in paths:
+                if x == -1:
+                    print(n)
+                n+=1
+        elif (self.yString[i,j,k]== +1):
+            paths+=self.xString[i,j,k], self.xString[i+1,j,k], self.yString[i,j+1,k], self.zString[i,j,k], self.zString[i,j,k+1]
+          
+        elif (self.yString[i,j+1,k]== -1):
+            paths+=self.xString[i+1,j,k], self.yString[i,j,k], self.yString[i,j+1,k], zString[i,j,k], self.zString[i,j,k+1]
+           
+        elif (self.zString[i,j,k]== +1):
+            paths+=self.xString[i,j,k],self.xString[i+1,j,k], self.yString[i,j,k], self.yString[i,j+1,k], self.zString[i,j,k+1]
+          
+        elif (self.zString[i,j,k+1]== -1):
+            paths+=self.xString[i,j,k], self.xString[i+1,j,k], self.yString[i,j,k], self.yString[i,j+1,k], self.zString[i,j,k]
+          
+            return i,j,k
+                                                                                                                                                                           def pathFinder(self, XYZ, i,j,k):
+        paths =[]
+        out = []
+        if XYZ == 'X': 
+            if (self.xString[i,j,k]== +1):
+                paths+=self.xString[i+1,j,k], self.yString[i,j,k], self.yString[i,j+1,k], self.zString[i,j,k], self.zString[i,j,k+1]
+                if paths[0] == 1:
+                    out.append(0)   
+                if paths[1] == -1:
+                    out.append(1) 
+                if paths[2] == 1:
+                    out.append(2) 
+                if paths[3] == -1:
+                    out.append(3)
+                if paths[4] == 1:
+                    out.append(4)
+                if len(out) == 1:
+                    if out[0] == 0:
+                        return 'X', i+1,j,k
+                    if out[0] == 1:
+                        return 'Y', i,j,k
+                    if out[0] == 2:
+                        return 'Y', i,j+1,k
+                    if out[0] == 3:
+                        return 'Z', i,j,k
+                    if out[0] == 4:
+                        return 'Z', i,j,k+1
+                if len(out) == 2:
+                    choice = randint(0,1)
+                    if out[choice] == 0:
+                        return 'X', i+1,j,k
+                    if out[choice] == 1:
+                        return 'Y', i,j,k
+                    if out[choice] == 2:
+                        return 'Y', i,j+1,k
+                    if out[choice] == 3:
+                        return 'Z', i,j,k
+                    if out[choice] == 4:
+                        return 'Z', i,j,k+1
+                    
+            if (self.xString[i,j,k]== -1):
+                paths+=self.xString[i-1,j,k], self.yString[i-1,j,k], self.yString[i-1,j+1,k], self.zString[i-1,j,k], self.zString[i-1,j,k+1]
+                if paths[0] == -1:
+                    out.append(0)   
+                if paths[1] == -1:
+                    out.append(1) 
+                if paths[2] == 1:
+                    out.append(2) 
+                if paths[3] == -1:
+                    out.append(3)
+                if paths[4] == 1:
+                    out.append(4)
+                if len(out) == 1:
+                    if out[0] == 0:
+                        return 'X', i-1,j,k
+                    if out[0] == 1:
+                        return 'Y', i-1,j,k
+                    if out[0] == 2:
+                        return 'Y', i-1,j+1,k
+                    if out[0] == 3:
+                        return 'Z', i-1,j,k
+                    if out[0] == 4:
+                        return 'Z', i-1,j,k+1
+                if len(out) == 2:
+                    choice = randint(0,1)
+                    if out[choice] == 0:
+                        return 'X', i-1,j,k
+                    if out[choice] == 1:
+                        return 'Y', i-1,j,k
+                    if out[choice] == 2:
+                        return 'Y', i-1,j+1,k
+                    if out[choice] == 3:
+                        return 'Z', i-1,j,k
+                    if out[choice] == 4:
+                        return 'Z', i-1,j,k+1
+        if XYZ == 'Y':
+            if (self.yString[i,j,k]== +1):  #(-1 , 1, 1, -1, 1)
+                paths+=self.xString[i,j,k], self.xString[i+1,j,k], self.yString[i,j+1,k], self.zString[i,j,k], self.zString[i,j,k+1]
+                if paths[0] == -1:
+                    out.append(0) 
+                if paths[1] == 1:
+                    out.append(1)
+                if paths[2] == 1:
+                    out.append(2)
+                if paths[3] == -1:
+                    out.append(3)
+                if paths[4] == 1:
+                    out.append(4)
+                if len(out) == 1:
+                    if out[0] == 0:
+                        return 'X', i,j,k
+                    if out[0] == 1:
+                        return 'X', i+1,j,k
+                    if out[0] == 2:
+                        return 'Y', i,j+1,k
+                    if out[0] == 3:
+                        return 'Z', i,j,k
+                    if out[0] == 4:
+                        return 'Z', i,j,k+1
+                if len(out) == 2:
+                    choice = randint(0,1)
+                    if out[choice] == 0:
+                        return 'X', i,j,k
+                    if out[choice] == 1:
+                        return 'X', i+1,j,k
+                    if out[choice] == 2:
+                        return 'Y', i,j+1,k
+                    if out[choice] == 3:
+                        return 'Z', i,j,k
+                    if out[choice] == 4:
+                        return 'Z', i,j,k+1
+            if (self.yString[i,j,k]== -1):
+                paths+=self.xString[i,j-1,k], self.xString[i+1,j-1,k], self.yString[i,j-1,k], self.zString[i,j-1,k], self.zString[i,j-1,k+1]
+                if paths[0] == -1:
+                    out.append(0)
+                if paths[1] == 1:
+                    out.append(1)
+                if paths[2] == -1:
+                    out.append(2)
+                if paths[3] == -1:
+                    out.append(3)
+                if paths[4] == 1:
+                    out.append(4)
+                if len(out) == 1:
+                    if out[0] == 0:
+                        return 'X', i,j-1,k
+                    if out[0] == 1:
+                        return 'X', i+1,j-1,k
+                    if out[0] == 2:
+                        return 'Y', i,j-1,k
+                    if out[0] == 3:
+                        return 'Z', i,j-1,k
+                    if out[0] == 4:
+                        return 'Z', i,j-1,k+1
+                if len(out) == 2:
+                    choice = randint(0,1)
+                    if out[choice] == 0:
+                        return 'X', i,j-1,k
+                    if out[choice] == 1:
+                        return 'X', i+1,j-1,k
+                    if out[choice] == 2:
+                        return 'Y', i,j-1,k
+                    if out[choice] == 3:
+                        return 'Z', i,j-1,k
+                    if out[choice] == 4:
+                        return 'Z', i,j-1,k+1
+        if XYZ == 'Z':
+            if (self.zString[i,j,k]== +1):  #(-1, 1, -1, 1, 1)
+                paths+=self.xString[i,j,k],self.xString[i+1,j,k], self.yString[i,j,k], self.yString[i,j+1,k], self.zString[i,j,k+1]
+                if paths[0] == -1:
+                    out.append(0) 
+                if paths[1] == 1:
+                    out.append(1)
+                if paths[2] == -1:
+                    out.append(2)
+                if paths[3] == 1:
+                    out.append(3)
+                if paths[4] == 1:
+                    out.append(4)
+                if len(out) == 1:
+                    if out[0] == 0:
+                        return 'X', i,j,k
+                    if out[0] == 1:
+                        return 'X', i+1,j,k
+                    if out[0] == 2:
+                        return 'Y', i,j,k
+                    if out[0] == 3:
+                        return 'Y', i,j+1,k
+                    if out[0] == 4:
+                        return 'Z', i,j,k+1
+                if len(out) == 2:
+                    choice = randint(0,1)
+                    if out[choice] == 0:
+                        return 'X', i,j,k
+                    if out[choice] == 1:
+                        return 'X', i+1,j,k
+                    if out[choice] == 2:
+                        return 'Y', i,j,k
+                    if out[choice] == 3:
+                        return 'Y', i,j+1,k
+                    if out[choice] == 4:
+                        return 'Z', i,j,k+1
+            if (self.zString[i,j,k]== -1):  
+                paths+=self.xString[i,j,k-1], self.xString[i+1,j,k-1], self.yString[i,j,k-1], self.yString[i,j+1,k-1], self.zString[i,j,k-1]
+                if paths[0] == -1:
+                    out.append(0) 
+                if paths[1] == 1:
+                    out.append(1)
+                if paths[2] == -1:
+                    out.append(2)
+                if paths[3] == 1:
+                    out.append(3)
+                if paths[4] == -1:
+                    out.append(4)
+                if len(out) == 1:
+                    if out[0] == 0:
+                        return 'X', i,j,k-1
+                    if out[0] == 1:
+                        return 'X', i+1,j,k-1
+                    if out[0] == 2:
+                        return 'Y', i,j,k-1
+                    if out[0] == 3:
+                        return 'Y', i,j+1,k-1
+                    if out[0] == 4:
+                        return 'Z', i,j,k-1
+                if len(out) == 2:
+                    choice = randint(0,1)
+                    if out[choice] == 0:
+                        return 'X', i,j,k-1
+                    if out[choice] == 1:
+                        return 'X', i+1,j,k-1
+                    if out[choice] == 2:
+                        return 'Y', i,j,k-1
+                    if out[choice] == 3:
+                        return 'Y', i,j+1,k-1
+                    if out[choice] == 4:
+                        return 'Z', i,j,k-1                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 N = 5
 lattice = SpaceCube(N)
 lattice.xPlane()
