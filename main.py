@@ -48,9 +48,9 @@ class SpaceCube:
         yString = np.zeros((N-1,N,N-1))
         xString = np.zeros((N,N-1,N-1))
         zString = np.zeros((N-1,N-1,N))
-        for i in xrange(len(box[:,0,0])):
-            for j in xrange(len(box[0,:,0])):
-                for k in xrange(len(box[0,0,:])):
+        for i in range(len(box[:,0,0])):
+            for j in range(len(box[0,:,0])):
+                for k in range(len(box[0,0,:])):
                      box[i,j,k] = randint(0, 2)
         total =0 
         faceNum=0
@@ -67,7 +67,7 @@ class SpaceCube:
         self.total=total   
         self.faceNum=faceNum  
             
-        self.faceDict={ 0 : [1,2,3,4],     #bottom
+        self.faceDict={ 0 : [1,2,3,4],    #bottom
                         1 : [1,4,8,5],    #left
                         2 : [1,5,6,2],    #front
                         3 : [5,6,7,8],    #top
@@ -75,15 +75,15 @@ class SpaceCube:
                         5 : [4,8,7,3]}    #back
                         
         self.facepointsDict={ 1:np.array([0,0,0]),     #(  ni    ,  nj    ,  nk    )
-                        2:np.array([1,0,0]),     #(  ni+1  ,  nj    ,  nk    )
-                        3:np.array([1,0,1]),     #(  ni+1  ,  nj    ,  nk+1  )
-                        4:np.array([0,0,1]),     #(  ni    ,  nj    ,  nk+1  )
-                        5:np.array([0,1,0]),     #(  ni    ,  nj+1  ,  nk    )
-                        6:np.array([1,1,0]),     #(  ni+1  ,  nj+1  ,  nk    )
-                        7:np.array([1,1,1]),     #(  ni+1  ,  nj+1  ,  nk+1  )
-                        8:np.array([0,1,1])}     #(  ni+1  ,  nj    ,  nk+1  )
-
+                        2:np.array([1,0,0]),           #(  ni+1  ,  nj    ,  nk    )
+                        3:np.array([1,0,1]),           #(  ni+1  ,  nj    ,  nk+1  )
+                        4:np.array([0,0,1]),           #(  ni    ,  nj    ,  nk+1  )
+                        5:np.array([0,1,0]),           #(  ni    ,  nj+1  ,  nk    )
+                        6:np.array([1,1,0]),           #(  ni+1  ,  nj+1  ,  nk    )
+                        7:np.array([1,1,1]),           #(  ni+1  ,  nj+1  ,  nk+1  )
+                        8:np.array([0,1,1])}           #(  ni+1  ,  nj    ,  nk+1  )
         
+      
     def yPlane(self):
         for j in xrange(len(self.box[0,:,0])):
             for k in xrange(len(self.box[0,0,:])-1):
@@ -121,7 +121,7 @@ class SpaceCube:
                         Jz = j + self.facepointsDict[zcorner][1] 
                         Kz = k + self.facepointsDict[zcorner][2] 
                         zFace[p] = self.box[Iz,Jz,Kz]
-                    self.zString[i,j,k] = self.isString(zFace)                              
+                    self.zString[i,j,k] = self.isString(zFace)    
                                                                                                     
     def isString(self,face):   
         phase = 0   
@@ -130,7 +130,7 @@ class SpaceCube:
             phase += 3
         elif (np.mod(face[3] - face[0],3) == 2): #test right-most and left-most values
             phase -= 3                       
-        for p in xrange(0,len(face[:]) - 1): #cycle through the rest            
+        for p in range(0,len(face[:]) - 1): #cycle through the rest            
             if (np.mod(face[p] - face[p+1],3) == 1):
                 phase += 3 
             elif (np.mod(face[p] - face[p+1],3) == 2):
@@ -544,5 +544,6 @@ print "Probability = ", (1.0 * lattice.total)/(1.0*lattice.faceNum)
 
 lattice.trackStrings()
 print lattice.length 
+
 
 
