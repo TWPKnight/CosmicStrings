@@ -175,62 +175,8 @@ class SpaceCube:
         print "n0 = ",n0  
         print "n1 = ",n1 
         print "n2 = ",n2 
-        print "n3 = ",n3                                                                                                                                                                                                                                                                                                               
+        print "n3 = ",n3   
         
-    def trackStrings(self):
-        self.edge = True
-        self.trackEdge() #Infinite Strings
-        self.edge = False
-        self.trackCentre() #Closed Strings
-        
-    def trackEdge(self):
-        """Z-Edges"""
-        for j in xrange(len(self.box[0,:,0])-1):  
-            for i in xrange(len(self.box[:,0,0])-1):
-                k = 0
-                if ( self.zString[i,j,k] == 1 ):
-                    """Follow"""
-                    self.L=0
-                    self.follow(self.zString,i,j,k,'Z')    
-                    self.length.append(self.L)                                  
-                k = N-1
-                if ( self.zString[i,j,k] == -1 ):
-                    """Follow"""
-                    self.L=0
-                    self.follow(self.zString,i,j,k,'Z')
-                    self.length.append(self.L) 
-        """Y-Edges"""    
-        for k in xrange(len(self.box[0,0,:])-1):
-            for i in xrange(len(self.box[:,0,0])-1):   
-                j = 0    
-                if ( self.yString[i,j,k] == 1 ):
-                    """Follow"""
-                    self.L=0
-                    self.follow(self.yString,i,j,k,'Y') 
-                    self.length.append(self.L)                                   
-                j = N-1
-                if ( self.yString[i,j,k] == -1 ):
-                    """Follow"""
-                    self.L=0
-                    self.follow(self.yString,i,j,k,'Y')
-                    self.length.append(self.L)  
-        """X-Edges"""    
-        for j in xrange(len(self.box[0,:,0])-1):
-            for k in xrange(len(self.box[0,0,:])-1):    
-                i = 0    
-                if ( self.xString[i,j,k] == 1 ):
-                    """Follow"""
-                    self.L=0
-                    self.follow(self.xString,i,j,k,'X')  
-                    self.length.append(self.L)                                   
-                i = N-1
-                if ( self.xString[i,j,k] == -1 ):
-                    """Follow"""
-                    self.L=0
-                    self.follow(self.xString,i,j,k,'X')
-                    self.length.append(self.L)  
-
-
     def followFunc(self, XYZ, i,j,k):
             print "Run"
             paths =[]
@@ -451,9 +397,60 @@ class SpaceCube:
                             return 'Y', i,j+1,k-1
                         if out[choice] == 4:
                             return 'Z', i,j,k-1
-                      
-                                            
-                                                                  
+                                                                                                                                                                                                                                                                                                                                  
+        
+    def trackStrings(self):
+        self.edge = True
+        self.trackEdge() #Infinite Strings
+        self.edge = False
+        self.trackCentre() #Closed Strings
+        
+    def trackEdge(self):
+        """Z-Edges"""
+        for j in xrange(len(self.box[0,:,0])-1):  
+            for i in xrange(len(self.box[:,0,0])-1):
+                k = 0
+                if ( self.zString[i,j,k] == 1 ):
+                    """Follow"""
+                    self.L=0
+                    self.follow(self.zString,i,j,k,'Z')    
+                    self.length.append(self.L)                                  
+                k = N-1
+                if ( self.zString[i,j,k] == -1 ):
+                    """Follow"""
+                    self.L=0
+                    self.follow(self.zString,i,j,k,'Z')
+                    self.length.append(self.L) 
+        """Y-Edges"""    
+        for k in xrange(len(self.box[0,0,:])-1):
+            for i in xrange(len(self.box[:,0,0])-1):   
+                j = 0    
+                if ( self.yString[i,j,k] == 1 ):
+                    """Follow"""
+                    self.L=0
+                    self.follow(self.yString,i,j,k,'Y') 
+                    self.length.append(self.L)                                   
+                j = N-1
+                if ( self.yString[i,j,k] == -1 ):
+                    """Follow"""
+                    self.L=0
+                    self.follow(self.yString,i,j,k,'Y')
+                    self.length.append(self.L)  
+        """X-Edges"""    
+        for j in xrange(len(self.box[0,:,0])-1):
+            for k in xrange(len(self.box[0,0,:])-1):    
+                i = 0    
+                if ( self.xString[i,j,k] == 1 ):
+                    """Follow"""
+                    self.L=0
+                    self.follow(self.xString,i,j,k,'X')  
+                    self.length.append(self.L)                                   
+                i = N-1
+                if ( self.xString[i,j,k] == -1 ):
+                    """Follow"""
+                    self.L=0
+                    self.follow(self.xString,i,j,k,'X')
+                    self.length.append(self.L)  
                                                                                                               
     def trackCentre(self):
         for i in xrange(1,len(self.box[:,0,0])-2):
@@ -521,13 +518,7 @@ class SpaceCube:
                      break
                 n_i , n_j, n_k, n_XYZ = m_i, m_j, m_k, m_XYZ
                 
-                #if (self.edge==True and m_i==N-1 or m_j==N-1 or m_k ==N-1 or m_i==0 or m_j==0 or m_k ==0 ):
-                    #break
-                              
-        
-        
-        
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 N = 5
 lattice = SpaceCube(N)
 lattice.xPlane()
