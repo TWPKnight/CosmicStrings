@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import math
 import random
 from random import randint
-random.seed(987654321) 
+random.seed(519350) 
 np.set_printoptions(threshold='nan')
 
 def PrintPnF(i,j,k):
@@ -177,18 +177,19 @@ class SpaceCube:
         print "n0 = ",n0  
         print "n1 = ",n1 
         print "n2 = ",n2 
-        print "n3 = ",n3   
+        print "n3 = ",n3  
+        print "Total: ", np.abs(self.xString).sum()+np.abs(self.yString).sum()+np.abs(self.zString).sum()            
+               
         
     def followFunc(self, XYZ, i,j,k):
-            print "In ijk: ", i, j, k
+           # print "In ijk: ", i, j, k
             paths =[]
             out = []
             if XYZ == 'X': 
-                print "In X"
+              #  print "In X"
                 if (self.xString[i,j,k]== +1):
-                    print "check X1"
                     paths+=self.xString[i+1,j,k], self.yString[i,j,k], self.yString[i,j+1,k], self.zString[i,j,k], self.zString[i,j,k+1]
-                    print paths
+                   # print paths
                     if paths[0] == 1:
                         out.append(0)   
                     if paths[1] == -1:
@@ -212,7 +213,7 @@ class SpaceCube:
                             return 'Z', i,j,k+1
                     if len(out) == 2:
                         choice = randint(0,1)
-                        print "choice:", out[choice]
+                       # print "choice:", out[choice]
                         if out[choice] == 0:
                             return 'X', i+1,j,k
                         if out[choice] == 1:
@@ -225,9 +226,8 @@ class SpaceCube:
                             return 'Z', i,j,k+1
                         
                 if (self.xString[i,j,k]== -1):
-                    print "check X2"
                     paths+=self.xString[i-1,j,k], self.yString[i-1,j,k], self.yString[i-1,j+1,k], self.zString[i-1,j,k], self.zString[i-1,j,k+1]
-                    print paths
+                  #  print paths
                     if paths[0] == -1:
                         out.append(0)   
                     if paths[1] == -1:
@@ -262,10 +262,10 @@ class SpaceCube:
                         if out[choice] == 4:
                             return 'Z', i-1,j,k+1
             if XYZ == 'Y':
-                print "In Y"
+               # print "In Y"
                 if (self.yString[i,j,k]== +1):  #(-1 , 1, 1, -1, 1)
                     paths+=self.xString[i,j,k], self.xString[i+1,j,k], self.yString[i,j+1,k], self.zString[i,j,k], self.zString[i,j,k+1]
-                    print paths
+                   # print paths
                     if paths[0] == -1:
                         out.append(0) 
                     if paths[1] == 1:
@@ -301,7 +301,7 @@ class SpaceCube:
                             return 'Z', i,j,k+1
                 if (self.yString[i,j,k]== -1):
                     paths+=self.xString[i,j-1,k], self.xString[i+1,j-1,k], self.yString[i,j-1,k], self.zString[i,j-1,k], self.zString[i,j-1,k+1]
-                    print 
+                   # print 
                     if paths[0] == -1:
                         out.append(0)
                     if paths[1] == 1:
@@ -336,10 +336,10 @@ class SpaceCube:
                         if out[choice] == 4:
                             return 'Z', i,j-1,k+1
             if XYZ == 'Z':
-                print "In Z"
+                #print "In Z"
                 if (self.zString[i,j,k]== +1):  #(-1, 1, -1, 1, 1)
                     paths+=self.xString[i,j,k],self.xString[i+1,j,k], self.yString[i,j,k], self.yString[i,j+1,k], self.zString[i,j,k+1]
-                    print 
+                   # print 
                     if paths[0] == -1:
                         out.append(0) 
                     if paths[1] == 1:
@@ -374,9 +374,9 @@ class SpaceCube:
                         if out[choice] == 4:
                             return 'Z', i,j,k+1
                 if (self.zString[i,j,k]== -1):  
-                    print "found: ",self.zString[i,j,k]
+                    #print "found: ",self.zString[i,j,k]
                     paths+=self.xString[i,j,k-1], self.xString[i+1,j,k-1], self.yString[i,j,k-1], self.yString[i,j+1,k-1], self.zString[i,j,k-1]
-                    print "Prob", paths
+                    #print "Prob", paths
                     if paths[0] == -1:
                         out.append(0) 
                     if paths[1] == 1:
@@ -425,13 +425,13 @@ class SpaceCube:
                 k = 0
                 if ( self.zString[i,j,k] == 1 ):
                     """Follow"""
-                    self.L=0
+                    self.L=1
                     self.follow(self.zString,i,j,k,'Z')    
                     self.length_inf.append(self.L)                                  
                 k = N-1
                 if ( self.zString[i,j,k] == -1 ):
                     """Follow"""
-                    self.L=0
+                    self.L=1
                     self.follow(self.zString,i,j,k,'Z')
                     self.length_inf.append(self.L) 
         """Y-Edges"""    
@@ -440,13 +440,13 @@ class SpaceCube:
                 j = 0    
                 if ( self.yString[i,j,k] == 1 ):
                     """Follow"""
-                    self.L=0
+                    self.L=1
                     self.follow(self.yString,i,j,k,'Y') 
                     self.length_inf.append(self.L)                                   
                 j = N-1
                 if ( self.yString[i,j,k] == -1 ):
                     """Follow"""
-                    self.L=0
+                    self.L=1
                     self.follow(self.yString,i,j,k,'Y')
                     self.length_inf.append(self.L)  
         """X-Edges"""    
@@ -455,30 +455,36 @@ class SpaceCube:
                 i = 0    
                 if ( self.xString[i,j,k] == 1 ):
                     """Follow"""
-                    self.L=0
+                    self.L=1
                     self.follow(self.xString,i,j,k,'X')  
                     self.length_inf.append(self.L)                                   
                 i = N-1
                 if ( self.xString[i,j,k] == -1 ):
                     """Follow"""
-                    self.L=0
+                    self.L=1
                     self.follow(self.xString,i,j,k,'X')
                     self.length_inf.append(self.L)  
                                                                                                               
     def trackCentre(self):
-        for i in xrange(1,len(self.box[:,0,0])-2):
-            for j in xrange(1,len(self.box[0,:,0])-2):
+        for i in xrange(0,len(self.box[:,0,0])-1):
+            for j in xrange(0,len(self.box[0,:,0])-1):
                 for k in xrange(1,len(self.box[0,0,:])-2):
                     if ( abs(self.zString[i,j,k]) == 1 ):
                         """Follow"""
                         self.L=0
                         self.follow(self.zString,i,j,k,'Z')
-                        self.length_loop.append(self.L)  
+                        self.length_loop.append(self.L)                          
+        for i in xrange(0,len(self.box[:,0,0])-1):
+            for j in xrange(1,len(self.box[0,:,0])-2):
+                for k in xrange(0,len(self.box[0,0,:])-1):
                     if ( abs(self.yString[i,j,k]) == 1 ):
                         """Follow"""
                         self.L=0
                         self.follow(self.yString,i,j,k,'Y')
-                        self.length_loop.append(self.L)  
+                        self.length_loop.append(self.L)            
+        for i in xrange(1,len(self.box[:,0,0])-2):
+            for j in xrange(0,len(self.box[0,:,0])-1):
+                for k in xrange(0,len(self.box[0,0,:])-1): 
                     if ( abs(self.xString[i,j,k]) == 1 ):
                         """Follow"""
                         self.L=0
@@ -488,15 +494,18 @@ class SpaceCube:
     def follow(self,xyz_string,i,j,k,XYZ): 
         #Edge == True means looking for infinite strings
         #Edge == False means looking for closed strings
-        n_XYZ,n_i,n_j,n_k = self.followFunc(XYZ,i,j,k)       
-        print "O: ",i,j,k,XYZ, self.edge
-        print "n: ", n_i,n_j,n_k,n_XYZ, self.edge
+        n_XYZ,n_i,n_j,n_k = self.followFunc(XYZ,i,j,k) 
         self.L += 1
         if (self.edge == False):
             while (True):
-                if (n_i==i and n_j==j and n_k==k):
-                    break              
-                print "n2: ", n_i,n_j,n_k,n_XYZ, self.edge                  
+                if (XYZ == n_XYZ and n_i==i and n_j==j and n_k==k):
+                    if (n_XYZ =='X'):
+                        self.xString[n_i,n_j,n_k]=0
+                    if (n_XYZ =='Y'):
+                        self.yString[n_i,n_j,n_k]=0
+                    if (n_XYZ=='Z'):
+                        self.zString[n_i,n_j,n_k]=0
+                    break                              
                 m_XYZ,m_i,m_j,m_k = self.followFunc(n_XYZ,n_i,n_j,n_k)
                 self.L += 1
                 if (n_XYZ =='X'):
@@ -508,26 +517,30 @@ class SpaceCube:
                 n_i , n_j, n_k, n_XYZ = m_i, m_j, m_k, m_XYZ
                 
         if (self.edge == True):
+            if (XYZ =='X'):
+                self.xString[i,j,k]=0
+            if (XYZ =='Y'):
+                self.yString[i,j,k]=0
+            if (XYZ=='Z'):
+                self.zString[i,j,k]=0
             while (True):               
                 if (n_XYZ == 'X'):
                     if (n_i==N-1 or n_i==0):
                      self.xString[n_i,n_j,n_k]=0
-                     print "Break X" 
+                     #print "Break X" 
                      break
                 if (n_XYZ == 'Y'):
                     if (n_j==N-1 or n_j==0):
                      self.yString[n_i,n_j,n_k]=0
-                     print "Break Y"
+                     #print "Break Y"
                      break
                 if (n_XYZ == 'Z'):
                     if (n_k==N-1 or n_k==0):
                      self.zString[n_i,n_j,n_k]=0
-                     print "Break Z"
+                     #print "Break Z"
                      break
-                print "n_Stop: ", n_i,n_j,n_k
                 self.L += 1 
                 m_XYZ,m_i,m_j,m_k = self.followFunc(n_XYZ,n_i,n_j,n_k)
-                print "m_Stop: ", m_i,m_j,m_k
                 if (n_XYZ =='X'):
                     self.xString[n_i,n_j,n_k]=0
                 if (n_XYZ =='Y'):
@@ -537,7 +550,7 @@ class SpaceCube:
                 n_i , n_j, n_k, n_XYZ = m_i, m_j, m_k, m_XYZ
                 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-N = 10
+N = 50
 lattice = SpaceCube(N)
 lattice.xPlane()
 lattice.yPlane()
@@ -551,11 +564,26 @@ lattice.check_in_out_equal()
 lattice.check_num_strings()
 print "Probability = ", (1.0 * lattice.total)/(1.0*lattice.faceNum)
 
+
 lattice.trackStrings()
 print
 print lattice.length_inf
 print
 print lattice.length_loop
+print "inf: ",np.sum(lattice.length_inf)
+print "closed: ",np.sum(lattice.length_loop)
+print "Tot Both",np.sum(lattice.length_inf)+np.sum(lattice.length_loop)
 
+num = 0
+
+for i in xrange(len(lattice.box[:,0,0])-1):
+    for j in xrange(len(lattice.box[0,:,0])-1):
+        for k in xrange(len(lattice.box[0,0,:])-1):    
+            num += np.abs(lattice.xString[i+1,j,k])+np.abs(lattice.xString[i,j,k]) + np.abs(lattice.zString[i,j,k+1])+np.abs(lattice.zString[i,j,k]) + np.abs(lattice.yString[i,j+1,k])+np.abs(lattice.yString[i,j,k]) 
+            
+#print "tot:", num   
+print "tot2: ", np.abs(lattice.xString).sum()+np.abs(lattice.yString).sum()+np.abs(lattice.zString).sum()  
+
+#Arrowplot      
 
 
