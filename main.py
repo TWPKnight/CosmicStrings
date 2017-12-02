@@ -174,12 +174,11 @@ class SpaceCube:
                         n3 += 1
                     else:
                         print "ERROR"
-        print "n0 = ",n0  
-        print "n1 = ",n1 
-        print "n2 = ",n2 
-        print "n3 = ",n3  
-        print "Total: ", np.abs(self.xString).sum()+np.abs(self.yString).sum()+np.abs(self.zString).sum()            
-               
+        print "no strings/cell = ",n0  
+        print "one string/cell = ",n1 
+        print "two strings/cell = ",n2 
+        print "three strings/cell = ",n3  
+        print "Tot number of strings: ", np.abs(self.xString).sum()+np.abs(self.yString).sum()+np.abs(self.zString).sum()             
         
     def followFunc(self, XYZ, i,j,k):
            # print "In ijk: ", i, j, k
@@ -550,7 +549,7 @@ class SpaceCube:
                 n_i , n_j, n_k, n_XYZ = m_i, m_j, m_k, m_XYZ
                 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-N = 50
+N = 40
 lattice = SpaceCube(N)
 lattice.xPlane()
 lattice.yPlane()
@@ -562,28 +561,26 @@ lattice.zPlane()
 #PrintPnF(0,0,0)
 lattice.check_in_out_equal()
 lattice.check_num_strings()
-print "Probability = ", (1.0 * lattice.total)/(1.0*lattice.faceNum)
+print "Probability of strings per face = ", (1.0 * lattice.total)/(1.0*lattice.faceNum)
 
 
 lattice.trackStrings()
 print
-print lattice.length_inf
-print
-print lattice.length_loop
-print "inf: ",np.sum(lattice.length_inf)
-print "closed: ",np.sum(lattice.length_loop)
-print "Tot Both",np.sum(lattice.length_inf)+np.sum(lattice.length_loop)
-
-num = 0
-
-for i in xrange(len(lattice.box[:,0,0])-1):
-    for j in xrange(len(lattice.box[0,:,0])-1):
-        for k in xrange(len(lattice.box[0,0,:])-1):    
-            num += np.abs(lattice.xString[i+1,j,k])+np.abs(lattice.xString[i,j,k]) + np.abs(lattice.zString[i,j,k+1])+np.abs(lattice.zString[i,j,k]) + np.abs(lattice.yString[i,j+1,k])+np.abs(lattice.yString[i,j,k]) 
+print "tot lenght inf strings: ",np.sum(lattice.length_inf)
+print "tot leng closed strings: ",np.sum(lattice.length_loop)
+print "Tot lenght of strings",np.sum(lattice.length_inf)+np.sum(lattice.length_loop)
+#num = 0
+#for i in xrange(len(lattice.box[:,0,0])-1):
+ #   for j in xrange(len(lattice.box[0,:,0])-1):
+  #      for k in xrange(len(lattice.box[0,0,:])-1):    
+   #         num += np.abs(lattice.xString[i+1,j,k])+np.abs(lattice.xString[i,j,k]) + np.abs(lattice.zString[i,j,k+1])+np.abs(lattice.zString[i,j,k]) + np.abs(lattice.yString[i,j+1,k])+np.abs(lattice.yString[i,j,k]) 
             
 #print "tot:", num   
-print "tot2: ", np.abs(lattice.xString).sum()+np.abs(lattice.yString).sum()+np.abs(lattice.zString).sum()  
-
+print "Leftover strings:", np.abs(lattice.xString).sum()+np.abs(lattice.yString).sum()+np.abs(lattice.zString).sum()  
+print "Avg number of strings/unit cell:", (1.0*(len(lattice.length_loop) + len(lattice.length_inf)))/(1.0*((N-1)**3))
+print "Number of closed loops", len(lattice.length_loop)
+print "Number of infinite strings", len(lattice.length_inf)
 #Arrowplot      
-
+#plt.plot(np.log(lattice.length_loop), np.linspace(0,1.0, len(lattice.length_loop)))
+#plt.show()
 
