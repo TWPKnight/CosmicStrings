@@ -10,8 +10,10 @@ import matplotlib.pyplot as plt
 import math
 import random
 from random import randint
+from mpl_toolkits.mplot3d import Axes3D  
 random.seed(519350) 
 np.set_printoptions(threshold='nan')
+plt.close("all")
 
 def PrintPnF(i,j,k):
     '''
@@ -58,9 +60,21 @@ class SpaceCube:
         L=0
         length_inf=[]
         length_loop=[]
+        loop_coord_i=[]
+        loop_coord_j=[]
+        loop_coord_k=[]
+        tot_loop_coord_i=[]
+        tot_loop_coord_j=[]
+        tot_loop_coord_k=[]
         self.L=L
         self.length_inf=length_inf
         self.length_loop=length_loop
+        self.loop_coord_i=loop_coord_i
+        self.loop_coord_j=loop_coord_j
+        self.loop_coord_k=loop_coord_k
+        self.tot_loop_coord_i=tot_loop_coord_i
+        self.tot_loop_coord_j=tot_loop_coord_j
+        self.tot_loop_coord_k=tot_loop_coord_k
         self.box=box
         self.edge=edge  
         self.yString=yString
@@ -472,7 +486,13 @@ class SpaceCube:
                     if ( abs(self.zString[i,j,k]) == 1 ):
                         """Follow"""
                         self.L=0
+                        self.loop_coord_i=[]
+                        self.loop_coord_j=[]
+                        self.loop_coord_k=[]
                         self.follow(self.zString,i,j,k,'Z')
+                        self.tot_loop_coord_i.append(self.loop_coord_i)
+                        self.tot_loop_coord_j.append(self.loop_coord_j)
+                        self.tot_loop_coord_k.append(self.loop_coord_k)
                         self.length_loop.append(self.L)                          
         for i in xrange(0,len(self.box[:,0,0])-1):
             for j in xrange(1,len(self.box[0,:,0])-2):
@@ -480,7 +500,13 @@ class SpaceCube:
                     if ( abs(self.yString[i,j,k]) == 1 ):
                         """Follow"""
                         self.L=0
+                        self.loop_coord_i=[]
+                        self.loop_coord_j=[]
+                        self.loop_coord_k=[]
                         self.follow(self.yString,i,j,k,'Y')
+                        self.tot_loop_coord_i.append(self.loop_coord_i)
+                        self.tot_loop_coord_j.append(self.loop_coord_j)
+                        self.tot_loop_coord_k.append(self.loop_coord_k)
                         self.length_loop.append(self.L)            
         for i in xrange(1,len(self.box[:,0,0])-2):
             for j in xrange(0,len(self.box[0,:,0])-1):
@@ -488,7 +514,13 @@ class SpaceCube:
                     if ( abs(self.xString[i,j,k]) == 1 ):
                         """Follow"""
                         self.L=0
+                        self.loop_coord_i=[]
+                        self.loop_coord_j=[]
+                        self.loop_coord_k=[]
                         self.follow(self.xString,i,j,k,'X')
+                        self.tot_loop_coord_i.append(self.loop_coord_i)
+                        self.tot_loop_coord_j.append(self.loop_coord_j)
+                        self.tot_loop_coord_k.append(self.loop_coord_k)
                         self.length_loop.append(self.L)  
                           
     def follow(self,xyz_string,i,j,k,XYZ): 
@@ -496,6 +528,9 @@ class SpaceCube:
         #Edge == False means looking for closed strings
         n_XYZ,n_i,n_j,n_k = self.followFunc(XYZ,i,j,k) 
         self.L += 1
+        self.loop_coord_i.append(i)
+        self.loop_coord_j.append(j)
+        self.loop_coord_k.append(k)
         if (self.edge == False):
             while (True):
                 if (XYZ == n_XYZ and n_i==i and n_j==j and n_k==k):
@@ -508,6 +543,9 @@ class SpaceCube:
                     break                              
                 m_XYZ,m_i,m_j,m_k = self.followFunc(n_XYZ,n_i,n_j,n_k)
                 self.L += 1
+                self.loop_coord_i.append(m_i)
+                self.loop_coord_j.append(m_j)
+                self.loop_coord_k.append(m_k)
                 if (n_XYZ =='X'):
                     self.xString[n_i,n_j,n_k]=0
                 if (n_XYZ =='Y'):
@@ -582,4 +620,15 @@ plt.ylabel(r'$Number \ of \ strings$')
 plt.title(r'$Histogram \ of \ string \ length$')
 plt.legend(loc='upper right')
 plt.show()
+
+fig=plt.figure("3DFig")
+ax = Axes3D(fig)
+for n in xrange(0,len(lattice.tot_loop_coord_i)-1):
+    ax.plot3D(lattice.tot_loop_coord_i[n],lattice.tot_loop_coord_j[n],lattice.tot_loop_coord_k[n], color='blue', label='Closed Strings')
+
+#print lattice.tot_loop_coord_i[0]
+#print lattice.tot_loop_coord_j[0]
+#print lattice.tot_loop_coord_k[0]
+#print lattice.length_loop
+plt.show("3DFig")
 
