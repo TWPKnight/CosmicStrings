@@ -174,11 +174,12 @@ class SpaceCube:
                         n3 += 1
                     else:
                         print "ERROR"
-        print "no strings/cell = ",n0  
-        print "one string/cell = ",n1 
-        print "two strings/cell = ",n2 
-        print "three strings/cell = ",n3  
-        print "Tot number of strings: ", np.abs(self.xString).sum()+np.abs(self.yString).sum()+np.abs(self.zString).sum()             
+        print "Tot number of strings: ", np.abs(self.xString).sum()+np.abs(self.yString).sum()+np.abs(self.zString).sum()  
+        print "Probability of no strings/cell = ", (1.0*n0)/((N-1)**3)
+        print "Probability of one string/cell", (1.0*n1)/((N-1)**3)
+        print "Probability of two strings/cell", (1.0*n2)/((N-1)**3)
+        print "three strings/cell = ",n3     
+        print "Avg number of strings/unit cell:", (1.0*(n1+n2))/((N-1)**3)
         
     def followFunc(self, XYZ, i,j,k):
            # print "In ijk: ", i, j, k
@@ -568,19 +569,17 @@ lattice.trackStrings()
 print
 print "tot lenght inf strings: ",np.sum(lattice.length_inf)
 print "tot leng closed strings: ",np.sum(lattice.length_loop)
-print "Tot lenght of strings",np.sum(lattice.length_inf)+np.sum(lattice.length_loop)
-#num = 0
-#for i in xrange(len(lattice.box[:,0,0])-1):
- #   for j in xrange(len(lattice.box[0,:,0])-1):
-  #      for k in xrange(len(lattice.box[0,0,:])-1):    
-   #         num += np.abs(lattice.xString[i+1,j,k])+np.abs(lattice.xString[i,j,k]) + np.abs(lattice.zString[i,j,k+1])+np.abs(lattice.zString[i,j,k]) + np.abs(lattice.yString[i,j+1,k])+np.abs(lattice.yString[i,j,k]) 
-            
-#print "tot:", num   
+print "Tot lenght of strings",np.sum(lattice.length_inf)+np.sum(lattice.length_loop)  
 print "Leftover strings:", np.abs(lattice.xString).sum()+np.abs(lattice.yString).sum()+np.abs(lattice.zString).sum()  
-print "Avg number of strings/unit cell:", (1.0*(len(lattice.length_loop) + len(lattice.length_inf)))/(1.0*((N-1)**3))
 print "Number of closed loops", len(lattice.length_loop)
 print "Number of infinite strings", len(lattice.length_inf)
-#Arrowplot      
-#plt.plot(np.log(lattice.length_loop), np.linspace(0,1.0, len(lattice.length_loop)))
-#plt.show()
+   
+bins = range(min(lattice.length_loop), max(lattice.length_loop))
+plt.hist(lattice.length_loop, bins, histtype= 'bar', color = 'r', label = r'$Closed \ strings$', alpha=0.5)
+plt.hist(lattice.length_inf, bins, histtype= 'bar', color ='b', label = r'$Infinite \ strings$', alpha=0.5)
+plt.xlabel(r'$Length \ of \ strings$')
+plt.ylabel(r'$Number \ of \ strings$')
+plt.title(r'$Histogram \ of \ string \ length$')
+plt.legend(loc='upper right')
+plt.show()
 
