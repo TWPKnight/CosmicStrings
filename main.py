@@ -648,7 +648,7 @@ class SpaceCube:
                 n_i , n_j, n_k, n_XYZ = m_i, m_j, m_k, m_XYZ
                 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-N = 6
+N = 20
 lattice = SpaceCube(N)
 lattice.xPlane()
 lattice.yPlane()
@@ -700,15 +700,26 @@ ax.set_zlabel(r"$Z/ \xi$")
 ax.legend(loc = 'upper right')
 plt.show("3DFig")
 
-#fig1=plt.figure("3DFig1")
-#ax1=Axes3D(fig1)
-#for n in xrange(0,len(lattice.tot_inf_coord_i)-1):
- #   ax1.plot3D(lattice.tot_inf_coord_i[n],lattice.tot_inf_coord_j[n],lattice.tot_inf_coord_k[n], color='r', label='Infinite Strings')
-#ax1.set_title(r"$3D \ plot \ of \ Infinite \ Strings$")
-#ax1.set_xlabel(r"$X/ \xi$")
-#ax1.set_ylabel(r"$Y/ \xi$")
-#ax1.set_zlabel(r"$Z/ \xi$")
-#plt.show("3DFig1")
+fig1=plt.figure("3DFigInf")
+ax1=Axes3D(fig1)
+for n in xrange(0,len(lattice.tot_inf_coord_i)-1):
+    ax1.plot3D(lattice.tot_inf_coord_i[n],lattice.tot_inf_coord_j[n],lattice.tot_inf_coord_k[n], color='r', label='Infinite Strings')
+ax1.set_title(r"$3D \ plot \ of \ Infinite \ Strings \ (size \ N\xi = 20)$")
+ax1.set_xlabel(r"$X/ \xi$")
+ax1.set_ylabel(r"$Y/ \xi$")
+ax1.set_zlabel(r"$Z/ \xi$")
+plt.show("3DFig1")
+
+fig2=plt.figure("3DFigLoop")
+ax2=Axes3D(fig2)
+for n in xrange(0,len(lattice.tot_loop_coord_i)-1):
+    ax2.plot3D(lattice.tot_loop_coord_i[n],lattice.tot_loop_coord_j[n],lattice.tot_loop_coord_k[n], color='b', label='Closed Strings')
+ax2.set_title(r"$3D \ plot \ of \ Closed \ Strings \ (size \ N\xi = 20)$")
+ax2.set_xlabel(r"$X/ \xi$")
+ax2.set_ylabel(r"$Y/ \xi$")
+ax2.set_zlabel(r"$Z/ \xi$")
+plt.show("3DFig1")
+
 
 
 print lattice.length_loop
