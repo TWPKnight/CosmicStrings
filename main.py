@@ -11,12 +11,8 @@ import math
 import random
 from random import randint
 from mpl_toolkits.mplot3d import Axes3D  
-<<<<<<< HEAD
 from scipy.optimize import curve_fit
 random.seed(823456789) 
-=======
-random.seed(357357)
->>>>>>> 3cdfd5782fe3f90f4d756397027651d209937ff7
 np.set_printoptions(threshold='nan')
 plt.close("all")
 
@@ -737,7 +733,6 @@ print "Tot lenght of strings",np.sum(lattice.length_inf)+np.sum(lattice.length_l
 print "Leftover strings:", np.abs(lattice.xString).sum()+np.abs(lattice.yString).sum()+np.abs(lattice.zString).sum()  
 print "Number of closed loops", len(lattice.length_loop)
 print "Number of infinite strings", len(lattice.length_inf)
-<<<<<<< HEAD
 print "Percentage of closed loops", 1.0*sum(lattice.length_loop)/sum((lattice.length_inf+lattice.length_loop))
 
 #R_run = np.savetxt()
@@ -797,8 +792,6 @@ plt.show()
 #ax2.set_zlabel(r"$Z/ \xi$", size = '16')
 #plt.show("3DFig1")
 
-=======
-   
 figHist=plt.figure("Histogram", figsize=(16,9))   
 bins = range(min(lattice.length_inf), max(lattice.length_loop))
 plt.hist(lattice.length_inf, bins, histtype= 'bar', color ='r', label = r'$Infinite \ strings$', alpha=0.5)
@@ -863,4 +856,3 @@ plt.show("3DFig1")
 
 print "Minimum Length of Closed Loop:", min(lattice.length_loop)
 print "Minimum Length of Infinite Loop:", min(lattice.length_inf)
->>>>>>> 3cdfd5782fe3f90f4d756397027651d209937ff7
