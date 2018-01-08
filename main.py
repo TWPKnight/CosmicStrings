@@ -11,7 +11,8 @@ import math
 import random
 from random import randint
 from mpl_toolkits.mplot3d import Axes3D  
-random.seed(989898989) 
+from scipy.optimize import curve_fit
+random.seed(823456789) 
 np.set_printoptions(threshold='nan')
 plt.close("all")
 
@@ -58,8 +59,14 @@ class SpaceCube:
         faceNum=0
         edge = False
         L=0
+        l = 0
+        R_i = 0
+        R_j = 0
+        R_k = 0
         length_inf=[]
         length_loop=[]
+        size_loop=[]
+        segment = []
         loop_coord_i=[]
         loop_coord_j=[]
         loop_coord_k=[]
@@ -72,9 +79,15 @@ class SpaceCube:
         tot_inf_coord_i=[]
         tot_inf_coord_j=[]
         tot_inf_coord_k=[]
-        self.L=L
+        self.L = L
+        self.l = l 
+        self.R_i = R_i
+        self.R_j = R_j
+        self.R_k = R_k
         self.length_inf=length_inf
+        self.size_loop = size_loop 
         self.length_loop=length_loop
+        self.segment = segment
         self.loop_coord_i=loop_coord_i
         self.loop_coord_j=loop_coord_j
         self.loop_coord_k=loop_coord_k
@@ -534,6 +547,10 @@ class SpaceCube:
                     if ( abs(self.zString[i,j,k]) == 1 ):
                         """Follow"""
                         self.L=0
+                        self.l = 0
+                        self.R_i = 1
+                        self.R_j = 1
+                        self.R_k = 1
                         self.loop_coord_i=[]
                         self.loop_coord_j=[]
                         self.loop_coord_k=[]
@@ -541,13 +558,19 @@ class SpaceCube:
                         self.tot_loop_coord_i.append(self.loop_coord_i)
                         self.tot_loop_coord_j.append(self.loop_coord_j)
                         self.tot_loop_coord_k.append(self.loop_coord_k)
-                        self.length_loop.append(self.L)                          
+                        self.length_loop.append(self.L)
+                        self.size_loop.append(self.R_i + self.R_j + self.R_k)  
+                        self.segment.append(self.l)                        
         for i in xrange(0,len(self.box[:,0,0])-1):
             for j in xrange(1,len(self.box[0,:,0])-2):
                 for k in xrange(0,len(self.box[0,0,:])-1):
                     if ( abs(self.yString[i,j,k]) == 1 ):
                         """Follow"""
                         self.L=0
+                        self.l = 0
+                        self.R_i = 1
+                        self.R_j = 1
+                        self.R_k = 1
                         self.loop_coord_i=[]
                         self.loop_coord_j=[]
                         self.loop_coord_k=[]
@@ -555,13 +578,19 @@ class SpaceCube:
                         self.tot_loop_coord_i.append(self.loop_coord_i)
                         self.tot_loop_coord_j.append(self.loop_coord_j)
                         self.tot_loop_coord_k.append(self.loop_coord_k)
-                        self.length_loop.append(self.L)            
+                        self.length_loop.append(self.L) 
+                        self.size_loop.append(self.R_i + self.R_j + self.R_k) 
+                        self.segment.append(self.l)            
         for i in xrange(1,len(self.box[:,0,0])-2):
             for j in xrange(0,len(self.box[0,:,0])-1):
                 for k in xrange(0,len(self.box[0,0,:])-1): 
                     if ( abs(self.xString[i,j,k]) == 1 ):
                         """Follow"""
                         self.L=0
+                        self.l = 0
+                        self.R_i = 1
+                        self.R_j = 1
+                        self.R_k = 1
                         self.loop_coord_i=[]
                         self.loop_coord_j=[]
                         self.loop_coord_k=[]
@@ -570,6 +599,8 @@ class SpaceCube:
                         self.tot_loop_coord_j.append(self.loop_coord_j)
                         self.tot_loop_coord_k.append(self.loop_coord_k)
                         self.length_loop.append(self.L)  
+                        self.size_loop.append(self.R_i + self.R_j + self.R_k) 
+                        self.segment.append(self.l)   
                           
     def follow(self,xyz_string,i,j,k,XYZ): 
         #Edge == True means looking for infinite strings
@@ -589,6 +620,21 @@ class SpaceCube:
         self.inf_coord_j.append(n_j)
         self.inf_coord_k.append(n_k)
         if (self.edge == False):
+            if (n_i > i):
+                self.R_i += 1
+                self.l = self.L
+            if (n_j > j):
+                self.R_j += 1
+                self.l = self.L
+            if (n_k > k):
+                self.R_k += 1
+                self.l = self.L
+            if (n_i < i or n_i == i ):
+                self.R_i += 0
+            if (n_j < j or n_j == j ):
+                self.R_j += 0
+            if (n_k < k or n_k == k ):
+                self.R_k += 0
             while (True):
                 if (XYZ == n_XYZ and n_i==i and n_j==j and n_k==k):
                     if (n_XYZ =='X'):
@@ -600,6 +646,22 @@ class SpaceCube:
                     break                              
                 m_XYZ,m_i,m_j,m_k = self.followFunc(n_XYZ,n_i,n_j,n_k)
                 self.L += 1
+                if (m_i > n_i):
+                    self.R_i += 1
+                    self.l = self.L
+                if (m_j > n_j):
+                    self.R_j += 1
+                    self.l = self.L
+                if (m_k > n_k):
+                    self.R_k += 1
+                    self.l = self.L
+                if (m_i < n_i or m_i == n_i ):
+                    self.R_i += 0
+                if (m_j < n_j or m_j == n_j ):
+                    self.R_j += 0
+                if (m_k < n_k or m_k == n_k ):
+                    self.R_k += 0
+                
                 self.loop_coord_i.append(m_i)
                 self.loop_coord_j.append(m_j)
                 self.loop_coord_k.append(m_k)
@@ -647,8 +709,8 @@ class SpaceCube:
                     self.zString[n_i,n_j,n_k]=0 
                 n_i , n_j, n_k, n_XYZ = m_i, m_j, m_k, m_XYZ
                 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-N = 20
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+N = 40
 lattice = SpaceCube(N)
 lattice.xPlane()
 lattice.yPlane()
@@ -671,55 +733,62 @@ print "Tot lenght of strings",np.sum(lattice.length_inf)+np.sum(lattice.length_l
 print "Leftover strings:", np.abs(lattice.xString).sum()+np.abs(lattice.yString).sum()+np.abs(lattice.zString).sum()  
 print "Number of closed loops", len(lattice.length_loop)
 print "Number of infinite strings", len(lattice.length_inf)
-   
-bins = range(min(lattice.length_loop), max(lattice.length_loop))
-plt.hist(lattice.length_loop, bins, histtype= 'bar', color = 'b', label = r'$Closed \ strings$', alpha=0.5)
-plt.hist(lattice.length_inf, bins, histtype= 'bar', color ='r', label = r'$Infinite \ strings$', alpha=0.5)
-plt.xlabel(r'$Length \ of \ strings$')
-plt.ylabel(r'$Number \ of \ strings$')
-plt.title(r'$Histogram \ of \ string \ length$')
-plt.legend(loc='upper right')
+print "Percentage of closed loops", 1.0*sum(lattice.length_loop)/sum((lattice.length_inf+lattice.length_loop))
+
+#R_run = np.savetxt()
+def func(l, A, d):
+    return (l/A)**(1./d)
+plt.scatter(np.log(lattice.segment), np.log(lattice.size_loop))
+popt,pcov = curve_fit(func, lattice.segment, lattice.size_loop)
+plt.plot( np.log(lattice.segment), np.log(func(lattice.segment, *popt)))
+plt.xlabel(r'$Log(segment \ lenght)$', size = '16')
+plt.ylabel(r'$Log(end \ to \ end \ distance)$', size = '16')
+plt.title(r'$Estimation \ of \ the \ fractal \ dimension$', size = '16')
 plt.show()
 
-fig=plt.figure("3DFig")
-ax = Axes3D(fig)
-for n in xrange(0,len(lattice.tot_loop_coord_i)-1):
-    if n == 0:
-        ax.plot3D(lattice.tot_loop_coord_i[n],lattice.tot_loop_coord_j[n],lattice.tot_loop_coord_k[n], color='blue', label='Closed Strings')
-    else:
-        ax.plot3D(lattice.tot_loop_coord_i[n],lattice.tot_loop_coord_j[n],lattice.tot_loop_coord_k[n], color='blue')
-for n in xrange(0,len(lattice.tot_inf_coord_i)-1):
-    if n==0:
-        ax.plot3D(lattice.tot_inf_coord_i[n],lattice.tot_inf_coord_j[n],lattice.tot_inf_coord_k[n], color='r', label='Infinite Strings')
-    else:
-        ax.plot3D(lattice.tot_inf_coord_i[n],lattice.tot_inf_coord_j[n],lattice.tot_inf_coord_k[n], color='r')
-ax.set_title(r"$3D \ plot \ of \ Cosmic \ Strings \ (size \ N\xi = 6)$")
-ax.set_xlabel(r"$X/ \xi$")
-ax.set_ylabel(r"$Y/ \xi$")
-ax.set_zlabel(r"$Z/ \xi$")
-ax.legend(loc = 'upper right')
-plt.show("3DFig")
+#bins = range(min(lattice.length_loop), max(lattice.length_loop))
+#plt.hist(lattice.length_loop, bins, histtype= 'bar', color = 'b', label = r'$Closed \ strings$', alpha=0.5)
+#plt.hist(lattice.length_inf, bins, histtype= 'bar', color ='r', label = r'$Infinite \ strings$', alpha=0.5)
+#plt.xlabel(r'$Length \ of \ strings$', size = '16')
+#plt.ylabel(r'$Number \ of \ strings$', size = '16')
+#plt.title(r'$Histogram \ of \ string \ lengths \ (N\xi = 20)$', size = '16')
+#plt.legend(loc='upper right', fontsize = 'large')
+#plt.show()
+#
+#fig=plt.figure("3DFig")
+#ax = Axes3D(fig)
+#for n in xrange(0,len(lattice.tot_loop_coord_i)-1):
+#    if n == 0:
+#        ax.plot3D(lattice.tot_loop_coord_i[n],lattice.tot_loop_coord_j[n],lattice.tot_loop_coord_k[n], color='blue', label='Closed Strings')
+#    else:
+#        ax.plot3D(lattice.tot_loop_coord_i[n],lattice.tot_loop_coord_j[n],lattice.tot_loop_coord_k[n], color='blue')
+#for n in xrange(0,len(lattice.tot_inf_coord_i)-1):
+#    if n==0:
+#        ax.plot3D(lattice.tot_inf_coord_i[n],lattice.tot_inf_coord_j[n],lattice.tot_inf_coord_k[n], color='r', label='Infinite Strings')
+#    else:
+#        ax.plot3D(lattice.tot_inf_coord_i[n],lattice.tot_inf_coord_j[n],lattice.tot_inf_coord_k[n], color='r')
+#ax.set_title(r"$3D \ plot \ of \ Cosmic \ Strings \ (size \ N\xi = 6)$", size = '16')
+#ax.set_xlabel(r"$X/ \xi$", size = '16')
+#ax.set_ylabel(r"$Y/ \xi$", size = '16')
+#ax.set_zlabel(r"$Z/ \xi$", size = '16')
+#ax.legend(loc = 'upper right', fontsize = 'large')
+#plt.show("3DFig")
+#fig1=plt.figure("3DFigInf")
+#ax1=Axes3D(fig1)
+#for n in xrange(0,len(lattice.tot_inf_coord_i)-1):
+#    ax1.plot3D(lattice.tot_inf_coord_i[n],lattice.tot_inf_coord_j[n],lattice.tot_inf_coord_k[n], color='r', label='Infinite Strings')
+#ax1.set_title(r"$3D \ plot \ of \ Infinite \ Strings \ (size \ N\xi = 20)$", size = '16')
+#ax1.set_xlabel(r"$X/ \xi$", size = '16')
+#ax1.set_ylabel(r"$Y/ \xi$", size = '16')
+#ax1.set_zlabel(r"$Z/ \xi$", size = '16')
+#plt.show("3DFig1")
+#fig2=plt.figure("3DFigLoop")
+#ax2=Axes3D(fig2)
+#for n in xrange(0,len(lattice.tot_loop_coord_i)-1):
+#    ax2.plot3D(lattice.tot_loop_coord_i[n],lattice.tot_loop_coord_j[n],lattice.tot_loop_coord_k[n], color='b', label='Closed Strings')
+#ax2.set_title(r"$3D \ plot \ of \ Closed \ Strings \ (size \ N\xi = 20)$", size = '16')
+#ax2.set_xlabel(r"$X/ \xi$", size = '16')
+#ax2.set_ylabel(r"$Y/ \xi$", size = '16')
+#ax2.set_zlabel(r"$Z/ \xi$", size = '16')
+#plt.show("3DFig1")
 
-fig1=plt.figure("3DFigInf")
-ax1=Axes3D(fig1)
-for n in xrange(0,len(lattice.tot_inf_coord_i)-1):
-    ax1.plot3D(lattice.tot_inf_coord_i[n],lattice.tot_inf_coord_j[n],lattice.tot_inf_coord_k[n], color='r', label='Infinite Strings')
-ax1.set_title(r"$3D \ plot \ of \ Infinite \ Strings \ (size \ N\xi = 20)$")
-ax1.set_xlabel(r"$X/ \xi$")
-ax1.set_ylabel(r"$Y/ \xi$")
-ax1.set_zlabel(r"$Z/ \xi$")
-plt.show("3DFig1")
-
-fig2=plt.figure("3DFigLoop")
-ax2=Axes3D(fig2)
-for n in xrange(0,len(lattice.tot_loop_coord_i)-1):
-    ax2.plot3D(lattice.tot_loop_coord_i[n],lattice.tot_loop_coord_j[n],lattice.tot_loop_coord_k[n], color='b', label='Closed Strings')
-ax2.set_title(r"$3D \ plot \ of \ Closed \ Strings \ (size \ N\xi = 20)$")
-ax2.set_xlabel(r"$X/ \xi$")
-ax2.set_ylabel(r"$Y/ \xi$")
-ax2.set_zlabel(r"$Z/ \xi$")
-plt.show("3DFig1")
-
-
-
-print lattice.length_loop
