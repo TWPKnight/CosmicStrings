@@ -38,7 +38,58 @@ def PrintPnF(i,j,k):
     print "Z(0,0,0) = ",lattice.zString[i,j,k]
     print "Z(0,0,1) = ",lattice.zString[i,j,k+1]
     
+def PlotLengthHist():
+    figHist=plt.figure("Histogram", figsize=(16,9))   
+    bins = range(min(lattice.length_inf), max(lattice.length_loop))
+    plt.hist(lattice.length_inf, bins, histtype= 'bar', color ='r', label = r'$Infinite \ strings$', alpha=0.5)
+    plt.hist(lattice.length_loop, bins, histtype= 'bar', color = 'b', label = r'$Closed \ strings$', alpha=0.5)
+    plt.xlabel(r'$Length \ of \ Strings$', fontsize=22)
+    plt.ylabel(r'$Number \ of \ Strings$', fontsize=22)
+    plt.title(r'$Histogram \ of \ String \ Lengths$', fontsize=25, y=1.025)
+    plt.legend(loc='upper right', fontsize=25)
+    plt.annotate(r'$Size: \ N\xi \ = \ {0}$'.format(N), xy=(800, 325), xycoords='figure points', fontsize=22,
+    bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=0.25'))
+    plt.show("Histogram")
 
+def Plot3DStrings():
+    fig=plt.figure("3DFig", figsize=(8.0*1.2,6.0*1.2))
+    ax = Axes3D(fig)  
+    for n in xrange(0,len(lattice.tot_loop_coord_i)-1):
+        ax.plot3D(lattice.tot_loop_coord_i[n],lattice.tot_loop_coord_j[n],lattice.tot_loop_coord_k[n], color='blue', label=r'$Closed \ Strings$'  if n == 0 else "", linewidth = 3)
+    for n in xrange(0,len(lattice.tot_inf_coord_i)-1):
+        ax.plot3D(lattice.tot_inf_coord_i[n],lattice.tot_inf_coord_j[n],lattice.tot_inf_coord_k[n], color='r', label=r'$Infinite \ Strings$'  if n == 0 else "", linewidth = 3)        
+    ax.set_title(r"$3D \ Plot \ of \ Cosmic \ Strings $", fontsize=25, y=1.025, x=0.32)
+    ax.set_xlabel(r"$X/ \xi$", fontsize=18, labelpad=10)
+    ax.set_ylabel(r"$Y/ \xi$", fontsize=18, labelpad=10)
+    ax.set_zlabel(r"$Z/ \xi$", fontsize=18, labelpad=10)
+    ax.legend(loc = 'upper right', fontsize=22)
+    ax.annotate(r'$Size: \ N\xi \ = \ {0}$'.format(N), xy=(525, 20), xycoords='figure points', fontsize=22,
+    bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=0.25'))
+    plt.show("3DFig")  
+    fig1=plt.figure("3DFigInf", figsize=(8.0*1.2,6.0*1.2))
+    ax1=Axes3D(fig1) 
+    for n in xrange(0,len(lattice.tot_inf_coord_i)-1):
+        ax1.plot3D(lattice.tot_inf_coord_i[n],lattice.tot_inf_coord_j[n],lattice.tot_inf_coord_k[n], color='r', label=r'$Infinite \ Strings$' if n == 0 else "", linewidth = 1.5)      
+    ax1.set_title(r"$3D \ Plot \ of \ Infinite \ Strings $", fontsize=25, y=1.025, x=0.32)
+    ax1.set_xlabel(r"$X/ \xi$", fontsize=18, labelpad=10)
+    ax1.set_ylabel(r"$Y/ \xi$", fontsize=18, labelpad=10)
+    ax1.set_zlabel(r"$Z/ \xi$", fontsize=18, labelpad=10)
+    ax1.legend(loc = 'upper right', fontsize=22)
+    ax1.annotate(r'$Size: \ N\xi \ = \ {0}$'.format(N), xy=(525, 20), xycoords='figure points', fontsize=22,
+    bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=0.25'))
+    plt.show("3DFig1")   
+    fig2=plt.figure("3DFigLoop", figsize=(8.0*1.2,6.0*1.2))
+    ax2=Axes3D(fig2)    
+    for n in xrange(0,len(lattice.tot_loop_coord_i)-1):
+        ax2.plot3D(lattice.tot_loop_coord_i[n],lattice.tot_loop_coord_j[n],lattice.tot_loop_coord_k[n], color='b', label=r'$Closed \ Strings$' if n == 0 else "", linewidth = 1.5)       
+    ax2.set_title(r"$3D \ Plot \ of \ Closed \ Strings $", fontsize=25, y=1.025, x=0.32)
+    ax2.set_xlabel(r"$X/ \xi$", fontsize=18, labelpad=10)
+    ax2.set_ylabel(r"$Y/ \xi$", fontsize=18, labelpad=10)
+    ax2.set_zlabel(r"$Z/ \xi$", fontsize=18, labelpad=10)
+    ax2.legend(loc = 'upper right', fontsize=22)
+    ax2.annotate(r'$Size: \ N\xi \ = \ {0}$'.format(N), xy=(525, 20), xycoords='figure points', fontsize=22,
+    bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=0.25'))
+    plt.show("3DFig1")
 
 class SpaceCube:
     
@@ -724,7 +775,6 @@ lattice.check_in_out_equal()
 lattice.check_num_strings()
 print "Probability of strings per face = ", (1.0 * lattice.total)/(1.0*lattice.faceNum)
 
-
 lattice.trackStrings()
 print
 print "Tot lenght inf strings: ",np.sum(lattice.length_inf)
@@ -734,125 +784,21 @@ print "Leftover strings:", np.abs(lattice.xString).sum()+np.abs(lattice.yString)
 print "Number of closed loops", len(lattice.length_loop)
 print "Number of infinite strings", len(lattice.length_inf)
 print "Percentage of closed loops", 1.0*sum(lattice.length_loop)/sum((lattice.length_inf+lattice.length_loop))
+#Plot3DStrings()
+PlotLengthHist()
 
 #R_run = np.savetxt()
 def func(l, A, d):
     return (l/A)**(1./d)
+plt.figure("LogPlot1")
 plt.scatter(np.log(lattice.segment), np.log(lattice.size_loop))
 popt,pcov = curve_fit(func, lattice.segment, lattice.size_loop)
 plt.plot( np.log(lattice.segment), np.log(func(lattice.segment, *popt)))
 plt.xlabel(r'$Log(segment \ lenght)$', size = '16')
 plt.ylabel(r'$Log(end \ to \ end \ distance)$', size = '16')
 plt.title(r'$Estimation \ of \ the \ fractal \ dimension$', size = '16')
-plt.show()
-
-#bins = range(min(lattice.length_loop), max(lattice.length_loop))
-#plt.hist(lattice.length_loop, bins, histtype= 'bar', color = 'b', label = r'$Closed \ strings$', alpha=0.5)
-#plt.hist(lattice.length_inf, bins, histtype= 'bar', color ='r', label = r'$Infinite \ strings$', alpha=0.5)
-#plt.xlabel(r'$Length \ of \ strings$', size = '16')
-#plt.ylabel(r'$Number \ of \ strings$', size = '16')
-#plt.title(r'$Histogram \ of \ string \ lengths \ (N\xi = 20)$', size = '16')
-#plt.legend(loc='upper right', fontsize = 'large')
-#plt.show()
-#
-#fig=plt.figure("3DFig")
-#ax = Axes3D(fig)
-#for n in xrange(0,len(lattice.tot_loop_coord_i)-1):
-#    if n == 0:
-#        ax.plot3D(lattice.tot_loop_coord_i[n],lattice.tot_loop_coord_j[n],lattice.tot_loop_coord_k[n], color='blue', label='Closed Strings')
-#    else:
-#        ax.plot3D(lattice.tot_loop_coord_i[n],lattice.tot_loop_coord_j[n],lattice.tot_loop_coord_k[n], color='blue')
-#for n in xrange(0,len(lattice.tot_inf_coord_i)-1):
-#    if n==0:
-#        ax.plot3D(lattice.tot_inf_coord_i[n],lattice.tot_inf_coord_j[n],lattice.tot_inf_coord_k[n], color='r', label='Infinite Strings')
-#    else:
-#        ax.plot3D(lattice.tot_inf_coord_i[n],lattice.tot_inf_coord_j[n],lattice.tot_inf_coord_k[n], color='r')
-#ax.set_title(r"$3D \ plot \ of \ Cosmic \ Strings \ (size \ N\xi = 6)$", size = '16')
-#ax.set_xlabel(r"$X/ \xi$", size = '16')
-#ax.set_ylabel(r"$Y/ \xi$", size = '16')
-#ax.set_zlabel(r"$Z/ \xi$", size = '16')
-#ax.legend(loc = 'upper right', fontsize = 'large')
-#plt.show("3DFig")
-#fig1=plt.figure("3DFigInf")
-#ax1=Axes3D(fig1)
-#for n in xrange(0,len(lattice.tot_inf_coord_i)-1):
-#    ax1.plot3D(lattice.tot_inf_coord_i[n],lattice.tot_inf_coord_j[n],lattice.tot_inf_coord_k[n], color='r', label='Infinite Strings')
-#ax1.set_title(r"$3D \ plot \ of \ Infinite \ Strings \ (size \ N\xi = 20)$", size = '16')
-#ax1.set_xlabel(r"$X/ \xi$", size = '16')
-#ax1.set_ylabel(r"$Y/ \xi$", size = '16')
-#ax1.set_zlabel(r"$Z/ \xi$", size = '16')
-#plt.show("3DFig1")
-#fig2=plt.figure("3DFigLoop")
-#ax2=Axes3D(fig2)
-#for n in xrange(0,len(lattice.tot_loop_coord_i)-1):
-#    ax2.plot3D(lattice.tot_loop_coord_i[n],lattice.tot_loop_coord_j[n],lattice.tot_loop_coord_k[n], color='b', label='Closed Strings')
-#ax2.set_title(r"$3D \ plot \ of \ Closed \ Strings \ (size \ N\xi = 20)$", size = '16')
-#ax2.set_xlabel(r"$X/ \xi$", size = '16')
-#ax2.set_ylabel(r"$Y/ \xi$", size = '16')
-#ax2.set_zlabel(r"$Z/ \xi$", size = '16')
-#plt.show("3DFig1")
-
-figHist=plt.figure("Histogram", figsize=(16,9))   
-bins = range(min(lattice.length_inf), max(lattice.length_loop))
-plt.hist(lattice.length_inf, bins, histtype= 'bar', color ='r', label = r'$Infinite \ strings$', alpha=0.5)
-plt.hist(lattice.length_loop, bins, histtype= 'bar', color = 'b', label = r'$Closed \ strings$', alpha=0.5)
-plt.xlabel(r'$Length \ of \ Strings$', fontsize=22)
-plt.ylabel(r'$Number \ of \ Strings$', fontsize=22)
-plt.title(r'$Histogram \ of \ String \ Lengths$', fontsize=25, y=1.025)
-plt.legend(loc='upper right', fontsize=25)
-#plt.annotate(r'$Size: \ N\xi \ = \ {0}$'.format(N), xy=(800, 325), xycoords='figure points', fontsize=22,
-#bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=0.25'))
-plt.show("Histogram")
-
-
-
-fig=plt.figure("3DFig", figsize=(8.0*1.2,6.0*1.2))
-ax = Axes3D(fig)
-
-for n in xrange(0,len(lattice.tot_loop_coord_i)-1):
-    ax.plot3D(lattice.tot_loop_coord_i[n],lattice.tot_loop_coord_j[n],lattice.tot_loop_coord_k[n], color='blue', label=r'$Closed \ Strings$'  if n == 0 else "", linewidth = 3)
-for n in xrange(0,len(lattice.tot_inf_coord_i)-1):
-    ax.plot3D(lattice.tot_inf_coord_i[n],lattice.tot_inf_coord_j[n],lattice.tot_inf_coord_k[n], color='r', label=r'$Infinite \ Strings$'  if n == 0 else "", linewidth = 3)
-    
-ax.set_title(r"$3D \ Plot \ of \ Cosmic \ Strings $", fontsize=25, y=1.025, x=0.32)
-ax.set_xlabel(r"$X/ \xi$", fontsize=18, labelpad=10)
-ax.set_ylabel(r"$Y/ \xi$", fontsize=18, labelpad=10)
-ax.set_zlabel(r"$Z/ \xi$", fontsize=18, labelpad=10)
-ax.legend(loc = 'upper right', fontsize=22)
-ax.annotate(r'$Size: \ N\xi \ = \ {0}$'.format(N), xy=(525, 20), xycoords='figure points', fontsize=22,
-bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=0.25'))
-plt.show("3DFig")
-
-
-fig1=plt.figure("3DFigInf", figsize=(8.0*1.2,6.0*1.2))
-ax1=Axes3D(fig1)
-
-for n in xrange(0,len(lattice.tot_inf_coord_i)-1):
-    ax1.plot3D(lattice.tot_inf_coord_i[n],lattice.tot_inf_coord_j[n],lattice.tot_inf_coord_k[n], color='r', label=r'$Infinite \ Strings$' if n == 0 else "", linewidth = 1.5)
-    
-#ax1.set_title(r"$3D \ Plot \ of \ Infinite \ Strings $", fontsize=25, y=1.025, x=0.32)
-#ax1.set_xlabel(r"$X/ \xi$", fontsize=18, labelpad=10)
-#ax1.set_ylabel(r"$Y/ \xi$", fontsize=18, labelpad=10)
-#ax1.set_zlabel(r"$Z/ \xi$", fontsize=18, labelpad=10)
-#ax1.legend(loc = 'upper right', fontsize=22)
-#ax1.annotate(r'$Size: \ N\xi \ = \ {0}$'.format(N), xy=(525, 20), xycoords='figure points', fontsize=22,
-#bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=0.25'))
-plt.show("3DFig1")
-
-fig2=plt.figure("3DFigLoop", figsize=(8.0*1.2,6.0*1.2))
-ax2=Axes3D(fig2)
-
-for n in xrange(0,len(lattice.tot_loop_coord_i)-1):
-    ax2.plot3D(lattice.tot_loop_coord_i[n],lattice.tot_loop_coord_j[n],lattice.tot_loop_coord_k[n], color='b', label=r'$Closed \ Strings$' if n == 0 else "", linewidth = 1.5)
-    
-#ax2.set_title(r"$3D \ Plot \ of \ Closed \ Strings $", fontsize=25, y=1.025, x=0.32)
-#ax2.set_xlabel(r"$X/ \xi$", fontsize=18, labelpad=10)
-#ax2.set_ylabel(r"$Y/ \xi$", fontsize=18, labelpad=10)
-#ax2.set_zlabel(r"$Z/ \xi$", fontsize=18, labelpad=10)
-#ax2.legend(loc = 'upper right', fontsize=22)
-#ax2.annotate(r'$Size: \ N\xi \ = \ {0}$'.format(N), xy=(525, 20), xycoords='figure points', fontsize=22,
-#bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=0.25'))
-plt.show("3DFig1")
+plt.show("LogPlot1")
 
 print "Minimum Length of Closed Loop:", min(lattice.length_loop)
 print "Minimum Length of Infinite Loop:", min(lattice.length_inf)
+
