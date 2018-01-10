@@ -12,6 +12,7 @@ import random
 from random import randint
 from mpl_toolkits.mplot3d import Axes3D  
 from scipy.optimize import curve_fit
+import collections
 random.seed(823456789) 
 np.set_printoptions(threshold='nan')
 plt.close("all")
@@ -616,6 +617,7 @@ class SpaceCube:
                         self.length_loop.append(self.L)
                         self.size_loop.append(self.R_i + self.R_j + self.R_k) 
                         self.R_loop.append(self.R) 
+                        self.R = []
                         self.segment.append(self.l)                        
         for i in xrange(0,len(self.box[:,0,0])-1):
             for j in xrange(1,len(self.box[0,:,0])-2):
@@ -637,6 +639,7 @@ class SpaceCube:
                         self.length_loop.append(self.L) 
                         self.size_loop.append(self.R_i + self.R_j + self.R_k) 
                         self.R_loop.append(self.R)
+                        self.R = []
                         self.segment.append(self.l)            
         for i in xrange(1,len(self.box[:,0,0])-2):
             for j in xrange(0,len(self.box[0,:,0])-1):
@@ -694,9 +697,6 @@ class SpaceCube:
                 self.R_j += 0
             if (n_k < k or n_k == k ):
                 self.R_k += 0
-            if (self.L % 5 == 0):
-                self.R.append(self.R_i + self.R_j + self.R_k)
-                
             while (True):
                 if (XYZ == n_XYZ and n_i==i and n_j==j and n_k==k):
                     if (n_XYZ =='X'):
@@ -725,7 +725,6 @@ class SpaceCube:
                     self.R_k += 0
                 if (self.L % 5 == 0):
                     self.R.append(self.R_i + self.R_j + self.R_k)
-                    
                 self.loop_coord_i.append(m_i)
                 self.loop_coord_j.append(m_j)
                 self.loop_coord_k.append(m_k)
@@ -800,28 +799,66 @@ print "Percentage of closed loops", 1.0*sum(lattice.length_loop)/sum((lattice.le
 #Plot3DStrings()
 #PlotLengthHist()
 
+
+Avg_r = []
+r = 0
+for r in xrange(len(lattice.size_loop)):
+  if (lattice.length_loop[r] > 99): 
+    print "length: ",lattice.length_loop[r]
+    print "r: ", r
+    print lattice.R_loop[r]    
+  r += 1
+ 
+for i in xrange(len(lattice.R_loop[294])):  
+   Avg_r.append((lattice.R_loop[294][i] + lattice.R_loop[664][i])/2.)
+   
+print "Avg: ",Avg_r
+#print "Seg: ",lattice.segment
+print "lin: ",np.linspace(5,105,len(Avg_r))
+
+
 #R_run = np.savetxt()
-def func(l, A, d):
-    return (l/A)**(1./d)
-plt.figure("LogPlot1")
-plt.scatter(np.log(lattice.segment), np.log(lattice.size_loop))
-popt,pcov = curve_fit(func, lattice.segment, lattice.size_loop)
-plt.plot( np.log(lattice.segment), np.log(func(lattice.segment, *popt)))
-plt.xlabel(r'$Log(segment \ lenght)$', size = '16')
-plt.ylabel(r'$Log(end \ to \ end \ distance)$', size = '16')
-plt.title(r'$Estimation \ of \ the \ fractal \ dimension$', size = '16')
-plt.show("LogPlot1")
+#def func(l, A, d):
+#    return (l/A)**(1./d)
+#plt.figure("LogPlot1")
+#plt.scatter(np.log10(np.linspace(5,105,len(Avg_r))), np.log10(Avg_r))
+#popt,pcov = curve_fit(func, np.linspace(5,105,len(Avg_r)), Avg_r)
+#plt.plot( np.log10(np.linspace(5,105,len(Avg_r))), np.log10(func(np.linspace(5,105,len(Avg_r)), *popt)))
+#plt.xlabel(r'$Log(segment \ lenght)$', size = '16')
+#plt.ylabel(r'$Log(end \ to \ end \ distance)$', size = '16')
+#plt.title(r'$Estimation \ of \ the \ fractal \ dimension$', size = '16')
+#plt.show("LogPlot1")
+def func_lin(R, A, d):
+    return A*(R**(-d))
+#plt.figure("LogPlot2")
+#plt.scatter(np.log10(lattice.size_loop), np.log10(lattice.length_loop))
+#popt,pcov = curve_fit(func_lin,lattice.size_loop , lattice.length_loop)
+#plt.plot( np.log10(lattice.size_loop), np.log10(func_lin(lattice.size_loop, *popt)))
+#plt.ylabel(r'$Log(lenght)$', size = '16')
+#plt.xlabel(r'$Log(loop \ perimeter)$', size = '16')
+#plt.title(r'$Estimation \ of \ the \ fractal \ dimension$', size = '16')
+#plt.show("LogPlot2")
 
 
 print "Minimum Length of Closed Loop:", min(lattice.length_loop)
 print "Minimum Length of Infinite Loop:", min(lattice.length_inf)
-print "Fit Params: ", popt
-print lattice.size_loop
+#print "Fit Params: ", popt
+#print lattice.length_loop
 
-i = 0
-for i in xrange(len(lattice.size_loop)):
-  if (lattice.length_loop[i] > 70): 
-    print lattice.length_loop[i]
-  i += 1
   
-print lattice.R_loop
+#print lattice.R_loop
+
+number_occ = []
+n = []
+perimeter =[]
+counter = collections.Counter(lattice.size_loop)
+for i,j in counter.items():
+    #n.append(i/j)
+    perimeter.append(i)
+    number_occ.append(j)
+for i in xrange(len(number_occ)):
+    n.append(1.0*number_occ[i]/perimeter[i])
+plt.scatter(np.log10(perimeter), np.log10(n))
+popt,pcov = curve_fit(func_lin, perimeter , n)
+plt.plot( np.log10(perimeter), np.log10(func_lin(perimeter, *popt)))
+plt.show()
