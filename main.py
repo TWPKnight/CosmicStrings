@@ -114,6 +114,8 @@ class SpaceCube:
         R_i = 0
         R_j = 0
         R_k = 0
+        R = []
+        R_loop = []
         length_inf=[]
         length_loop=[]
         size_loop=[]
@@ -135,6 +137,8 @@ class SpaceCube:
         self.R_i = R_i
         self.R_j = R_j
         self.R_k = R_k
+        self.R = R
+        self.R_loop = R_loop
         self.length_inf=length_inf
         self.size_loop = size_loop 
         self.length_loop=length_loop
@@ -610,7 +614,8 @@ class SpaceCube:
                         self.tot_loop_coord_j.append(self.loop_coord_j)
                         self.tot_loop_coord_k.append(self.loop_coord_k)
                         self.length_loop.append(self.L)
-                        self.size_loop.append(self.R_i + self.R_j + self.R_k)  
+                        self.size_loop.append(self.R_i + self.R_j + self.R_k) 
+                        self.R_loop.append(self.R) 
                         self.segment.append(self.l)                        
         for i in xrange(0,len(self.box[:,0,0])-1):
             for j in xrange(1,len(self.box[0,:,0])-2):
@@ -631,6 +636,7 @@ class SpaceCube:
                         self.tot_loop_coord_k.append(self.loop_coord_k)
                         self.length_loop.append(self.L) 
                         self.size_loop.append(self.R_i + self.R_j + self.R_k) 
+                        self.R_loop.append(self.R)
                         self.segment.append(self.l)            
         for i in xrange(1,len(self.box[:,0,0])-2):
             for j in xrange(0,len(self.box[0,:,0])-1):
@@ -651,6 +657,8 @@ class SpaceCube:
                         self.tot_loop_coord_k.append(self.loop_coord_k)
                         self.length_loop.append(self.L)  
                         self.size_loop.append(self.R_i + self.R_j + self.R_k) 
+                        self.R_loop.append(self.R)
+                        self.R = []
                         self.segment.append(self.l)   
                           
     def follow(self,xyz_string,i,j,k,XYZ): 
@@ -686,6 +694,9 @@ class SpaceCube:
                 self.R_j += 0
             if (n_k < k or n_k == k ):
                 self.R_k += 0
+            if (self.L % 5 == 0):
+                self.R.append(self.R_i + self.R_j + self.R_k)
+                
             while (True):
                 if (XYZ == n_XYZ and n_i==i and n_j==j and n_k==k):
                     if (n_XYZ =='X'):
@@ -712,7 +723,9 @@ class SpaceCube:
                     self.R_j += 0
                 if (m_k < n_k or m_k == n_k ):
                     self.R_k += 0
-                
+                if (self.L % 5 == 0):
+                    self.R.append(self.R_i + self.R_j + self.R_k)
+                    
                 self.loop_coord_i.append(m_i)
                 self.loop_coord_j.append(m_j)
                 self.loop_coord_k.append(m_k)
@@ -785,7 +798,7 @@ print "Number of closed loops", len(lattice.length_loop)
 print "Number of infinite strings", len(lattice.length_inf)
 print "Percentage of closed loops", 1.0*sum(lattice.length_loop)/sum((lattice.length_inf+lattice.length_loop))
 #Plot3DStrings()
-PlotLengthHist()
+#PlotLengthHist()
 
 #R_run = np.savetxt()
 def func(l, A, d):
@@ -799,6 +812,16 @@ plt.ylabel(r'$Log(end \ to \ end \ distance)$', size = '16')
 plt.title(r'$Estimation \ of \ the \ fractal \ dimension$', size = '16')
 plt.show("LogPlot1")
 
+
 print "Minimum Length of Closed Loop:", min(lattice.length_loop)
 print "Minimum Length of Infinite Loop:", min(lattice.length_inf)
+print "Fit Params: ", popt
+print lattice.size_loop
 
+i = 0
+for i in xrange(len(lattice.size_loop)):
+  if (lattice.length_loop[i] > 70): 
+    print lattice.length_loop[i]
+  i += 1
+  
+print lattice.R_loop
