@@ -858,7 +858,12 @@ for i,j in counter.items():
     number_occ.append(j)
 for i in xrange(len(number_occ)):
     n.append(1.0*number_occ[i]/perimeter[i])
+def func_lin2(R, B, d):
+    return B/(R**d)
 plt.scatter(np.log10(perimeter), np.log10(n))
-popt,pcov = curve_fit(func_lin, perimeter , n)
-plt.plot( np.log10(perimeter), np.log10(func_lin(perimeter, *popt)))
+popt2,pcov2 = curve_fit(func_lin2, perimeter,n)
+plt.plot( np.log10(perimeter), np.log10(func_lin2(perimeter, *popt2)))
+plt.ylabel(r'$Log(density)$', size = '16')
+plt.xlabel(r'$Log(loop \ perimeter)$', size = '16')
+#plt.title(r'$$', size = '16')
 plt.show()
