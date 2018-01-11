@@ -115,12 +115,10 @@ class SpaceCube:
         R_i = 0
         R_j = 0
         R_k = 0
-        R = []
-        R_loop = []
+        R = 0
         length_inf=[]
         length_loop=[]
         size_loop=[]
-        segment = []
         loop_coord_i=[]
         loop_coord_j=[]
         loop_coord_k=[]
@@ -139,11 +137,9 @@ class SpaceCube:
         self.R_j = R_j
         self.R_k = R_k
         self.R = R
-        self.R_loop = R_loop
         self.length_inf=length_inf
         self.size_loop = size_loop 
         self.length_loop=length_loop
-        self.segment = segment
         self.loop_coord_i=loop_coord_i
         self.loop_coord_j=loop_coord_j
         self.loop_coord_k=loop_coord_k
@@ -614,11 +610,8 @@ class SpaceCube:
                         self.tot_loop_coord_i.append(self.loop_coord_i)
                         self.tot_loop_coord_j.append(self.loop_coord_j)
                         self.tot_loop_coord_k.append(self.loop_coord_k)
-                        self.length_loop.append(self.L)
-                        self.size_loop.append(self.R_i + self.R_j + self.R_k) 
-                        self.R_loop.append(self.R) 
-                        self.R = []
-                        self.segment.append(self.l)                        
+                        #self.length_loop.append(self.L)
+                        #self.size_loop.append(self.R)                         
         for i in xrange(0,len(self.box[:,0,0])-1):
             for j in xrange(1,len(self.box[0,:,0])-2):
                 for k in xrange(0,len(self.box[0,0,:])-1):
@@ -636,11 +629,8 @@ class SpaceCube:
                         self.tot_loop_coord_i.append(self.loop_coord_i)
                         self.tot_loop_coord_j.append(self.loop_coord_j)
                         self.tot_loop_coord_k.append(self.loop_coord_k)
-                        self.length_loop.append(self.L) 
-                        self.size_loop.append(self.R_i + self.R_j + self.R_k) 
-                        self.R_loop.append(self.R)
-                        self.R = []
-                        self.segment.append(self.l)            
+                        #self.length_loop.append(self.L) 
+                        #self.size_loop.append(self.R)             
         for i in xrange(1,len(self.box[:,0,0])-2):
             for j in xrange(0,len(self.box[0,:,0])-1):
                 for k in xrange(0,len(self.box[0,0,:])-1): 
@@ -658,11 +648,9 @@ class SpaceCube:
                         self.tot_loop_coord_i.append(self.loop_coord_i)
                         self.tot_loop_coord_j.append(self.loop_coord_j)
                         self.tot_loop_coord_k.append(self.loop_coord_k)
-                        self.length_loop.append(self.L)  
-                        self.size_loop.append(self.R_i + self.R_j + self.R_k) 
-                        self.R_loop.append(self.R)
-                        self.R = []
-                        self.segment.append(self.l)   
+                        #self.length_loop.append(self.L)  
+                        #self.size_loop.append(self.R) 
+                
                           
     def follow(self,xyz_string,i,j,k,XYZ): 
         #Edge == True means looking for infinite strings
@@ -708,23 +696,25 @@ class SpaceCube:
                     break                              
                 m_XYZ,m_i,m_j,m_k = self.followFunc(n_XYZ,n_i,n_j,n_k)
                 self.L += 1
-                if (m_i > n_i):
-                    self.R_i += 1
-                    self.l = self.L
-                if (m_j > n_j):
-                    self.R_j += 1
-                    self.l = self.L
-                if (m_k > n_k):
-                    self.R_k += 1
-                    self.l = self.L
-                if (m_i < n_i or m_i == n_i ):
-                    self.R_i += 0
-                if (m_j < n_j or m_j == n_j ):
-                    self.R_j += 0
-                if (m_k < n_k or m_k == n_k ):
-                    self.R_k += 0
                 if (self.L % 5 == 0):
-                    self.R.append(self.R_i + self.R_j + self.R_k)
+                    if (m_i > n_i):
+                        self.R_i += 1
+                        self.l = self.L
+                    if (m_j > n_j):
+                        self.R_j += 1
+                        self.l = self.L
+                    if (m_k > n_k):
+                        self.R_k += 1
+                        self.l = self.L
+                    if (m_i < n_i or m_i == n_i ):
+                        self.R_i += 0
+                    if (m_j < n_j or m_j == n_j ):
+                        self.R_j += 0
+                    if (m_k < n_k or m_k == n_k ):
+                        self.R_k += 0
+                    self.R = np.sqrt((self.R_i)**2 + (self.R_j)**2 + (self.R_k)**2)
+                    self.size_loop.append(self.R)
+                    self.length_loop.append(self.L)
                 self.loop_coord_i.append(m_i)
                 self.loop_coord_j.append(m_j)
                 self.loop_coord_k.append(m_k)
@@ -801,69 +791,63 @@ print "Percentage of closed loops", 1.0*sum(lattice.length_loop)/sum((lattice.le
 
 
 Avg_r = []
-r = 0
-for r in xrange(len(lattice.size_loop)):
-  if (lattice.length_loop[r] > 99): 
-    print "length: ",lattice.length_loop[r]
-    print "r: ", r
-    print lattice.R_loop[r]    
-  r += 1
- 
-for i in xrange(len(lattice.R_loop[294])):  
-   Avg_r.append((lattice.R_loop[294][i] + lattice.R_loop[664][i])/2.)
+
    
-print "Avg: ",Avg_r
+#print "Avg: ",Avg_r
 #print "Seg: ",lattice.segment
-print "lin: ",np.linspace(5,105,len(Avg_r))
+#print "lin: ",np.linspace(5,105,len(Avg_r))
 
 
 #R_run = np.savetxt()
-#def func(l, A, d):
-#    return (l/A)**(1./d)
-#plt.figure("LogPlot1")
-#plt.scatter(np.log10(np.linspace(5,105,len(Avg_r))), np.log10(Avg_r))
-#popt,pcov = curve_fit(func, np.linspace(5,105,len(Avg_r)), Avg_r)
-#plt.plot( np.log10(np.linspace(5,105,len(Avg_r))), np.log10(func(np.linspace(5,105,len(Avg_r)), *popt)))
-#plt.xlabel(r'$Log(segment \ lenght)$', size = '16')
-#plt.ylabel(r'$Log(end \ to \ end \ distance)$', size = '16')
-#plt.title(r'$Estimation \ of \ the \ fractal \ dimension$', size = '16')
-#plt.show("LogPlot1")
+def func(l, A, d):
+    return (l/A)**(1./d)
+plt.figure("LogPlot1")
+plt.scatter(np.log10(lattice.length_loop), np.log10(lattice.size_loop))
+popt,pcov = curve_fit(func, lattice.length_loop, lattice.size_loop)
+plt.plot( np.log10(lattice.length_loop), np.log10(func(lattice.length_loop, *popt)))
+plt.xlabel(r'$Log(segment \ lenght)$', size = '16')
+plt.ylabel(r'$Log(end \ to \ end \ distance)$', size = '16')
+plt.title(r'$Estimation \ of \ the \ fractal \ dimension$', size = '16')
+plt.show("LogPlot1")
 def func_lin(R, A, d):
     return A*(R**(-d))
-#plt.figure("LogPlot2")
-#plt.scatter(np.log10(lattice.size_loop), np.log10(lattice.length_loop))
-#popt,pcov = curve_fit(func_lin,lattice.size_loop , lattice.length_loop)
-#plt.plot( np.log10(lattice.size_loop), np.log10(func_lin(lattice.size_loop, *popt)))
-#plt.ylabel(r'$Log(lenght)$', size = '16')
-#plt.xlabel(r'$Log(loop \ perimeter)$', size = '16')
-#plt.title(r'$Estimation \ of \ the \ fractal \ dimension$', size = '16')
-#plt.show("LogPlot2")
+plt.figure("LogPlot2")
+plt.scatter(np.log10(lattice.size_loop), np.log10(lattice.length_loop))
+popt2,pcov = curve_fit(func_lin,lattice.size_loop , lattice.length_loop)
+plt.plot( np.log10(lattice.size_loop), np.log10(func_lin(lattice.size_loop, *popt2)))
+plt.ylabel(r'$Log(lenght)$', size = '16')
+plt.xlabel(r'$Log(loop \ perimeter)$', size = '16')
+plt.title(r'$Estimation \ of \ the \ fractal \ dimension$', size = '16')
+plt.show("LogPlot2")
 
 
 print "Minimum Length of Closed Loop:", min(lattice.length_loop)
 print "Minimum Length of Infinite Loop:", min(lattice.length_inf)
-#print "Fit Params: ", popt
+print "Fit Params 1 & 2: ", popt, popt2
 #print lattice.length_loop
 
   
 #print lattice.R_loop
 
-number_occ = []
-n = []
-perimeter =[]
-counter = collections.Counter(lattice.size_loop)
-for i,j in counter.items():
-    #n.append(i/j)
-    perimeter.append(i)
-    number_occ.append(j)
-for i in xrange(len(number_occ)):
-    n.append(1.0*number_occ[i]/perimeter[i])
-def func_lin2(R, B, d):
-    return B/(R**d)
-plt.scatter(np.log10(perimeter), np.log10(n))
-popt2,pcov2 = curve_fit(func_lin2, perimeter,n)
-plt.plot( np.log10(perimeter), np.log10(func_lin2(perimeter, *popt2)))
-plt.ylabel(r'$Log(density)$', size = '16')
-plt.xlabel(r'$Log(loop \ perimeter)$', size = '16')
-#plt.title(r'$$', size = '16')
-plt.show()
+#number_occ = []
+#n = []
+#perimeter =[]
+#counter = collections.Counter(lattice.size_loop)
+#for i,j in counter.items():
+#    #n.append(i/j)
+#    perimeter.append(i)
+#    number_occ.append(j)
+#for i in xrange(len(number_occ)):
+#    n.append(1.0*number_occ[i]/perimeter[i])
+#def func_lin2(R, B, d):
+#    return B/(R**d)
+#plt.scatter(np.log10(perimeter), np.log10(n))
+#popt2,pcov2 = curve_fit(func_lin2, perimeter,n)
+#plt.plot( np.log10(perimeter), np.log10(func_lin2(perimeter, *popt2)))
+#plt.ylabel(r'$Log(density)$', size = '16')
+#plt.xlabel(r'$Log(loop \ perimeter)$', size = '16')
+##plt.title(r'$$', size = '16')
+#plt.show()
+
+A = np.zeros((len(lattice.length_loop), 2))
+A[:,0] += lattice.length_loop
