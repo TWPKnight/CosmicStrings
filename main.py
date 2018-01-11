@@ -41,9 +41,9 @@ def PrintPnF(i,j,k):
     
 def PlotLengthHist():
     figHist=plt.figure("Histogram", figsize=(16,9))   
-    bins = range(min(lattice.length_inf), max(lattice.length_loop))
+    bins = range(min(lattice.length_inf), max(lattice.total_length))
     plt.hist(lattice.length_inf, bins, histtype= 'bar', color ='r', label = r'$Infinite \ strings$', alpha=0.5)
-    plt.hist(lattice.length_loop, bins, histtype= 'bar', color = 'b', label = r'$Closed \ strings$', alpha=0.5)
+    plt.hist(lattice.total_length, bins, histtype= 'bar', color = 'b', label = r'$Closed \ strings$', alpha=0.5)
     plt.xlabel(r'$Length \ of \ Strings$', fontsize=22)
     plt.ylabel(r'$Number \ of \ Strings$', fontsize=22)
     plt.title(r'$Histogram \ of \ String \ Lengths$', fontsize=25, y=1.025)
@@ -111,14 +111,16 @@ class SpaceCube:
         faceNum=0
         edge = False
         L=0
-        l = 0
         R_i = 0
         R_j = 0
         R_k = 0
         R = 0
         length_inf=[]
         length_loop=[]
+        total_length = []
+        length_strings = []
         size_loop=[]
+        size_strings = []
         loop_coord_i=[]
         loop_coord_j=[]
         loop_coord_k=[]
@@ -132,7 +134,6 @@ class SpaceCube:
         tot_inf_coord_j=[]
         tot_inf_coord_k=[]
         self.L = L
-        self.l = l 
         self.R_i = R_i
         self.R_j = R_j
         self.R_k = R_k
@@ -140,6 +141,9 @@ class SpaceCube:
         self.length_inf=length_inf
         self.size_loop = size_loop 
         self.length_loop=length_loop
+        self.total_length = total_length
+        self.length_strings = length_strings 
+        self.size_strings = size_strings
         self.loop_coord_i=loop_coord_i
         self.loop_coord_j=loop_coord_j
         self.loop_coord_k=loop_coord_k
@@ -517,6 +521,9 @@ class SpaceCube:
                 if ( self.zString[i,j,k] == 1 ):
                     """Follow"""
                     self.L=1
+                    self.R_i = 1
+                    self.R_j = 1
+                    self.R_k = 1
                     self.inf_coord_i=[]
                     self.inf_coord_j=[]
                     self.inf_coord_k=[]
@@ -529,6 +536,9 @@ class SpaceCube:
                 if ( self.zString[i,j,k] == -1 ):
                     """Follow"""
                     self.L=1
+                    self.R_i = 1
+                    self.R_j = 1
+                    self.R_k = 1
                     self.inf_coord_i=[]
                     self.inf_coord_j=[]
                     self.inf_coord_k=[]
@@ -544,6 +554,9 @@ class SpaceCube:
                 if ( self.yString[i,j,k] == 1 ):
                     """Follow"""
                     self.L=1
+                    self.R_i = 1
+                    self.R_j = 1
+                    self.R_k = 1
                     self.inf_coord_i=[]
                     self.inf_coord_j=[]
                     self.inf_coord_k=[]
@@ -556,6 +569,9 @@ class SpaceCube:
                 if ( self.yString[i,j,k] == -1 ):
                     """Follow"""
                     self.L=1
+                    self.R_i = 1
+                    self.R_j = 1
+                    self.R_k = 1
                     self.inf_coord_i=[]
                     self.inf_coord_j=[]
                     self.inf_coord_k=[]
@@ -571,6 +587,9 @@ class SpaceCube:
                 if ( self.xString[i,j,k] == 1 ):
                     """Follow"""
                     self.L=1
+                    self.R_i = 1
+                    self.R_j = 1
+                    self.R_k = 1
                     self.inf_coord_i=[]
                     self.inf_coord_j=[]
                     self.inf_coord_k=[]
@@ -583,6 +602,9 @@ class SpaceCube:
                 if ( self.xString[i,j,k] == -1 ):
                     """Follow"""
                     self.L=1
+                    self.R_i = 1
+                    self.R_j = 1
+                    self.R_k = 1
                     self.inf_coord_i=[]
                     self.inf_coord_j=[]
                     self.inf_coord_k=[]
@@ -599,7 +621,6 @@ class SpaceCube:
                     if ( abs(self.zString[i,j,k]) == 1 ):
                         """Follow"""
                         self.L=0
-                        self.l = 0
                         self.R_i = 1
                         self.R_j = 1
                         self.R_k = 1
@@ -610,7 +631,7 @@ class SpaceCube:
                         self.tot_loop_coord_i.append(self.loop_coord_i)
                         self.tot_loop_coord_j.append(self.loop_coord_j)
                         self.tot_loop_coord_k.append(self.loop_coord_k)
-                        #self.length_loop.append(self.L)
+                        self.total_length.append(self.L)
                         #self.size_loop.append(self.R)                         
         for i in xrange(0,len(self.box[:,0,0])-1):
             for j in xrange(1,len(self.box[0,:,0])-2):
@@ -618,7 +639,6 @@ class SpaceCube:
                     if ( abs(self.yString[i,j,k]) == 1 ):
                         """Follow"""
                         self.L=0
-                        self.l = 0
                         self.R_i = 1
                         self.R_j = 1
                         self.R_k = 1
@@ -629,7 +649,7 @@ class SpaceCube:
                         self.tot_loop_coord_i.append(self.loop_coord_i)
                         self.tot_loop_coord_j.append(self.loop_coord_j)
                         self.tot_loop_coord_k.append(self.loop_coord_k)
-                        #self.length_loop.append(self.L) 
+                        self.total_length.append(self.L) 
                         #self.size_loop.append(self.R)             
         for i in xrange(1,len(self.box[:,0,0])-2):
             for j in xrange(0,len(self.box[0,:,0])-1):
@@ -637,7 +657,6 @@ class SpaceCube:
                     if ( abs(self.xString[i,j,k]) == 1 ):
                         """Follow"""
                         self.L=0
-                        self.l = 0
                         self.R_i = 1
                         self.R_j = 1
                         self.R_k = 1
@@ -648,7 +667,7 @@ class SpaceCube:
                         self.tot_loop_coord_i.append(self.loop_coord_i)
                         self.tot_loop_coord_j.append(self.loop_coord_j)
                         self.tot_loop_coord_k.append(self.loop_coord_k)
-                        #self.length_loop.append(self.L)  
+                        self.total_length.append(self.L)  
                         #self.size_loop.append(self.R) 
                 
                           
@@ -669,22 +688,19 @@ class SpaceCube:
         self.inf_coord_i.append(n_i)
         self.inf_coord_j.append(n_j)
         self.inf_coord_k.append(n_k)
+        if (n_i > i):
+            self.R_i += 1
+        if (n_j > j):
+            self.R_j += 1
+        if (n_k > k):
+            self.R_k += 1
+        if (n_i < i or n_i == i ):
+            self.R_i += 0
+        if (n_j < j or n_j == j ):
+            self.R_j += 0
+        if (n_k < k or n_k == k ):
+            self.R_k += 0
         if (self.edge == False):
-            if (n_i > i):
-                self.R_i += 1
-                self.l = self.L
-            if (n_j > j):
-                self.R_j += 1
-                self.l = self.L
-            if (n_k > k):
-                self.R_k += 1
-                self.l = self.L
-            if (n_i < i or n_i == i ):
-                self.R_i += 0
-            if (n_j < j or n_j == j ):
-                self.R_j += 0
-            if (n_k < k or n_k == k ):
-                self.R_k += 0
             while (True):
                 if (XYZ == n_XYZ and n_i==i and n_j==j and n_k==k):
                     if (n_XYZ =='X'):
@@ -699,13 +715,10 @@ class SpaceCube:
                 if (self.L % 5 == 0):
                     if (m_i > n_i):
                         self.R_i += 1
-                        self.l = self.L
                     if (m_j > n_j):
                         self.R_j += 1
-                        self.l = self.L
                     if (m_k > n_k):
                         self.R_k += 1
-                        self.l = self.L
                     if (m_i < n_i or m_i == n_i ):
                         self.R_i += 0
                     if (m_j < n_j or m_j == n_j ):
@@ -714,7 +727,9 @@ class SpaceCube:
                         self.R_k += 0
                     self.R = np.sqrt((self.R_i)**2 + (self.R_j)**2 + (self.R_k)**2)
                     self.size_loop.append(self.R)
+                    self.size_strings.append(self.R)
                     self.length_loop.append(self.L)
+                    self.length_strings.append(self.L)
                 self.loop_coord_i.append(m_i)
                 self.loop_coord_j.append(m_j)
                 self.loop_coord_k.append(m_k)
@@ -751,6 +766,22 @@ class SpaceCube:
                      break
                 self.L += 1 
                 m_XYZ,m_i,m_j,m_k = self.followFunc(n_XYZ,n_i,n_j,n_k)
+                if (self.L % 5 == 0):
+                    if (m_i > n_i):
+                        self.R_i += 1
+                    if (m_j > n_j):
+                        self.R_j += 1
+                    if (m_k > n_k):
+                        self.R_k += 1
+                    if (m_i < n_i or m_i == n_i ):
+                        self.R_i += 0
+                    if (m_j < n_j or m_j == n_j ):
+                        self.R_j += 0
+                    if (m_k < n_k or m_k == n_k ):
+                        self.R_k += 0
+                    self.R = np.sqrt((self.R_i)**2 + (self.R_j)**2 + (self.R_k)**2)
+                    self.size_strings.append(self.R)
+                    self.length_strings.append(self.L)
                 self.inf_coord_i.append(m_i)
                 self.inf_coord_j.append(m_j)
                 self.inf_coord_k.append(m_k)
@@ -787,43 +818,48 @@ print "Number of closed loops", len(lattice.length_loop)
 print "Number of infinite strings", len(lattice.length_inf)
 print "Percentage of closed loops", 1.0*sum(lattice.length_loop)/sum((lattice.length_inf+lattice.length_loop))
 #Plot3DStrings()
-#PlotLengthHist()
+PlotLengthHist()
 
+Avg_R = []
+A = np.zeros((len(lattice.size_strings), 2))
+A[:,0]+= lattice.length_strings
+A[:,1] += lattice.size_strings
+i = 0
+for i in xrange(5, 170, 5):
+    select = (A[:,0] == i)
+    Avg_R.append(sum(A[select,1])/len(A[select,1]))
 
-Avg_r = []
-
-   
-#print "Avg: ",Avg_r
-#print "Seg: ",lattice.segment
-#print "lin: ",np.linspace(5,105,len(Avg_r))
-
-
-#R_run = np.savetxt()
+segments = np.linspace(5,max(lattice.length_strings),len(Avg_R))
 def func(l, A, d):
     return (l/A)**(1./d)
-plt.figure("LogPlot1")
-plt.scatter(np.log10(lattice.length_loop), np.log10(lattice.size_loop))
-popt,pcov = curve_fit(func, lattice.length_loop, lattice.size_loop)
-plt.plot( np.log10(lattice.length_loop), np.log10(func(lattice.length_loop, *popt)))
+plt.figure("LogPlot1_new")
+plt.scatter(np.log10(segments), np.log10(Avg_R))
+#popt,pcov = curve_fit(func, segments, Avg_R)
+#plt.plot( np.log10(segments), np.log10(func(segments,*popt)))
 plt.xlabel(r'$Log(segment \ lenght)$', size = '16')
 plt.ylabel(r'$Log(end \ to \ end \ distance)$', size = '16')
 plt.title(r'$Estimation \ of \ the \ fractal \ dimension$', size = '16')
 plt.show("LogPlot1")
-def func_lin(R, A, d):
-    return A*(R**(-d))
-plt.figure("LogPlot2")
-plt.scatter(np.log10(lattice.size_loop), np.log10(lattice.length_loop))
-popt2,pcov = curve_fit(func_lin,lattice.size_loop , lattice.length_loop)
-plt.plot( np.log10(lattice.size_loop), np.log10(func_lin(lattice.size_loop, *popt2)))
-plt.ylabel(r'$Log(lenght)$', size = '16')
-plt.xlabel(r'$Log(loop \ perimeter)$', size = '16')
-plt.title(r'$Estimation \ of \ the \ fractal \ dimension$', size = '16')
-plt.show("LogPlot2")
+#
+#Avg_l =[]
+#for i in xrange(5, 170, 5):
+#    select = (A[:,1] == i)
+#    Avg_R.append(sum(A[select,1])/len(A[select,1]))
+#def func_lin(R, A, d):
+#    return A*(R**(-d))
+#plt.figure("LogPlot2")
+#plt.scatter(np.log10(lattice.size_loop), np.log10(Avg_l))
+#popt2,pcov = curve_fit(func_lin,lattice.size_loop , Avg_l)
+#plt.plot( np.log10(lattice.size_loop), np.log10(func_lin(lattice.size_loop, *popt2)))
+#plt.ylabel(r'$Log(lenght)$', size = '16')
+#plt.xlabel(r'$Log(loop \ perimeter)$', size = '16')
+#plt.title(r'$Estimation \ of \ the \ fractal \ dimension$', size = '16')
+#plt.show("LogPlot2")
 
 
 print "Minimum Length of Closed Loop:", min(lattice.length_loop)
 print "Minimum Length of Infinite Loop:", min(lattice.length_inf)
-print "Fit Params 1 & 2: ", popt, popt2
+#print "Fit Params 1 & 2: ", popt, popt2
 #print lattice.length_loop
 
   
@@ -832,9 +868,9 @@ print "Fit Params 1 & 2: ", popt, popt2
 #number_occ = []
 #n = []
 #perimeter =[]
-#counter = collections.Counter(lattice.size_loop)
+#counter = collections.Counter(lattice.size_strings)
 #for i,j in counter.items():
-#    #n.append(i/j)
+#    print i,j
 #    perimeter.append(i)
 #    number_occ.append(j)
 #for i in xrange(len(number_occ)):
@@ -849,32 +885,3 @@ print "Fit Params 1 & 2: ", popt, popt2
 ##plt.title(r'$$', size = '16')
 #plt.show()
 
-r = 0
-n = 0
-Avg_r = []
-base_r = np.zeros(len(lattice.length_loop))
-for r in xrange(len(lattice.length_loop)):
-    if (lattice.length_loop[r] == 5):
-        n = 0
-    base_r[n] += lattice.size_loop[r]  
-    r+=1
-    n+=1
-       
-for m in xrange(max(lattice.length_loop)/5):
-    Avg_r.append(base_r[m]/((m+1)*5.0))
-    m+=1
-
-def func_new(l, A, d):
-    return (A)*(l**(-d))
-plt.figure("LogPlot1_new")
-plt.scatter(np.log10(np.linspace(5,max(lattice.length_loop),len(Avg_r))), np.log10(Avg_r))
-popt_new,pcov_new = curve_fit(func_new, np.linspace(5,max(lattice.length_loop),len(Avg_r)), Avg_r)
-plt.plot( np.log10(np.linspace(5,max(lattice.length_loop),len(Avg_r))), np.log10(func_new(np.linspace(5,max(lattice.length_loop),len(Avg_r)), *popt_new)))
-plt.xlabel(r'$Log(segment \ lenght)$', size = '16')
-plt.ylabel(r'$Log(end \ to \ end \ distance)$', size = '16')
-plt.title(r'$Estimation \ of \ the \ fractal \ dimension$', size = '16')
-plt.show("LogPlot1_new")
-
-#print np.linspace(5,max(lattice.length_loop),len(Avg_r))
-#print Avg_r
-print "New popt: ",popt_new
