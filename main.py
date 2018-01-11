@@ -849,5 +849,32 @@ print "Fit Params 1 & 2: ", popt, popt2
 ##plt.title(r'$$', size = '16')
 #plt.show()
 
-A = np.zeros((len(lattice.length_loop), 2))
-A[:,0] += lattice.length_loop
+r = 0
+n = 0
+Avg_r = []
+base_r = np.zeros(len(lattice.length_loop))
+for r in xrange(len(lattice.length_loop)):
+    if (lattice.length_loop[r] == 5):
+        n = 0
+    base_r[n] += lattice.size_loop[r]  
+    r+=1
+    n+=1
+       
+for m in xrange(max(lattice.length_loop)/5):
+    Avg_r.append(base_r[m]/((m+1)*5.0))
+    m+=1
+
+def func_new(l, A, d):
+    return (A)*(l**(-d))
+plt.figure("LogPlot1_new")
+plt.scatter(np.log10(np.linspace(5,max(lattice.length_loop),len(Avg_r))), np.log10(Avg_r))
+popt_new,pcov_new = curve_fit(func_new, np.linspace(5,max(lattice.length_loop),len(Avg_r)), Avg_r)
+plt.plot( np.log10(np.linspace(5,max(lattice.length_loop),len(Avg_r))), np.log10(func_new(np.linspace(5,max(lattice.length_loop),len(Avg_r)), *popt_new)))
+plt.xlabel(r'$Log(segment \ lenght)$', size = '16')
+plt.ylabel(r'$Log(end \ to \ end \ distance)$', size = '16')
+plt.title(r'$Estimation \ of \ the \ fractal \ dimension$', size = '16')
+plt.show("LogPlot1_new")
+
+#print np.linspace(5,max(lattice.length_loop),len(Avg_r))
+#print Avg_r
+print "New popt: ",popt_new
