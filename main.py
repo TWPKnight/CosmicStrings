@@ -13,7 +13,8 @@ from random import randint
 from mpl_toolkits.mplot3d import Axes3D  
 from scipy.optimize import curve_fit
 import collections
-random.seed(823456789) 
+random.seed(963738) 
+#random.seed(98765432)
 np.set_printoptions(threshold='nan')
 plt.close("all")
 
@@ -41,9 +42,9 @@ def PrintPnF(i,j,k):
     
 def PlotLengthHist():
     figHist=plt.figure("Histogram", figsize=(16,9))   
-    bins = range(min(lattice.length_inf), max(lattice.total_length))
+    bins = range(min(lattice.length_inf), max(lattice.length_loop))
     plt.hist(lattice.length_inf, bins, histtype= 'bar', color ='r', label = r'$Infinite \ strings$', alpha=0.5)
-    plt.hist(lattice.total_length, bins, histtype= 'bar', color = 'b', label = r'$Closed \ strings$', alpha=0.5)
+    plt.hist(lattice.length_loop, bins, histtype= 'bar', color = 'b', label = r'$Closed \ strings$', alpha=0.5)
     plt.xlabel(r'$Length \ of \ Strings$', fontsize=22)
     plt.ylabel(r'$Number \ of \ Strings$', fontsize=22)
     plt.title(r'$Histogram \ of \ String \ Lengths$', fontsize=25, y=1.025)
@@ -111,18 +112,10 @@ class SpaceCube:
         faceNum=0
         edge = False
         L=0
-        R_i = 0
-        R_j = 0
-        R_k = 0
-        R = 0
-        count=np.zeros(10)
-        Avg_R=np.zeros(10)
+        count=np.zeros(10-1)
+        Avg_R=np.zeros(10-1)
         length_inf=[]
         length_loop=[]
-        total_length = []
-        length_strings = []
-        size_loop=[]
-        size_strings = []
         loop_coord_i=[]
         loop_coord_j=[]
         loop_coord_k=[]
@@ -138,16 +131,8 @@ class SpaceCube:
         self.Avg_R=Avg_R
         self.count=count
         self.L = L
-        self.R_i = R_i
-        self.R_j = R_j
-        self.R_k = R_k
-        self.R = R
-        self.length_inf=length_inf
-        self.size_loop = size_loop 
+        self.length_inf=length_inf 
         self.length_loop=length_loop
-        self.total_length = total_length
-        self.length_strings = length_strings 
-        self.size_strings = size_strings
         self.loop_coord_i=loop_coord_i
         self.loop_coord_j=loop_coord_j
         self.loop_coord_k=loop_coord_k
@@ -525,9 +510,6 @@ class SpaceCube:
                 if ( self.zString[i,j,k] == 1 ):
                     """Follow"""
                     self.L=1
-                    self.R_i = 1
-                    self.R_j = 1
-                    self.R_k = 1
                     self.inf_coord_i=[]
                     self.inf_coord_j=[]
                     self.inf_coord_k=[]
@@ -540,9 +522,6 @@ class SpaceCube:
                 if ( self.zString[i,j,k] == -1 ):
                     """Follow"""
                     self.L=1
-                    self.R_i = 1
-                    self.R_j = 1
-                    self.R_k = 1
                     self.inf_coord_i=[]
                     self.inf_coord_j=[]
                     self.inf_coord_k=[]
@@ -558,9 +537,6 @@ class SpaceCube:
                 if ( self.yString[i,j,k] == 1 ):
                     """Follow"""
                     self.L=1
-                    self.R_i = 1
-                    self.R_j = 1
-                    self.R_k = 1
                     self.inf_coord_i=[]
                     self.inf_coord_j=[]
                     self.inf_coord_k=[]
@@ -573,9 +549,6 @@ class SpaceCube:
                 if ( self.yString[i,j,k] == -1 ):
                     """Follow"""
                     self.L=1
-                    self.R_i = 1
-                    self.R_j = 1
-                    self.R_k = 1
                     self.inf_coord_i=[]
                     self.inf_coord_j=[]
                     self.inf_coord_k=[]
@@ -591,9 +564,6 @@ class SpaceCube:
                 if ( self.xString[i,j,k] == 1 ):
                     """Follow"""
                     self.L=1
-                    self.R_i = 1
-                    self.R_j = 1
-                    self.R_k = 1
                     self.inf_coord_i=[]
                     self.inf_coord_j=[]
                     self.inf_coord_k=[]
@@ -606,9 +576,6 @@ class SpaceCube:
                 if ( self.xString[i,j,k] == -1 ):
                     """Follow"""
                     self.L=1
-                    self.R_i = 1
-                    self.R_j = 1
-                    self.R_k = 1
                     self.inf_coord_i=[]
                     self.inf_coord_j=[]
                     self.inf_coord_k=[]
@@ -625,9 +592,6 @@ class SpaceCube:
                     if ( abs(self.zString[i,j,k]) == 1 ):
                         """Follow"""
                         self.L=0
-                        self.R_i = 1
-                        self.R_j = 1
-                        self.R_k = 1
                         self.loop_coord_i=[]
                         self.loop_coord_j=[]
                         self.loop_coord_k=[]
@@ -635,8 +599,7 @@ class SpaceCube:
                         self.tot_loop_coord_i.append(self.loop_coord_i)
                         self.tot_loop_coord_j.append(self.loop_coord_j)
                         self.tot_loop_coord_k.append(self.loop_coord_k)
-                        self.total_length.append(self.L)
-                        #self.size_loop.append(self.R)                         
+                        self.length_loop.append(self.L)                        
         for i in xrange(0,len(self.box[:,0,0])-1):
             for j in xrange(1,len(self.box[0,:,0])-2):
                 for k in xrange(0,len(self.box[0,0,:])-1):
@@ -653,17 +616,13 @@ class SpaceCube:
                         self.tot_loop_coord_i.append(self.loop_coord_i)
                         self.tot_loop_coord_j.append(self.loop_coord_j)
                         self.tot_loop_coord_k.append(self.loop_coord_k)
-                        self.total_length.append(self.L) 
-                        #self.size_loop.append(self.R)             
+                        self.length_loop.append(self.L)           
         for i in xrange(1,len(self.box[:,0,0])-2):
             for j in xrange(0,len(self.box[0,:,0])-1):
                 for k in xrange(0,len(self.box[0,0,:])-1): 
                     if ( abs(self.xString[i,j,k]) == 1 ):
                         """Follow"""
                         self.L=0
-                        self.R_i = 1
-                        self.R_j = 1
-                        self.R_k = 1
                         self.loop_coord_i=[]
                         self.loop_coord_j=[]
                         self.loop_coord_k=[]
@@ -671,8 +630,7 @@ class SpaceCube:
                         self.tot_loop_coord_i.append(self.loop_coord_i)
                         self.tot_loop_coord_j.append(self.loop_coord_j)
                         self.tot_loop_coord_k.append(self.loop_coord_k)
-                        self.total_length.append(self.L)  
-                        #self.size_loop.append(self.R) 
+                        self.length_loop.append(self.L)  
                 
                           
     def follow(self,xyz_string,i,j,k,XYZ): 
@@ -704,52 +662,15 @@ class SpaceCube:
                     break                              
                 m_XYZ,m_i,m_j,m_k = self.followFunc(n_XYZ,n_i,n_j,n_k)
                 self.L += 1
-                if (self.L == 5):
-                    R=np.sqrt( (m_i-i)**2 + (m_j-j)**2 + (m_k-k)**2 )
-                    self.Avg_R[0]+=R
-                    self.count[0]+=1
-                if (self.L == 10):
-                    R=np.sqrt( (m_i-i)**2 + (m_j-j)**2 + (m_k-k)**2 )
-                    self.Avg_R[1]+=R
-                    self.count[1]+=1
-                if (self.L == 15):
-                    R=np.sqrt( (m_i-i)**2 + (m_j-j)**2 + (m_k-k)**2 )
-                    self.Avg_R[2]+=R
-                    self.count[2]+=1
-                if (self.L == 20):
-                    R=np.sqrt( (m_i-i)**2 + (m_j-j)**2 + (m_k-k)**2 )
-                    self.Avg_R[3]+=R
-                    self.count[3]+=1
-                if (self.L == 25):
-                    R=np.sqrt( (m_i-i)**2 + (m_j-j)**2 + (m_k-k)**2 )
-                    self.Avg_R[4]+=R
-                    self.count[4]+=1
-                if (self.L == 30):
-                    R=np.sqrt( (m_i-i)**2 + (m_j-j)**2 + (m_k-k)**2 )
-                    self.Avg_R[5]+=R
-                    self.count[5]+=1
-                if (self.L == 35):
-                    R=np.sqrt( (m_i-i)**2 + (m_j-j)**2 + (m_k-k)**2 )
-                    self.Avg_R[6]+=R
-                    self.count[6]+=1
-                if (self.L == 40):
-                    R=np.sqrt( (m_i-i)**2 + (m_j-j)**2 + (m_k-k)**2 )
-                    self.Avg_R[7]+=R
-                    self.count[7]+=1
-                if (self.L == 45):
-                    R=np.sqrt( (m_i-i)**2 + (m_j-j)**2 + (m_k-k)**2 )
-                    self.Avg_R[8]+=R
-                    self.count[8]+=1
-                if (self.L == 50):
-                    R=np.sqrt( (m_i-i)**2 + (m_j-j)**2 + (m_k-k)**2 )
-                    self.Avg_R[9]+=R
-                    self.count[9]+=1
-                        
-                    self.R = np.sqrt((self.R_i)**2 + (self.R_j)**2 + (self.R_k)**2)
-                    self.size_loop.append(self.R)
-                    self.size_strings.append(self.R)
-                    self.length_loop.append(self.L)
-                    self.length_strings.append(self.L)
+                
+                e=0
+                for l in xrange(10, 55, 5):
+                    if (self.L == l):
+                        R=np.sqrt( (m_i-i)**2 + (m_j-j)**2 + (m_k-k)**2 )
+                        self.Avg_R[e]+=R
+                        self.count[e]+=1
+                    e+=1
+                    
                 self.loop_coord_i.append(m_i)
                 self.loop_coord_j.append(m_j)
                 self.loop_coord_k.append(m_k)
@@ -786,51 +707,15 @@ class SpaceCube:
                      break
                 self.L += 1 
                 m_XYZ,m_i,m_j,m_k = self.followFunc(n_XYZ,n_i,n_j,n_k)
-                if (self.L == 5):
-                    R=np.sqrt( (m_i-i)**2 + (m_j-j)**2 + (m_k-k)**2 )
-                    self.Avg_R[0]+=R
-                    self.count[0]+=1
-                if (self.L == 10):
-                    R=np.sqrt( (m_i-i)**2 + (m_j-j)**2 + (m_k-k)**2 )
-                    self.Avg_R[1]+=R
-                    self.count[1]+=1
-                if (self.L == 15):
-                    R=np.sqrt( (m_i-i)**2 + (m_j-j)**2 + (m_k-k)**2 )
-                    self.Avg_R[2]+=R
-                    self.count[2]+=1
-                if (self.L == 20):
-                    R=np.sqrt( (m_i-i)**2 + (m_j-j)**2 + (m_k-k)**2 )
-                    self.Avg_R[3]+=R
-                    self.count[3]+=1
-                if (self.L == 25):
-                    R=np.sqrt( (m_i-i)**2 + (m_j-j)**2 + (m_k-k)**2 )
-                    self.Avg_R[4]+=R
-                    self.count[4]+=1
-                if (self.L == 30):
-                    R=np.sqrt( (m_i-i)**2 + (m_j-j)**2 + (m_k-k)**2 )
-                    self.Avg_R[5]+=R
-                    self.count[5]+=1
-                if (self.L == 35):
-                    R=np.sqrt( (m_i-i)**2 + (m_j-j)**2 + (m_k-k)**2 )
-                    self.Avg_R[6]+=R
-                    self.count[6]+=1
-                if (self.L == 40):
-                    R=np.sqrt( (m_i-i)**2 + (m_j-j)**2 + (m_k-k)**2 )
-                    self.Avg_R[7]+=R
-                    self.count[7]+=1
-                if (self.L == 45):
-                    R=np.sqrt( (m_i-i)**2 + (m_j-j)**2 + (m_k-k)**2 )
-                    self.Avg_R[8]+=R
-                    self.count[8]+=1
-                if (self.L == 50):
-                    R=np.sqrt( (m_i-i)**2 + (m_j-j)**2 + (m_k-k)**2 )
-                    self.Avg_R[9]+=R
-                    self.count[9]+=1
+                
+                e=0
+                for l in xrange(10, 55, 5):
+                    if (self.L == l):
+                        R=np.sqrt( (m_i-i)**2 + (m_j-j)**2 + (m_k-k)**2 )
+                        self.Avg_R[e]+=R
+                        self.count[e]+=1
+                    e+=1
                     
-                    
-                    self.R = np.sqrt((self.R_i)**2 + (self.R_j)**2 + (self.R_k)**2)
-                    self.size_strings.append(self.R)
-                    self.length_strings.append(self.L)
                 self.inf_coord_i.append(m_i)
                 self.inf_coord_j.append(m_j)
                 self.inf_coord_k.append(m_k)
@@ -849,10 +734,6 @@ lattice.xPlane()
 lattice.yPlane()
 lattice.zPlane()
 
-#print lattice.yString
-#print lattice.xString
-#print lattice.zString
-#PrintPnF(0,0,0)
 lattice.check_in_out_equal()
 lattice.check_num_strings()
 print "Probability of strings per face = ", (1.0 * lattice.total)/(1.0*lattice.faceNum)
@@ -867,11 +748,11 @@ print "Number of closed loops", len(lattice.length_loop)
 print "Number of infinite strings", len(lattice.length_inf)
 print "Percentage of closed loops", 1.0*sum(lattice.length_loop)/sum((lattice.length_inf+lattice.length_loop))
 #Plot3DStrings()
-#PlotLengthHist()
+PlotLengthHist()
 
 Avg_R = lattice.Avg_R/lattice.count
-segment_length = np.array(10)
-segment_length=[5,10,15,20,25,30,35,40,45,50]
+segment_length = np.array(10-1)
+segment_length=[10,15,20,25,30,35,40,45,50]
 
 def func(l, A, d):
     return (l/A)**(1./d)
@@ -885,5 +766,7 @@ plt.ylabel(r'$Log(end \ to \ end \ distance)$', size = '16')
 plt.title(r'$Estimation \ of \ the \ fractal \ dimension$', size = '16')
 plt.show("FIG.2")
 print "Fit Params: ",popt
+print "Corr Martix: ",np.sqrt(np.diag(pcov))
+
 
 
