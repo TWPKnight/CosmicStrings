@@ -13,8 +13,9 @@ from random import randint
 from mpl_toolkits.mplot3d import Axes3D  
 from scipy.optimize import curve_fit
 import collections
-random.seed(963738) 
-#random.seed(98765432)
+#random.seed(963738) 
+random.seed(678987678584)
+
 np.set_printoptions(threshold='nan')
 plt.close("all")
 
@@ -766,7 +767,7 @@ plt.ylabel(r'$Log(end \ to \ end \ distance)$', size = '16')
 plt.title(r'$Estimation \ of \ the \ fractal \ dimension$', size = '16')
 plt.show("FIG.2")
 print "Fit Params: ",popt
-print "Corr Martix: ",np.sqrt(np.diag(pcov))
+print "Cor Martix: ",np.sqrt(np.diag(pcov))
 
 
 
