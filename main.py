@@ -666,11 +666,11 @@ class SpaceCube:
                 
                 e=0
                 for l in xrange(10, 55, 5):
-                    if (self.L == l):
+                     if (self.L == l):
                         R=np.sqrt( (m_i-i)**2 + (m_j-j)**2 + (m_k-k)**2 )
                         self.Avg_R[e]+=R
                         self.count[e]+=1
-                    e+=1
+                     e+=1
                     
                 self.loop_coord_i.append(m_i)
                 self.loop_coord_j.append(m_j)
