@@ -609,9 +609,9 @@ class SpaceCube:
                     if ( abs(self.yString[i,j,k]) == 1 ):
                         """Follow"""
                         self.L=0
-                        self.R_i = 1
-                        self.R_j = 1
-                        self.R_k = 1
+                        #self.R_i = 1
+                        #self.R_j = 1
+                        #self.R_k = 1
                         self.loop_coord_i=[]
                         self.loop_coord_j=[]
                         self.loop_coord_k=[]
@@ -667,7 +667,6 @@ class SpaceCube:
                     break                              
                 m_XYZ,m_i,m_j,m_k = self.followFunc(n_XYZ,n_i,n_j,n_k)
                 self.L += 1
-                
                 self.string_coords.append([m_i,m_j,m_k])
                                
                 self.loop_coord_i.append(m_i)
@@ -789,6 +788,7 @@ print "Percentage of closed loops", 1.0*sum(lattice.length_loop)/sum((lattice.le
 #PlotLengthHist()
 
 Avg_e2e = lattice.sum_e2e/lattice.count
+np.savetxt("multirun_e2e.txt", Avg_e2e)
 segment_length = np.array(10-1)
 segment_length=[10,15,20,25,30,35,40,45,50]
 
