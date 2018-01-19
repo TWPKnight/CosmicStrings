@@ -13,8 +13,9 @@ from random import randint
 from mpl_toolkits.mplot3d import Axes3D  
 from scipy.optimize import curve_fit
 import collections
-#random.seed(963738) 
-random.seed(36964289)
+#random.seed(36964289) #Run_1
+#random.seed(963738)    #Run_2
+random.seed(3854637289)  #Run_3
 
 np.set_printoptions(threshold='nan')
 plt.close("all")
@@ -788,20 +789,30 @@ print "Percentage of closed loops", 1.0*sum(lattice.length_loop)/sum((lattice.le
 #PlotLengthHist()
 
 Avg_e2e = lattice.sum_e2e/lattice.count
-np.savetxt("multirun_e2e.txt", Avg_e2e)
+#np.savetxt("multirun_e2e_2.txt", Avg_e2e, fmt ='%0.6f')  #change seed and change file name, then run
+Run_1 = np.loadtxt("multirun_e2e.txt")
+Run_2 = np.loadtxt("multirun_e2e_1.txt")
+Run_3 = np.loadtxt("multirun_e2e_2.txt")
+Avg_e2e_run = (Run_1+Run_2+Run_3)/3
 segment_length = np.array(10-1)
 segment_length=[10,15,20,25,30,35,40,45,50]
-
+Error_e2e_run = np.zeros(9)
+for n in xrange(0,9):
+    A = [Run_1[n], Run_2[n], Run_3[n]]
+    Error_e2e_run[n] += np.std(A)
 def func(l, A, d):
     return (l/A)**(1./d)
 
 plt.figure("LogPlot1_new")
-plt.scatter(np.log10(segment_length), np.log10(Avg_e2e))
-popt,pcov = curve_fit(func, segment_length, Avg_e2e)
-plt.plot( np.log10(segment_length), np.log10(func(segment_length,*popt)))
+#plt.scatter(np.log10(segment_length), np.log10(Avg_e2e_run))
+plt.errorbar(np.log10(segment_length), np.log10(Avg_e2e_run),xerr = 0, yerr = Error_e2e_run, fmt ='o', c = 'blue')
+popt,pcov = curve_fit(func, segment_length, Avg_e2e_run)
+error = np.sqrt(np.diag(pcov))
+plt.plot( np.log10(segment_length), np.log10(func(segment_length,*popt)) , c = 'blue')
 plt.xlabel(r'$Log(segment \ lenght)$', size = '16')
 plt.ylabel(r'$Log(end \ to \ end \ distance)$', size = '16')
 plt.title(r'$Estimation \ of \ the \ fractal \ dimension$', size = '16')
+plt.annotate("$l = AR^d$ \n $A = %0.3f \pm %0.3f$ \n $d = %0.3f \pm %0.3f$" %(popt[0],error[0],popt[1], error[1]), xy = (1.5,0.5), size = '16')
 plt.show("FIG.2")
 print "Fit Params: ",popt
 print "Cor Martix: ",np.sqrt(np.diag(pcov))
