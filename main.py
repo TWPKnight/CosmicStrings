@@ -14,7 +14,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from scipy.optimize import curve_fit
 import collections
 #random.seed(963738) 
-random.seed(678987678584)
+random.seed(36964289)
 
 np.set_printoptions(threshold='nan')
 plt.close("all")
@@ -114,7 +114,8 @@ class SpaceCube:
         edge = False
         L=0
         count=np.zeros(10-1)
-        Avg_R=np.zeros(10-1)
+        sum_e2e=np.zeros(10-1)
+        string_coords=[] #Want as array???
         length_inf=[]
         length_loop=[]
         loop_coord_i=[]
@@ -129,7 +130,8 @@ class SpaceCube:
         tot_inf_coord_i=[]
         tot_inf_coord_j=[]
         tot_inf_coord_k=[]
-        self.Avg_R=Avg_R
+        self.string_coords=string_coords
+        self.sum_e2e=sum_e2e
         self.count=count
         self.L = L
         self.length_inf=length_inf 
@@ -637,7 +639,9 @@ class SpaceCube:
     def follow(self,xyz_string,i,j,k,XYZ): 
         #Edge == True means looking for infinite strings
         #Edge == False means looking for closed strings
-        n_XYZ,n_i,n_j,n_k = self.followFunc(XYZ,i,j,k) 
+        self.string_coords.append([i,j,k])
+        n_XYZ,n_i,n_j,n_k = self.followFunc(XYZ,i,j,k)
+        self.string_coords.append([n_i,n_j,n_k]) 
         self.L += 1
         self.loop_coord_i.append(i)
         self.loop_coord_j.append(j)
@@ -664,14 +668,8 @@ class SpaceCube:
                 m_XYZ,m_i,m_j,m_k = self.followFunc(n_XYZ,n_i,n_j,n_k)
                 self.L += 1
                 
-                e=0
-                for l in xrange(10, 55, 5):
-                     if (self.L == l):
-                        R=np.sqrt( (m_i-i)**2 + (m_j-j)**2 + (m_k-k)**2 )
-                        self.Avg_R[e]+=R
-                        self.count[e]+=1
-                     e+=1
-                    
+                self.string_coords.append([m_i,m_j,m_k])
+                               
                 self.loop_coord_i.append(m_i)
                 self.loop_coord_j.append(m_j)
                 self.loop_coord_k.append(m_k)
@@ -708,15 +706,7 @@ class SpaceCube:
                      break
                 self.L += 1 
                 m_XYZ,m_i,m_j,m_k = self.followFunc(n_XYZ,n_i,n_j,n_k)
-                
-                e=0
-                for l in xrange(10, 55, 5):
-                    if (self.L == l):
-                        R=np.sqrt( (m_i-i)**2 + (m_j-j)**2 + (m_k-k)**2 )
-                        self.Avg_R[e]+=R
-                        self.count[e]+=1
-                    e+=1
-                    
+                self.string_coords.append([m_i,m_j,m_k])                   
                 self.inf_coord_i.append(m_i)
                 self.inf_coord_j.append(m_j)
                 self.inf_coord_k.append(m_k)
@@ -728,6 +718,53 @@ class SpaceCube:
                     self.zString[n_i,n_j,n_k]=0 
                 n_i , n_j, n_k, n_XYZ = m_i, m_j, m_k, m_XYZ
                 
+       
+        len_coord=len(self.string_coords)
+        #if (len_coord>10):
+        e=0
+        for l_1 in xrange(0, 55, 5):   
+                for l_2 in xrange(0, 55, 5):
+                    if ((l_1< len_coord) and (l_2< len_coord)): 
+                            R=np.sqrt( (self.string_coords[l_2][0]-self.string_coords[l_1][0])**2 + (self.string_coords[l_2][1]-self.string_coords[l_1][1])**2 + (self.string_coords[l_2][2]-self.string_coords[l_1][2])**2 )            
+                            #print "l1: ",l_1
+                            #print "l2: ",l_2
+                            if (abs(l_2-l_1) == 5):
+                                e=0
+                                R=0
+                            if (abs(l_2-l_1) == 10):
+                                e=0
+                                self.count[e]+=1
+                            if (abs(l_2-l_1) == 15):
+                                e=1
+                                self.count[e]+=1
+                            if (abs(l_2-l_1) == 20):
+                                e=2
+                                self.count[e]+=1
+                            if (abs(l_2-l_1) == 25):
+                                e=3
+                                self.count[e]+=1
+                            if (abs(l_2-l_1) == 30):
+                                e=4
+                                self.count[e]+=1
+                            if (abs(l_2-l_1) == 35):
+                                e=5
+                                self.count[e]+=1
+                            if (abs(l_2-l_1) == 40):
+                                e=6
+                                self.count[e]+=1                                
+                            if (abs(l_2-l_1) == 45):
+                                e=7
+                                self.count[e]+=1
+                            if (abs(l_2-l_1) == 50):
+                                e=8 
+                                self.count[e]+=1 
+                            #print "e: ",e
+                            self.sum_e2e[e]+=R
+                            #self.count[e]+=1
+                                                             
+                            
+        #print self.string_coords
+        self.string_coords=[]    
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
 N = 40
 lattice = SpaceCube(N)
@@ -749,9 +786,9 @@ print "Number of closed loops", len(lattice.length_loop)
 print "Number of infinite strings", len(lattice.length_inf)
 print "Percentage of closed loops", 1.0*sum(lattice.length_loop)/sum((lattice.length_inf+lattice.length_loop))
 #Plot3DStrings()
-PlotLengthHist()
+#PlotLengthHist()
 
-Avg_R = lattice.Avg_R/lattice.count
+Avg_e2e = lattice.sum_e2e/lattice.count
 segment_length = np.array(10-1)
 segment_length=[10,15,20,25,30,35,40,45,50]
 
@@ -759,8 +796,8 @@ def func(l, A, d):
     return (l/A)**(1./d)
 
 plt.figure("LogPlot1_new")
-plt.scatter(np.log10(segment_length), np.log10(Avg_R))
-popt,pcov = curve_fit(func, segment_length, Avg_R)
+plt.scatter(np.log10(segment_length), np.log10(Avg_e2e))
+popt,pcov = curve_fit(func, segment_length, Avg_e2e)
 plt.plot( np.log10(segment_length), np.log10(func(segment_length,*popt)))
 plt.xlabel(r'$Log(segment \ lenght)$', size = '16')
 plt.ylabel(r'$Log(end \ to \ end \ distance)$', size = '16')
