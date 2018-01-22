@@ -882,10 +882,12 @@ print "Fit Params: ",popt2
 print "Cor Martix: ",np.sqrt(np.diag(pcov2))
 
 n = []
+L_Range = []
 for i in xrange(5, max(lattice.size_loop)):
     select = (A[:,1] == i)
     if len(A[select,1])!=0:
         n.append(1.0*len(A[select,1])/(N**3))
+        L_Range.append(A[select,0][0])
         
 def func_n(B, n, beta):
     return (n/B)**(1./beta)
@@ -900,3 +902,15 @@ plt.ylabel(r'$Log(Density)$', size = '16')
 plt.show("Fig.5")
 print "Fit Params: ",popt3
 print "Cor Martix: ",np.sqrt(np.diag(pcov3))
+
+plt.figure("Fig.6")
+plt.scatter(np.log10(L_Range), np.log10(n))
+popt4,pcov4 = curve_fit(func_n, L_Range, n)
+plt.plot( np.log10(L_Range), np.log10(func_n(L_Range,*popt4)) , c = 'blue')
+plt.xlabel(r'$Log(Loop \ Length)$', size = '16')
+plt.ylabel(r'$Log(Density)$', size = '16')
+plt.show("Fig.6")
+print "Fit Params: ",popt4
+print "Cor Martix: ",np.sqrt(np.diag(pcov4))
+
+
