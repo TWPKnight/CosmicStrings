@@ -712,7 +712,7 @@ class SpaceCube:
                 self.loop_coord_j.append(m_j)
                 self.loop_coord_k.append(m_k)
                 if (n_XYZ =='X'):
-                    self.xString[n_i,n_j,n_k]=0
+                    self.xString[n_i,n_j,n_k]=0 
                 if (n_XYZ =='Y'):
                     self.yString[n_i,n_j,n_k]=0
                 if (n_XYZ=='Z'):
