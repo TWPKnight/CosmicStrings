@@ -853,8 +853,8 @@ plt.ylabel(r'$Log(end \ to \ end \ distance)$', size = '16')
 plt.title(r'$Estimation \ of \ the \ fractal \ dimension$', size = '16')
 plt.annotate("$l = AR^d$ \n $A = %0.3f \pm %0.3f$ \n $d = %0.3f \pm %0.3f$" %(popt[0],error[0],popt[1], error[1]), xy = (1.5,0.5), size = '16')
 plt.show("Fig.2")
-print "Fit Params: ",popt
-print "Cor Martix: ",np.sqrt(np.diag(pcov))
+print "[Fig 2] Fit Params: ",popt
+print "[Fig 2] Cor Martix: ",np.sqrt(np.diag(pcov))
 
 Avg_L = []
 P_Range = []
@@ -878,8 +878,8 @@ plt.ylabel(r'$Log(< Length >)$', size = '16')
 plt.title(r'$Estimation \ of \ the \ fractal \ dimension$', size = '16')
 #plt.annotate("$l = AR^d$ \n $A = %0.3f \pm %0.3f$ \n $d = %0.3f \pm %0.3f$" %(popt[0],error[0],popt[1], error[1]), xy = (1.5,0.5), size = '16')
 plt.show("Fig.4")
-print "Fit Params: ",popt2
-print "Cor Martix: ",np.sqrt(np.diag(pcov2))
+print "[Fig 4] Fit Params: ",popt2
+print "[Fig 4] Cor Martix: ",np.sqrt(np.diag(pcov2))
 
 n = []
 L_Range = []
@@ -900,8 +900,8 @@ plt.plot( np.log10(P_Range), np.log10(func_n(P_Range,*popt3)) , c = 'blue')
 plt.xlabel(r'$Log(Loop \ Perimeter)$', size = '16')
 plt.ylabel(r'$Log(Density)$', size = '16')
 plt.show("Fig.5")
-print "Fit Params: ",popt3
-print "Cor Martix: ",np.sqrt(np.diag(pcov3))
+print "[Fig 5] Fit Params: ",popt3
+print "[Fig 5] Cor Martix: ",np.sqrt(np.diag(pcov3))
 
 plt.figure("Fig.6")
 plt.scatter(np.log10(L_Range), np.log10(n))
@@ -910,7 +910,7 @@ plt.plot( np.log10(L_Range), np.log10(func_n(L_Range,*popt4)) , c = 'blue')
 plt.xlabel(r'$Log(Loop \ Length)$', size = '16')
 plt.ylabel(r'$Log(Density)$', size = '16')
 plt.show("Fig.6")
-print "Fit Params: ",popt4
-print "Cor Martix: ",np.sqrt(np.diag(pcov4))
+print "[Fig 6] Fit Params: ",popt4
+print "[Fig 6] Cor Martix: ",np.sqrt(np.diag(pcov4))
 
 
