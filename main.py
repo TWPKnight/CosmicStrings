@@ -880,8 +880,8 @@ plt.ylabel(r'$Log(end \ to \ end \ distance)$', size = '16')
 plt.title(r'$Estimation \ of \ the \ fractal \ dimension$', size = '16')
 plt.annotate("$l = AR^d$ \n $A = %0.3f \pm %0.3f$ \n $d = %0.3f \pm %0.3f$" %(popt[0],error[0],popt[1], error[1]), xy = (1.5,0.5), size = '16')
 plt.show("Fig.2")
-print "[Fig 2] Fit Params: ",popt
-print "[Fig 2] Cor Martix: ",np.sqrt(np.diag(pcov))
+print "A, d (end to end distance):",popt
+#print "[Fig 2] Cor Martix: ",np.sqrt(np.diag(pcov))
 
 Avg_L = []
 P_Range = []
@@ -891,30 +891,36 @@ A[:,1] += lattice.size_loop
 i = 0
 for i in xrange(5, max(lattice.size_loop)):
     select = (A[:,1] == i)
-    if len(A[select,0])!=0:
-        #if(len(A[select,0])>4):
+    #if (len(A[select,0])!=0) and (A[select,1][0]>5):
+    if (len(A[select,0])!=0):
             Avg_L.append(sum(A[select,0])/len(A[select,0]))
             P_Range.append(A[select,1][0])
+    #if(len(A[select,0])<4):
+      #  break
+       # print A[select,1], A[select,0]
             
 plt.figure("Fig.4")
 plt.scatter(np.log10(P_Range), np.log10(Avg_L))
 popt2,pcov2 = curve_fit(func, P_Range, Avg_L)
+error2 = np.sqrt(np.diag(pcov2))
 plt.plot( np.log10(P_Range), np.log10(func(P_Range,*popt2)) , c = 'blue')
 plt.xlabel(r'$Log(Loop \ Perimeter)$', size = '16')
 plt.ylabel(r'$Log(< Length >)$', size = '16')
 plt.title(r'$Estimation \ of \ the \ fractal \ dimension$', size = '16')
-#plt.annotate("$l = AR^d$ \n $A = %0.3f \pm %0.3f$ \n $d = %0.3f \pm %0.3f$" %(popt[0],error[0],popt[1], error[1]), xy = (1.5,0.5), size = '16')
+plt.annotate("$l = AR^d$ \n $A = %0.3f \pm %0.3f$ \n $d = %0.3f \pm %0.3f$" %(popt2[0],error2[0],popt2[1], error2[1]), xy = (1.3,0.7), size = '16')
 plt.show("Fig.4")
-print "[Fig 4] Fit Params: ",popt2
+print "A, d (loop perimeter):",popt2
 #print "[Fig 4] Cor Martix: ",np.sqrt(np.diag(pcov2))
 
 n = []
 L_Range = []
+P_Range = []
 for i in xrange(5, max(lattice.size_loop)):
     select = (A[:,1] == i)
     if len(A[select,1])!=0:
         n.append(1.0*len(A[select,1])/(N**3))
         L_Range.append(A[select,0][0])
+        P_Range.append(A[select,1][0])
         
 def func_n(B, n, beta):
     return (n/B)**(1./beta)
@@ -924,20 +930,24 @@ plt.figure("Fig.5")
 plt.scatter(np.log10(P_Range), np.log10(n))
 popt3,pcov3 = curve_fit(func_n, P_Range, n)
 plt.plot( np.log10(P_Range), np.log10(func_n(P_Range,*popt3)) , c = 'blue')
+error3 = np.sqrt(np.diag(pcov3))
 plt.xlabel(r'$Log(Loop \ Perimeter)$', size = '16')
 plt.ylabel(r'$Log(Density)$', size = '16')
+plt.annotate("$n = BR^\\beta$ \n $B = %0.3f \pm %0.3f$ \n $\\beta = %0.3f \pm %0.3f$" %(popt3[0],error3[0],popt3[1], error3[1]), xy = (1.3,-2.5), size = '16')
 plt.show("Fig.5")
-print "[Fig 5] Fit Params: ",popt3
+print "B, beta:",popt3
 #print "[Fig 5] Cor Martix: ",np.sqrt(np.diag(pcov3))
 
 plt.figure("Fig.6")
 plt.scatter(np.log10(L_Range), np.log10(n))
 popt4,pcov4 = curve_fit(func_n, L_Range, n)
+error4 = np.sqrt(np.diag(pcov4))
 plt.plot( np.log10(L_Range), np.log10(func_n(L_Range,*popt4)) , c = 'blue')
 plt.xlabel(r'$Log(Loop \ Length)$', size = '16')
 plt.ylabel(r'$Log(Density)$', size = '16')
+plt.annotate("$n = CR^{\gamma}$ \n $C = %0.3f \pm %0.3f$ \n $\gamma = %0.3f \pm %0.3f$" %(popt4[0],error4[0],popt4[1], error4[1]), xy = (1.7,-2.5), size = '16')
 plt.show("Fig.6")
-print "[Fig 6] Fit Params: ",popt4
+print "C, gamma:",popt4
 #print "[Fig 6] Cor Martix: ",np.sqrt(np.diag(pcov4))
 
 
