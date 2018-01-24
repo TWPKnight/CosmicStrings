@@ -132,13 +132,19 @@ class SpaceCube:
         tot_inf_coord_i=[]
         tot_inf_coord_j=[]
         tot_inf_coord_k=[]
-        R_i = 0
-        R_j = 0
-        R_k = 0
+        x_min = 0
+        x_max = 0
+        y_min = 0
+        y_max = 0
+        z_min = 0
+        z_max = 0
         P=0 # Perimeter - called R in VV paper
-        self.R_i = R_i
-        self.R_j = R_j
-        self.R_k = R_k
+        self.x_min = x_min
+        self.x_max = x_max
+        self.y_min = y_min
+        self.y_max = y_max
+        self.z_min = z_min
+        self.z_max = z_max
         self.P=P
         self.string_coords=string_coords
         self.sum_e2e=sum_e2e
@@ -606,9 +612,12 @@ class SpaceCube:
                     if ( abs(self.zString[i,j,k]) == 1 ):
                         """Follow"""
                         self.L=0
-                        self.R_i = 1
-                        self.R_j = 1
-                        self.R_k = 1
+                        self.x_min = i
+                        self.x_max = i
+                        self.y_min = j
+                        self.y_max = j
+                        self.z_min = k
+                        self.z_max = k
                         self.loop_coord_i=[]
                         self.loop_coord_j=[]
                         self.loop_coord_k=[]
@@ -616,7 +625,7 @@ class SpaceCube:
                         self.tot_loop_coord_i.append(self.loop_coord_i)
                         self.tot_loop_coord_j.append(self.loop_coord_j)
                         self.tot_loop_coord_k.append(self.loop_coord_k)
-                        self.P= self.R_i + self.R_j + self.R_k
+                        self.P = 3 + (self.x_max - self.x_min) + (self.y_max - self.y_min) + (self.z_max - self.z_min)  # 3 added to match spatial dimensions
                         self.length_loop.append(self.L)
                         self.size_loop.append(self.P)                        
         for i in xrange(0,len(self.box[:,0,0])-1):
@@ -625,9 +634,12 @@ class SpaceCube:
                     if ( abs(self.yString[i,j,k]) == 1 ):
                         """Follow"""
                         self.L=0
-                        self.R_i = 1
-                        self.R_j = 1
-                        self.R_k = 1
+                        self.x_min = i
+                        self.x_max = i
+                        self.y_min = j
+                        self.y_max = j
+                        self.z_min = k
+                        self.z_max = k
                         self.loop_coord_i=[]
                         self.loop_coord_j=[]
                         self.loop_coord_k=[]
@@ -635,7 +647,7 @@ class SpaceCube:
                         self.tot_loop_coord_i.append(self.loop_coord_i)
                         self.tot_loop_coord_j.append(self.loop_coord_j)
                         self.tot_loop_coord_k.append(self.loop_coord_k)
-                        self.P= self.R_i + self.R_j + self.R_k
+                        self.P = 3 + (self.x_max - self.x_min) + (self.y_max - self.y_min) + (self.z_max - self.z_min)
                         self.length_loop.append(self.L)
                         self.size_loop.append(self.P)           
         for i in xrange(1,len(self.box[:,0,0])-2):
@@ -644,9 +656,12 @@ class SpaceCube:
                     if ( abs(self.xString[i,j,k]) == 1 ):
                         """Follow"""
                         self.L=0
-                        self.R_i = 1
-                        self.R_j = 1
-                        self.R_k = 1
+                        self.x_min = i
+                        self.x_max = i
+                        self.y_min = j
+                        self.y_max = j
+                        self.z_min = k
+                        self.z_max = k
                         self.loop_coord_i=[]
                         self.loop_coord_j=[]
                         self.loop_coord_k=[]
@@ -654,7 +669,7 @@ class SpaceCube:
                         self.tot_loop_coord_i.append(self.loop_coord_i)
                         self.tot_loop_coord_j.append(self.loop_coord_j)
                         self.tot_loop_coord_k.append(self.loop_coord_k)
-                        self.P= self.R_i + self.R_j + self.R_k
+                        self.P= 3 + (self.x_max - self.x_min) + (self.y_max - self.y_min) + (self.z_max - self.z_min)
                         self.length_loop.append(self.L)
                         self.size_loop.append(self.P)  
                 
@@ -665,12 +680,18 @@ class SpaceCube:
         self.string_coords.append([i,j,k])
         n_XYZ,n_i,n_j,n_k = self.followFunc(XYZ,i,j,k)
         
-        if (n_i > i):
-                self.R_i += 1
-        if (n_j > j):
-                self.R_j += 1
-        if (n_k > k):
-                self.R_k += 1
+        if (n_i < self.x_min):
+            self.x_min = n_i
+        if (n_i > self.x_max):
+            self.x_max = n_i
+        if (n_j < self.y_min):
+            self.y_min = n_j
+        if (n_j > self.y_max):
+            self.y_max = n_j
+        if (n_k < self.z_min):
+            self.z_min = n_k
+        if (n_k > self.z_max):
+            self.z_max = n_k
 
         self.string_coords.append([n_i,n_j,n_k]) 
         self.L += 1
@@ -698,12 +719,18 @@ class SpaceCube:
                     break                              
                 m_XYZ,m_i,m_j,m_k = self.followFunc(n_XYZ,n_i,n_j,n_k)
                 
-                if (m_i > n_i):
-                        self.R_i += 1
-                if (m_j > n_j):
-                        self.R_j += 1
-                if (m_k > n_k):
-                        self.R_k += 1
+                if (m_i < self.x_min):
+                    self.x_min = m_i
+                if (m_i > self.x_max):
+                    self.x_max = m_i
+                if (m_j < self.y_min):
+                    self.y_min = m_j
+                if (m_j > self.y_max):
+                    self.y_max = m_j
+                if (m_k < self.z_min):
+                    self.z_min = m_k
+                if (m_k > self.z_max):
+                    self.z_max = m_k
                 
                 self.L += 1
                 self.string_coords.append([m_i,m_j,m_k])
@@ -879,7 +906,7 @@ plt.title(r'$Estimation \ of \ the \ fractal \ dimension$', size = '16')
 #plt.annotate("$l = AR^d$ \n $A = %0.3f \pm %0.3f$ \n $d = %0.3f \pm %0.3f$" %(popt[0],error[0],popt[1], error[1]), xy = (1.5,0.5), size = '16')
 plt.show("Fig.4")
 print "[Fig 4] Fit Params: ",popt2
-print "[Fig 4] Cor Martix: ",np.sqrt(np.diag(pcov2))
+#print "[Fig 4] Cor Martix: ",np.sqrt(np.diag(pcov2))
 
 n = []
 L_Range = []
@@ -901,7 +928,7 @@ plt.xlabel(r'$Log(Loop \ Perimeter)$', size = '16')
 plt.ylabel(r'$Log(Density)$', size = '16')
 plt.show("Fig.5")
 print "[Fig 5] Fit Params: ",popt3
-print "[Fig 5] Cor Martix: ",np.sqrt(np.diag(pcov3))
+#print "[Fig 5] Cor Martix: ",np.sqrt(np.diag(pcov3))
 
 plt.figure("Fig.6")
 plt.scatter(np.log10(L_Range), np.log10(n))
@@ -911,6 +938,6 @@ plt.xlabel(r'$Log(Loop \ Length)$', size = '16')
 plt.ylabel(r'$Log(Density)$', size = '16')
 plt.show("Fig.6")
 print "[Fig 6] Fit Params: ",popt4
-print "[Fig 6] Cor Martix: ",np.sqrt(np.diag(pcov4))
+#print "[Fig 6] Cor Martix: ",np.sqrt(np.diag(pcov4))
 
 
