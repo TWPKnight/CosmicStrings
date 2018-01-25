@@ -859,17 +859,11 @@ print "Percentage of closed loops", 1.0*sum(lattice.length_loop)/sum((lattice.le
 
 Avg_e2e = lattice.sum_e2e/lattice.count
 sig_e2e=np.zeros(len(Avg_e2e))
-#sig_e2e = np.std(lattice.sum_e2e)/np.sqrt(lattice.count)
 for c in xrange(0,len(Avg_e2e)):
     for i in xrange(0,len(lattice.e2e)):
-        #print "c:",c
-        #print "i:",i
         sig_e2e[c] += ((Avg_e2e[c]-lattice.e2e[i])**2) 
     sig_e2e[c] = np.sqrt((1./(lattice.count[c]-1))*sig_e2e[c])#/np.sqrt(lattice.count[c])
-    print sig_e2e
-    
-    
-#sig_e2e = np.std(Avg_e2e)
+
 np.savetxt("multirun_e2e.txt", np.c_[Avg_e2e,sig_e2e], fmt ='%0.6f')  #change seed and change file name, then run
 Run_1 = np.loadtxt("multirun_e2e.txt")
 Run_2 = np.loadtxt("multirun_e2e_1.txt")
@@ -927,20 +921,28 @@ print "A, d (loop perimeter):",popt2
 
 n = []
 L_Range = []
-P_Range = []
+#P_Range = []  #redefine  P_Range if cutting at R_c for in the plot above
 for i in xrange(5, max(lattice.size_loop)):
     select = (A[:,1] == i)
     if len(A[select,1])!=0:
         n.append(1.0*len(A[select,1])/(N**3))
         L_Range.append(A[select,0][0])
-        P_Range.append(A[select,1][0])
-        
+        #P_Range.append(A[select,1][0])
+l = P_Range
+beta = 0
+for i in xrange(0, len(l)):
+    beta += (np.log(l[i]/min(l)))
+beta = 1 + (len(l)/beta)
+B = (beta - 1.)/(min(l)**(-beta+1))
+n_1 = ((beta-1.)/min(P_Range))*(P_Range/min(P_Range))**(-beta)
+
 def func_n(B, n, beta):
     return (n/B)**(1./beta)
 #def func_n(B, R, beta):
 #    return B/(R**(beta))
 plt.figure("Fig.5")
 plt.scatter(np.log10(P_Range), np.log10(n))
+#plt.plot(np.log10(P_Range), np.log10(n_1))
 popt3,pcov3 = curve_fit(func_n, P_Range, n)
 plt.plot( np.log10(P_Range), np.log10(func_n(P_Range,*popt3)) , c = 'blue')
 error3 = np.sqrt(np.diag(pcov3))
@@ -948,7 +950,7 @@ plt.xlabel(r'$Log(Loop \ Perimeter)$', size = '16')
 plt.ylabel(r'$Log(Density)$', size = '16')
 plt.annotate("$n = BR^\\beta$ \n $B = %0.3f \pm %0.3f$ \n $\\beta = %0.3f \pm %0.3f$" %(popt3[0],error3[0],popt3[1], error3[1]), xy = (1.3,-2.5), size = '16')
 plt.show("Fig.5")
-print "B, beta:",popt3
+#print "B, beta:",popt3
 #print "[Fig 5] Cor Martix: ",np.sqrt(np.diag(pcov3))
 
 plt.figure("Fig.6")
