@@ -13,9 +13,9 @@ from random import randint
 from mpl_toolkits.mplot3d import Axes3D  
 from scipy.optimize import curve_fit
 import collections
-#random.seed(36964289) #Run_1
+random.seed(36964289) #Run_1
 #random.seed(963738)    #Run_2
-random.seed(3854637289)  #Run_3
+#random.seed(3854637289)  #Run_3
 
 np.set_printoptions(threshold='nan')
 plt.close("all")
@@ -116,6 +116,7 @@ class SpaceCube:
         L=0
         count=np.zeros(10-1)
         sum_e2e=np.zeros(10-1)
+        e2e=np.zeros(10-1)
         string_coords=[] #Want as array???
         length_inf=[]
         length_loop=[]
@@ -148,6 +149,7 @@ class SpaceCube:
         self.P=P
         self.string_coords=string_coords
         self.sum_e2e=sum_e2e
+        self.e2e=e2e
         self.count=count
         self.L = L
         self.length_inf=length_inf 
@@ -825,6 +827,7 @@ class SpaceCube:
                                 self.count[e]+=1 
                             #print "e: ",e
                             self.sum_e2e[e]+=R
+                            self.e2e = np.append(R,e)
                             #self.count[e]+=1
                                                              
                             
@@ -853,18 +856,28 @@ print "Percentage of closed loops", 1.0*sum(lattice.length_loop)/sum((lattice.le
 #Plot3DStrings()
 #PlotLengthHist()
 
+
 Avg_e2e = lattice.sum_e2e/lattice.count
-#np.savetxt("multirun_e2e_2.txt", Avg_e2e, fmt ='%0.6f')  #change seed and change file name, then run
+sig_e2e=np.zeros(len(Avg_e2e))
+#sig_e2e = np.std(lattice.sum_e2e)/np.sqrt(lattice.count)
+for c in xrange(0,len(Avg_e2e)):
+    for i in xrange(0,len(lattice.e2e)):
+        #print "c:",c
+        #print "i:",i
+        sig_e2e[c] += ((Avg_e2e[c]-lattice.e2e[i])**2) 
+    sig_e2e[c] = np.sqrt((1./(lattice.count[c]-1))*sig_e2e[c])#/np.sqrt(lattice.count[c])
+    print sig_e2e
+    
+    
+#sig_e2e = np.std(Avg_e2e)
+np.savetxt("multirun_e2e.txt", np.c_[Avg_e2e,sig_e2e], fmt ='%0.6f')  #change seed and change file name, then run
 Run_1 = np.loadtxt("multirun_e2e.txt")
 Run_2 = np.loadtxt("multirun_e2e_1.txt")
 Run_3 = np.loadtxt("multirun_e2e_2.txt")
-Avg_e2e_run = (Run_1+Run_2+Run_3)/3
+Avg_e2e_run = (Run_1[:,0]+Run_2[:,0]+Run_3[:,0])/3
 segment_length = np.array(10-1)
 segment_length=[10,15,20,25,30,35,40,45,50]
-Error_e2e_run = np.zeros(9)
-for n in xrange(0,9):
-    A = [Run_1[n], Run_2[n], Run_3[n]]
-    Error_e2e_run[n] += np.std(A)
+Error_e2e_run = np.sqrt((1./3)**2 * (Run_1[:,1]**2 + Run_2[:,1]**2 + Run_3[:,1]**2 ))
     
     
 def func(l, A, d):
@@ -948,6 +961,6 @@ plt.ylabel(r'$Log(Density)$', size = '16')
 plt.annotate("$n = CR^{\gamma}$ \n $C = %0.3f \pm %0.3f$ \n $\gamma = %0.3f \pm %0.3f$" %(popt4[0],error4[0],popt4[1], error4[1]), xy = (1.7,-2.5), size = '16')
 plt.show("Fig.6")
 print "C, gamma:",popt4
-#print "[Fig 6] Cor Martix: ",np.sqrt(np.diag(pcov4))
+print "[Fig 6] Cor Martix: ",np.sqrt(np.diag(pcov4))
 
 
