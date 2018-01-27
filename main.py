@@ -873,96 +873,145 @@ segment_length = np.array(10-1)
 segment_length=[10,15,20,25,30,35,40,45,50]
 Error_e2e_run = np.sqrt((1./3)**2 * (Run_1[:,1]**2 + Run_2[:,1]**2 + Run_3[:,1]**2 ))
     
+segment_length = np.log10(segment_length)   
+Avg_e2e_run = np.log10(Avg_e2e_run) 
     
-def func(l, A, d):
+def lin_func(l, A, d):
     return (l/A)**(1./d)
 plt.figure("Fig.2")
 #plt.scatter(np.log10(segment_length), np.log10(Avg_e2e_run))
-plt.errorbar(np.log10(segment_length), np.log10(Avg_e2e_run),xerr = 0, yerr = Error_e2e_run, fmt ='o', c = 'blue')
-popt,pcov = curve_fit(func, segment_length, Avg_e2e_run)
+plt.errorbar(segment_length, Avg_e2e_run,xerr = 0, yerr = Error_e2e_run, fmt ='o', c = 'blue')
+popt,pcov = curve_fit(lin_func, segment_length, Avg_e2e_run )
 error = np.sqrt(np.diag(pcov))
-plt.plot( np.log10(segment_length), np.log10(func(segment_length,*popt)) , c = 'blue')
+plt.plot( segment_length, lin_func(segment_length,*popt) , c = 'blue')
 plt.xlabel(r'$Log(segment \ lenght)$', size = '16')
 plt.ylabel(r'$Log(end \ to \ end \ distance)$', size = '16')
 plt.title(r'$Estimation \ of \ the \ fractal \ dimension$', size = '16')
 plt.annotate("$l = AR^d$ \n $A = %0.3f \pm %0.3f$ \n $d = %0.3f \pm %0.3f$" %(popt[0],error[0],popt[1], error[1]), xy = (1.5,0.5), size = '16')
 plt.show("Fig.2")
-print "A, d (end to end distance):",popt
-#print "[Fig 2] Cor Martix: ",np.sqrt(np.diag(pcov))
+print "d, A (end to end distance):",popt   
+print "Error d, A: ",np.sqrt(np.diag(pcov))
 
+
+Error_Range = []
 Avg_L = []
 P_Range = []
+count_L=[]
+P_Fit=[]
+L_Fit=[]
 A = np.zeros((len(lattice.size_loop), 2))
 A[:,0] += lattice.length_loop
 A[:,1] += lattice.size_loop
 i = 0
+
 for i in xrange(5, max(lattice.size_loop)):
     select = (A[:,1] == i)
-    #if (len(A[select,0])!=0) and (A[select,1][0]>5):
-    if (len(A[select,0])!=0):
-            Avg_L.append(sum(A[select,0])/len(A[select,0]))
-            P_Range.append(A[select,1][0])
-    #if(len(A[select,0])<4):
-      #  break
-       # print A[select,1], A[select,0]
-            
+    if (len(A[select,0])!=0) and (A[select,1][0]>5):
+    #if (len(A[select,0])!=0):
+        Avg_L.append(sum(A[select,0])/len(A[select,0]))
+        P_Range.append(A[select,1][0])
+        count_L.append(len(A[select,0]))
+        if(len(A[select,0])>4):
+            P_Fit.append(A[select,1][0])
+            L_Fit.append(sum(A[select,0])/len(A[select,0]))
+
+sig_L=np.zeros(len(Avg_L))
+for c in xrange(0,len(Avg_L)):
+    for i in xrange(0,len(count_L)):
+        if count_L[c] != 1:
+            sig_L[c] += ((Avg_L[c]-lattice.length_loop[i])**2) 
+    if count_L[c] != 1:
+        sig_L[c] = np.sqrt((1./(count_L[c]-1))*sig_L[c])/np.sqrt(count_L[c])
+
+
+P_Range = np.log10(P_Range)            
+Avg_L = np.log10(Avg_L)
+P_Fit = np.log10(P_Fit)
+AvgL_Fit = np.log10(L_Fit)
+
+def lin_func_2(R, A, d):
+    return d*R + A                                                                                                                                                
 plt.figure("Fig.4")
-plt.scatter(np.log10(P_Range), np.log10(Avg_L))
-popt2,pcov2 = curve_fit(func, P_Range, Avg_L)
+plt.scatter(P_Range, Avg_L)
+#plt.errorbar(P_Range,Avg_L, yerr = sig_L)
+popt2,pcov2 = curve_fit(lin_func_2, P_Fit, AvgL_Fit)
 error2 = np.sqrt(np.diag(pcov2))
-plt.plot( np.log10(P_Range), np.log10(func(P_Range,*popt2)) , c = 'blue')
+print "output:", lin_func_2(P_Fit,*popt2)
+plt.plot(P_Fit, lin_func_2(P_Fit,*popt2) , c = 'blue')
 plt.xlabel(r'$Log(Loop \ Perimeter)$', size = '16')
 plt.ylabel(r'$Log(< Length >)$', size = '16')
 plt.title(r'$Estimation \ of \ the \ fractal \ dimension$', size = '16')
 plt.annotate("$l = AR^d$ \n $A = %0.3f \pm %0.3f$ \n $d = %0.3f \pm %0.3f$" %(popt2[0],error2[0],popt2[1], error2[1]), xy = (1.2,0.7), size = '16')
+x = np.linspace(0.6,1.5,1000)
+plt.plot(x,1.9*x+0.21,c='r')
 plt.show("Fig.4")
-print "A, d (loop perimeter):",popt2
-#print "[Fig 4] Cor Martix: ",np.sqrt(np.diag(pcov2))
+print "d, A (loop perimeter):",popt2
+print "Error d, A: ",np.sqrt(np.diag(pcov2))
+
 
 n = []
 L_Range = []
-#P_Range = []  #redefine  P_Range if cutting at R_c for in the plot above
+P_Range = []  #redefine  P_Range if cutting at R_c for in the plot above
+P_Fit = []
+L_Fit = []
+n_Fit = []
 for i in xrange(5, max(lattice.size_loop)):
     select = (A[:,1] == i)
-    if len(A[select,1])!=0:
+    if (len(A[select,0])!=0) and (A[select,1][0]>5):
         n.append(1.0*len(A[select,1])/(N**3))
         L_Range.append(A[select,0][0])
-        #P_Range.append(A[select,1][0])
+        P_Range.append(A[select,1][0])
+        if(len(A[select,0])>4):
+            P_Fit.append(A[select,1][0])
+            L_Fit.append(A[select,0][0])
+            n_Fit.append(1.0*len(A[select,1])/(N**3))
+            
 l = P_Range
 beta = 0
 for i in xrange(0, len(l)):
     beta += (np.log(l[i]/min(l)))
 beta = 1 + (len(l)/beta)
-B = (beta - 1.)/(min(l)**(-beta+1))
-n_1 = ((beta-1.)/min(P_Range))*(P_Range/min(P_Range))**(-beta)
 
-def func_n(B, n, beta):
-    return (n/B)**(1./beta)
-#def func_n(B, R, beta):
-#    return B/(R**(beta))
+P_Range = np.log10(P_Range)
+L_Range = np.log10(L_Range)
+n = np.log10(n)
+P_Fit = np.log10(P_Fit)
+L_Fit = np.log10(L_Fit)
+n_Fit = np.log10(n_Fit)
+
+
+#def func_5(P, B, beta):
+#    return B/(P**beta)
+def func_5(P, B, beta):
+    return -beta * P + B
 plt.figure("Fig.5")
-plt.scatter(np.log10(P_Range), np.log10(n))
-#plt.plot(np.log10(P_Range), np.log10(n_1))
-popt3,pcov3 = curve_fit(func_n, P_Range, n)
-plt.plot( np.log10(P_Range), np.log10(func_n(P_Range,*popt3)) , c = 'blue')
+plt.scatter(P_Range, n)
+popt3,pcov3 = curve_fit(func_5, P_Fit, n_Fit)
+plt.plot(P_Fit, func_5(P_Fit,*popt3) , c = 'blue')
 error3 = np.sqrt(np.diag(pcov3))
 plt.xlabel(r'$Log(Loop \ Perimeter)$', size = '16')
 plt.ylabel(r'$Log(Density)$', size = '16')
-plt.annotate("$n = BR^\\beta$ \n $B = %0.3f \pm %0.3f$ \n $\\beta = %0.3f \pm %0.3f$" %(popt3[0],error3[0],popt3[1], error3[1]), xy = (1.3,-2.5), size = '16')
+plt.annotate("$n = BR^{-\\beta}$ \n $B = %0.3f \pm %0.3f$ \n $\\beta = %0.3f \pm %0.3f$" %(popt3[0],error3[0],popt3[1], error3[1]), xy = (1.3,-2.5), size = '16')
+x = np.linspace(0.6,1.5,1000)
+plt.plot(x,-4*x+6,c='r')
 plt.show("Fig.5")
 print "B, beta:",popt3
-#print "[Fig 5] Cor Martix: ",np.sqrt(np.diag(pcov3))
+print "Error B, beta: ",np.sqrt(np.diag(pcov3))
 
+def func_6(L, C, gam):
+    return -gam * L + C
 plt.figure("Fig.6")
-plt.scatter(np.log10(L_Range), np.log10(n))
-popt4,pcov4 = curve_fit(func_n, L_Range, n)
+plt.scatter(L_Range, n)
+popt4,pcov4 = curve_fit(func_6, L_Fit, n_Fit)
 error4 = np.sqrt(np.diag(pcov4))
-plt.plot( np.log10(L_Range), np.log10(func_n(L_Range,*popt4)) , c = 'blue')
+plt.plot(L_Fit, func_6(L_Fit,*popt4) , c = 'blue')
 plt.xlabel(r'$Log(Loop \ Length)$', size = '16')
 plt.ylabel(r'$Log(Density)$', size = '16')
 plt.annotate("$n = CR^{\gamma}$ \n $C = %0.3f \pm %0.3f$ \n $\gamma = %0.3f \pm %0.3f$" %(popt4[0],error4[0],popt4[1], error4[1]), xy = (1.65,-2.5), size = '16')
+x = np.linspace(0.5,1.5,1000)
+plt.plot(x,-2.6*x+0.4,c='r')
 plt.show("Fig.6")
 print "C, gamma:",popt4
-print "[Fig 6] Cor Martix: ",np.sqrt(np.diag(pcov4))
+print "Error C, gamma: ",np.sqrt(np.diag(pcov4))
 
 
