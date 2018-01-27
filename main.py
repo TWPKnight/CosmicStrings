@@ -13,9 +13,9 @@ from random import randint
 from mpl_toolkits.mplot3d import Axes3D  
 from scipy.optimize import curve_fit
 import collections
-random.seed(36964289) #Run_1
+#random.seed(36964289) #Run_1
 #random.seed(963738)    #Run_2
-#random.seed(3854637289)  #Run_3
+random.seed(3854637289)  #Run_3
 
 np.set_printoptions(threshold='nan')
 plt.close("all")
@@ -862,12 +862,12 @@ sig_e2e=np.zeros(len(Avg_e2e))
 for c in xrange(0,len(Avg_e2e)):
     for i in xrange(0,len(lattice.e2e)):
         sig_e2e[c] += ((Avg_e2e[c]-lattice.e2e[i])**2) 
-    sig_e2e[c] = np.sqrt((1./(lattice.count[c]-1))*sig_e2e[c])#/np.sqrt(lattice.count[c])
+    sig_e2e[c] = np.sqrt((1./(lattice.count[c]-1))*sig_e2e[c])/np.sqrt(lattice.count[c])
 
-np.savetxt("multirun_e2e.txt", np.c_[Avg_e2e,sig_e2e], fmt ='%0.6f')  #change seed and change file name, then run
-Run_1 = np.loadtxt("multirun_e2e.txt")
-Run_2 = np.loadtxt("multirun_e2e_1.txt")
-Run_3 = np.loadtxt("multirun_e2e_2.txt")
+#np.savetxt("test_multirun_e2e_2.txt", np.c_[Avg_e2e,sig_e2e], fmt ='%0.6f')  #change seed and change file name, then run
+Run_1 = np.loadtxt("test_multirun_e2e.txt")
+Run_2 = np.loadtxt("test_multirun_e2e_1.txt")
+Run_3 = np.loadtxt("test_multirun_e2e_2.txt")
 Avg_e2e_run = (Run_1[:,0]+Run_2[:,0]+Run_3[:,0])/3
 segment_length = np.array(10-1)
 segment_length=[10,15,20,25,30,35,40,45,50]
@@ -914,7 +914,7 @@ plt.plot( np.log10(P_Range), np.log10(func(P_Range,*popt2)) , c = 'blue')
 plt.xlabel(r'$Log(Loop \ Perimeter)$', size = '16')
 plt.ylabel(r'$Log(< Length >)$', size = '16')
 plt.title(r'$Estimation \ of \ the \ fractal \ dimension$', size = '16')
-plt.annotate("$l = AR^d$ \n $A = %0.3f \pm %0.3f$ \n $d = %0.3f \pm %0.3f$" %(popt2[0],error2[0],popt2[1], error2[1]), xy = (1.3,0.7), size = '16')
+plt.annotate("$l = AR^d$ \n $A = %0.3f \pm %0.3f$ \n $d = %0.3f \pm %0.3f$" %(popt2[0],error2[0],popt2[1], error2[1]), xy = (1.2,0.7), size = '16')
 plt.show("Fig.4")
 print "A, d (loop perimeter):",popt2
 #print "[Fig 4] Cor Martix: ",np.sqrt(np.diag(pcov2))
@@ -950,7 +950,7 @@ plt.xlabel(r'$Log(Loop \ Perimeter)$', size = '16')
 plt.ylabel(r'$Log(Density)$', size = '16')
 plt.annotate("$n = BR^\\beta$ \n $B = %0.3f \pm %0.3f$ \n $\\beta = %0.3f \pm %0.3f$" %(popt3[0],error3[0],popt3[1], error3[1]), xy = (1.3,-2.5), size = '16')
 plt.show("Fig.5")
-#print "B, beta:",popt3
+print "B, beta:",popt3
 #print "[Fig 5] Cor Martix: ",np.sqrt(np.diag(pcov3))
 
 plt.figure("Fig.6")
@@ -960,7 +960,7 @@ error4 = np.sqrt(np.diag(pcov4))
 plt.plot( np.log10(L_Range), np.log10(func_n(L_Range,*popt4)) , c = 'blue')
 plt.xlabel(r'$Log(Loop \ Length)$', size = '16')
 plt.ylabel(r'$Log(Density)$', size = '16')
-plt.annotate("$n = CR^{\gamma}$ \n $C = %0.3f \pm %0.3f$ \n $\gamma = %0.3f \pm %0.3f$" %(popt4[0],error4[0],popt4[1], error4[1]), xy = (1.7,-2.5), size = '16')
+plt.annotate("$n = CR^{\gamma}$ \n $C = %0.3f \pm %0.3f$ \n $\gamma = %0.3f \pm %0.3f$" %(popt4[0],error4[0],popt4[1], error4[1]), xy = (1.65,-2.5), size = '16')
 plt.show("Fig.6")
 print "C, gamma:",popt4
 print "[Fig 6] Cor Martix: ",np.sqrt(np.diag(pcov4))
