@@ -140,6 +140,7 @@ class SpaceCube:
         z_min = 0
         z_max = 0
         P=0 # Perimeter - called R in VV paper
+        VS_ratio = []
         self.x_min = x_min
         self.x_max = x_max
         self.y_min = y_min
@@ -147,6 +148,7 @@ class SpaceCube:
         self.z_min = z_min
         self.z_max = z_max
         self.P=P
+        self.VS_ratio = VS_ratio 
         self.string_coords=string_coords
         self.sum_e2e=sum_e2e
         self.e2e=e2e
@@ -628,6 +630,9 @@ class SpaceCube:
                         self.tot_loop_coord_j.append(self.loop_coord_j)
                         self.tot_loop_coord_k.append(self.loop_coord_k)
                         self.P = 3 + (self.x_max - self.x_min) + (self.y_max - self.y_min) + (self.z_max - self.z_min)  # 3 added to match spatial dimensions
+                        V = (self.x_max - self.x_min)*(self.y_max - self.y_min)*(self.z_max - self.z_min)
+                        S =2.0 * ((self.x_max - self.x_min)*(self.y_max - self.y_min) + (self.y_max - self.y_min)*(self.z_max - self.z_min) + (self.z_max - self.z_min)*(self.x_max - self.x_min))
+                        self.VS_ratio.append(1.0*V/S)
                         self.length_loop.append(self.L)
                         self.size_loop.append(self.P)                        
         for i in xrange(0,len(self.box[:,0,0])-1):
@@ -650,6 +655,9 @@ class SpaceCube:
                         self.tot_loop_coord_j.append(self.loop_coord_j)
                         self.tot_loop_coord_k.append(self.loop_coord_k)
                         self.P = 3 + (self.x_max - self.x_min) + (self.y_max - self.y_min) + (self.z_max - self.z_min)
+                        V = (self.x_max - self.x_min)*(self.y_max - self.y_min)*(self.z_max - self.z_min)
+                        S =2.0 * ((self.x_max - self.x_min)*(self.y_max - self.y_min) + (self.y_max - self.y_min)*(self.z_max - self.z_min) + (self.z_max - self.z_min)*(self.x_max - self.x_min))
+                        self.VS_ratio.append(1.0*V/S)
                         self.length_loop.append(self.L)
                         self.size_loop.append(self.P)           
         for i in xrange(1,len(self.box[:,0,0])-2):
@@ -672,6 +680,9 @@ class SpaceCube:
                         self.tot_loop_coord_j.append(self.loop_coord_j)
                         self.tot_loop_coord_k.append(self.loop_coord_k)
                         self.P= 3 + (self.x_max - self.x_min) + (self.y_max - self.y_min) + (self.z_max - self.z_min)
+                        V = (self.x_max - self.x_min)*(self.y_max - self.y_min)*(self.z_max - self.z_min)
+                        S =2.0 * ((self.x_max - self.x_min)*(self.y_max - self.y_min) + (self.y_max - self.y_min)*(self.z_max - self.z_min) + (self.z_max - self.z_min)*(self.x_max - self.x_min))
+                        self.VS_ratio.append(1.0*V/S)
                         self.length_loop.append(self.L)
                         self.size_loop.append(self.P)  
                 
@@ -861,7 +872,7 @@ Avg_e2e = lattice.sum_e2e/lattice.count
 sig_e2e=np.zeros(len(Avg_e2e))
 for c in xrange(0,len(Avg_e2e)):
     for i in xrange(0,len(lattice.e2e)):
-        sig_e2e[c] += ((Avg_e2e[c]-lattice.e2e[i])**2) 
+        sig_e2e[c] += ((lattice.e2e[i]-Avg_e2e[c])**2) 
     sig_e2e[c] = np.sqrt((1./(lattice.count[c]-1))*sig_e2e[c])/np.sqrt(lattice.count[c])
 
 #np.savetxt("test_multirun_e2e_2.txt", np.c_[Avg_e2e,sig_e2e], fmt ='%0.6f')  #change seed and change file name, then run
@@ -881,7 +892,7 @@ def lin_func(l, A, d):
 plt.figure("Fig.2")
 #plt.scatter(np.log10(segment_length), np.log10(Avg_e2e_run))
 plt.errorbar(segment_length, Avg_e2e_run,xerr = 0, yerr = Error_e2e_run, fmt ='o', c = 'blue')
-popt,pcov = curve_fit(lin_func, segment_length, Avg_e2e_run )
+popt,pcov = curve_fit(lin_func, segment_length, Avg_e2e_run)
 error = np.sqrt(np.diag(pcov))
 plt.plot( segment_length, lin_func(segment_length,*popt) , c = 'blue')
 plt.xlabel(r'$Log(segment \ lenght)$', size = '16')
@@ -919,7 +930,7 @@ sig_L=np.zeros(len(Avg_L))
 for c in xrange(0,len(Avg_L)):
     for i in xrange(0,len(count_L)):
         if count_L[c] != 1:
-            sig_L[c] += ((Avg_L[c]-lattice.length_loop[i])**2) 
+            sig_L[c] += ((lattice.length_loop[i]-Avg_L[c])**2) 
     if count_L[c] != 1:
         sig_L[c] = np.sqrt((1./(count_L[c]-1))*sig_L[c])/np.sqrt(count_L[c])
 
@@ -1014,4 +1025,24 @@ plt.show("Fig.6")
 print "C, gamma:",popt4
 print "Error C, gamma: ",np.sqrt(np.diag(pcov4))
 
+def vs_func(R, K, nu):
+    return nu*R + K
+    #return K * (R**nu)
+perimeter = lattice.size_loop
+VS_ratio = lattice.VS_ratio
+#VS_ratio = np.nan_to_num(VS_ratio)
+plt.figure("Fig. VS")
+plt.scatter(perimeter, VS_ratio)
+popt5,pcov5 = curve_fit(vs_func, perimeter, VS_ratio)
+error5 = np.sqrt(np.diag(pcov5))
+x = np.linspace(0.5,50,2284)  # change xmax lim to 1.6 if logged data
+plt.plot(x, vs_func(x,*popt5) , c = 'blue')
+#plt.plot(x,1*x+0.052,c='r')  #use for logged data
+plt.plot(x,0.052*x,c='r') 
+plt.xlabel(r'$Log(Loop \ Perimeter)$', size = '16')
+plt.ylabel(r'$Log(Volume \ to \ Surface \ ratio)$', size = '16')
+plt.annotate("$V/S= KR^{\\nu}$ \n $K = %0.5f \pm %0.5f$ \n $\\nu = %0.3f \pm %0.3f$" %(popt5[0],error5[0],popt5[1], error5[1]), xy = (2,3), size = '16')
+plt.show("Fig. VS")
+print "K, nu:",popt5
+print "Error K, nu: ",np.sqrt(np.diag(pcov5))
 
