@@ -13,6 +13,7 @@ from random import randint
 from mpl_toolkits.mplot3d import Axes3D  
 from scipy.optimize import curve_fit
 import collections
+from operator import itemgetter
 #random.seed(36964289) #Run_1
 #random.seed(963738)    #Run_2
 random.seed(3854637289)  #Run_3
@@ -116,7 +117,7 @@ class SpaceCube:
         L=0
         count=np.zeros(10-1)
         sum_e2e=np.zeros(10-1)
-        e2e=[[]]
+        e2e=[]
         string_coords=[] #Want as array???
         length_inf=[]
         length_loop=[]
@@ -799,68 +800,47 @@ class SpaceCube:
        
         len_coord=len(self.string_coords)
         #if (len_coord>10):
-        e2e_5,e2e_10,e2e_15,e2e_20,e2e_25,e2e_30,e2e_35,e2e_40,e2e_45,e2e_50 = []
         e=0
         for l_1 in xrange(0, 55, 5):   
                 for l_2 in xrange(0, 55, 5):
                     if ((l_1< len_coord) and (l_2< len_coord)): 
                             R=np.sqrt( (self.string_coords[l_2][0]-self.string_coords[l_1][0])**2 + (self.string_coords[l_2][1]-self.string_coords[l_1][1])**2 + (self.string_coords[l_2][2]-self.string_coords[l_1][2])**2 )            
-                            #print "l1: ",l_1
-                            #print "l2: ",l_2
                             if (abs(l_2-l_1) == 5):
                                 e=0
                                 R=0
-                                e2e_5.append(R)
                             if (abs(l_2-l_1) == 10):
                                 e=0
                                 self.count[e]+=1
-                                e2e_10.append(R)
                             if (abs(l_2-l_1) == 15):
                                 e=1
                                 self.count[e]+=1
-                                e2e_15.append(R)
                             if (abs(l_2-l_1) == 20):
                                 e=2
                                 self.count[e]+=1
-                                e2e_20.append(R)
                             if (abs(l_2-l_1) == 25):
                                 e=3
                                 self.count[e]+=1
-                                e2e_25.append(R)
                             if (abs(l_2-l_1) == 30):
                                 e=4
                                 self.count[e]+=1
-                                e2e_30.append(R)
                             if (abs(l_2-l_1) == 35):
                                 e=5
                                 self.count[e]+=1
-                                e2e_35.append(R)
                             if (abs(l_2-l_1) == 40):
                                 e=6
-                                self.count[e]+=1 
-                                e2e_40.append(R)                               
+                                self.count[e]+=1                               
                             if (abs(l_2-l_1) == 45):
                                 e=7
                                 self.count[e]+=1
-                                e2e_45.append(R)
                             if (abs(l_2-l_1) == 50):
                                 e=8 
                                 self.count[e]+=1
-                                e2e_50.append(R) 
                             #print "e: ",e
                             self.sum_e2e[e]+=R
-                            self.e2e[e].append(R)
-                            
-                            #print "R:", R
-                            #print "e:", e
-                            #print "e2e:",self.e2e
-                            #self.count[e]+=1
-                                                             
-                            
-        #print self.string_coords
+                            self.e2e.append([R,e]) 
         self.string_coords=[]    
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
-N = 50
+N = 40
 lattice = SpaceCube(N)
 lattice.xPlane()
 lattice.yPlane()
@@ -882,28 +862,30 @@ print "Percentage of closed loops", 1.0*sum(lattice.length_loop)/sum((lattice.le
 #Plot3DStrings()
 #PlotLengthHist()
 
-def lin_func(x, c, m):
-    return m*x + c
 
+lattice.e2e = sorted(lattice.e2e, key = itemgetter(1))  
 Avg_e2e = lattice.sum_e2e/lattice.count
 log_Avg_e2e = np.log10(Avg_e2e) 
-#lattice.e2e = np.log10(lattice.e2e)
-sig_e2e=np.zeros(len(Avg_e2e))
-for c in xrange(0,len(Avg_e2e)):
-    for i in xrange(0,len(lattice.e2e[c])):
-        #print lattice.e2e[i]
-        sig_e2e[c] += ((lattice.e2e[c][i] - log_Avg_e2e[c])**2) 
-    sig_e2e[c] = np.sqrt((1./(lattice.count[c]-1))*sig_e2e[c])/np.sqrt(lattice.count[c])
 
-np.savetxt("test_multirun_e2e_2.txt", np.c_[Avg_e2e,sig_e2e], fmt ='%0.6f')  #change seed and change file name, then run
+sig_e2e=np.zeros(len(Avg_e2e))
+
+for i in xrange(0,len(lattice.e2e)-1):
+    c = lattice.e2e[i][1]
+    sig_e2e[c] += ((np.log10(lattice.e2e[i][0]) - log_Avg_e2e[c])**2)
+    sig_e2e[c] = np.sqrt((1./(lattice.count[c]-1))*(sig_e2e[c]))/np.sqrt(lattice.count[c])
+
+
+#np.savetxt("test_multirun_e2e.txt", np.c_[Avg_e2e,sig_e2e], fmt ='%0.6f')  #change seed and change file name, then run
 Run_1 = np.loadtxt("test_multirun_e2e.txt")
-Run_2 = np.loadtxt("test_multirun_e2e_1.txt")
+Run_2 = np.loadtxt("test_multirun_e2e_1.txt")            #RETAKE DATA for all runs
 Run_3 = np.loadtxt("test_multirun_e2e_2.txt")
 Avg_e2e_run = (Run_1[:,0]+Run_2[:,0]+Run_3[:,0])/3
 segment_length = np.array(10-1)
 segment_length=[10,15,20,25,30,35,40,45,50]
 Error_e2e_run = np.sqrt((1./3)**2 * (Run_1[:,1]**2 + Run_2[:,1]**2 + Run_3[:,1]**2 ))
-    
+
+def lin_func(x, c, m):
+    return m*x + c                
 y = np.log10(Avg_e2e_run) 
 x = np.log10(segment_length)     
 
