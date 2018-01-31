@@ -115,9 +115,9 @@ class SpaceCube:
         edge = False
         L=0
         count=np.zeros(10-1)
-        sum_e2e=np.zeros(10-1)
-        e2e=np.zeros(10-1)
-        string_coords=[] #Want as array???
+        sum_e2e = np.zeros(10-1)
+        e2e = []            #Want as array???
+        string_coords=[] 
         length_inf=[]
         length_loop=[]
         size_loop=[]
@@ -838,7 +838,7 @@ class SpaceCube:
                                 self.count[e]+=1 
                             #print "e: ",e
                             self.sum_e2e[e]+=R
-                            self.e2e = np.append(R,e)
+                            self.e2e.append([R,e])
                             #self.count[e]+=1
                                                              
                             
@@ -1668,6 +1668,7 @@ class SpaceCube:
         len_coord=len(self.string_coords)
         #if (len_coord>10):
         e=0
+        i = 0
         for l_1 in xrange(0, 55, 5):   
                 for l_2 in xrange(0, 55, 5):
                     if ((l_1< len_coord) and (l_2< len_coord)): 
@@ -1704,12 +1705,8 @@ class SpaceCube:
                             if (abs(l_2-l_1) == 50):
                                 e=8 
                                 self.count[e]+=1 
-                            #print "e: ",e
                             self.sum_e2e[e]+=R
-                            #self.e2e = np.append(R,e)
-                            
-                            ##print "R:", R
-                            #print "e:", e
+                            self.e2e.append([R,e])
                             #print "e2e:",self.e2e
                             #self.count[e]+=1
                                                              
