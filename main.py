@@ -117,7 +117,7 @@ class SpaceCube:
         L=0
         count=np.zeros(10-1)
         sum_e2e=np.zeros(10-1)
-        e2e=[]
+        e2e=[[],[],[],[],[],[],[],[],[]]
         string_coords=[] #Want as array???
         length_inf=[]
         length_loop=[]
@@ -176,7 +176,7 @@ class SpaceCube:
         self.xString=xString
         self.zString=zString 
         self.total=total   
-        self.faceNum=faceNum  
+        self.faceNum=faceNum   
             
         self.faceDict={ 0 : [1,2,3,4],    #bottom
                         1 : [1,4,8,5],    #left
@@ -799,45 +799,54 @@ class SpaceCube:
                 
        
         len_coord=len(self.string_coords)
-        #if (len_coord>10):
-        e=0
-        for l_1 in xrange(0, 55, 5):   
-                for l_2 in xrange(0, 55, 5):
-                    if ((l_1< len_coord) and (l_2< len_coord)): 
-                            R=np.sqrt( (self.string_coords[l_2][0]-self.string_coords[l_1][0])**2 + (self.string_coords[l_2][1]-self.string_coords[l_1][1])**2 + (self.string_coords[l_2][2]-self.string_coords[l_1][2])**2 )            
-                            if (abs(l_2-l_1) == 5):
-                                e=0
-                                R=0
-                            if (abs(l_2-l_1) == 10):
-                                e=0
-                                self.count[e]+=1
-                            if (abs(l_2-l_1) == 15):
-                                e=1
-                                self.count[e]+=1
-                            if (abs(l_2-l_1) == 20):
-                                e=2
-                                self.count[e]+=1
-                            if (abs(l_2-l_1) == 25):
-                                e=3
-                                self.count[e]+=1
-                            if (abs(l_2-l_1) == 30):
-                                e=4
-                                self.count[e]+=1
-                            if (abs(l_2-l_1) == 35):
-                                e=5
-                                self.count[e]+=1
-                            if (abs(l_2-l_1) == 40):
-                                e=6
-                                self.count[e]+=1                               
-                            if (abs(l_2-l_1) == 45):
-                                e=7
-                                self.count[e]+=1
-                            if (abs(l_2-l_1) == 50):
-                                e=8 
-                                self.count[e]+=1
-                            #print "e: ",e
-                            self.sum_e2e[e]+=R
-                            self.e2e.append([R,e]) 
+        if (len_coord>5):
+            e=0
+            for l_1 in xrange(0, 55, 5):   
+                    for l_2 in xrange(0, 55, 5):
+                        #if (l_1 != l_2):
+                            if ((l_1< len_coord) and (l_2< len_coord)): 
+                                    R=np.sqrt( (self.string_coords[l_2][0]-self.string_coords[l_1][0])**2 + (self.string_coords[l_2][1]-self.string_coords[l_1][1])**2 + (self.string_coords[l_2][2]-self.string_coords[l_1][2])**2 )            
+                                    if (R!=0): #Cheat???
+                                        if (abs(l_2-l_1) == 5):
+                                            e=0
+                                            R=0 #NEED THIS!
+                                        if (abs(l_2-l_1) == 10):
+                                            e=0
+                                            self.count[e]+=1
+                                            self.e2e[e].append(R)
+                                        if (abs(l_2-l_1) == 15):
+                                            e=1
+                                            self.count[e]+=1
+                                            self.e2e[e].append(R)
+                                        if (abs(l_2-l_1) == 20):
+                                            e=2
+                                            self.count[e]+=1
+                                            self.e2e[e].append(R)
+                                        if (abs(l_2-l_1) == 25):
+                                            e=3
+                                            self.count[e]+=1
+                                            self.e2e[e].append(R)
+                                        if (abs(l_2-l_1) == 30):
+                                            e=4
+                                            self.count[e]+=1
+                                            self.e2e[e].append(R)
+                                        if (abs(l_2-l_1) == 35):
+                                            e=5
+                                            self.count[e]+=1
+                                            self.e2e[e].append(R)
+                                        if (abs(l_2-l_1) == 40):
+                                            e=6
+                                            self.count[e]+=1
+                                            self.e2e[e].append(R)                            
+                                        if (abs(l_2-l_1) == 45):
+                                            e=7
+                                            self.count[e]+=1
+                                            self.e2e[e].append(R)
+                                        if (abs(l_2-l_1) == 50):
+                                            e=8 
+                                            self.count[e]+=1
+                                            self.e2e[e].append(R)
+                                        self.sum_e2e[e]+=R
         self.string_coords=[]    
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
 N = 40
@@ -862,15 +871,18 @@ print "Percentage of closed loops", 1.0*sum(lattice.length_loop)/sum((lattice.le
 #Plot3DStrings()
 #PlotLengthHist()
 
-lattice.e2e = sorted(lattice.e2e, key = itemgetter(1))  
-Avg_e2e = lattice.sum_e2e/lattice.count
-log_Avg_e2e = np.log10(Avg_e2e) 
 
-sig_e2e=np.zeros(len(Avg_e2e))
-for i in xrange(0,len(lattice.e2e)-1):
-    c = lattice.e2e[i][1]
-    sig_e2e[c] += ((np.log10(lattice.e2e[i][0]) - log_Avg_e2e[c])**2)
-    sig_e2e[c] = np.sqrt((1./(lattice.count[c]-1))*(sig_e2e[c]))/np.sqrt(lattice.count[c])
+Avg_e2e = lattice.sum_e2e/lattice.count
+segment_length=[10,15,20,25,30,35,40,45,50]
+sig_e2e = np.zeros(9)
+summation = np.zeros(9)
+
+for i in xrange(0,len(lattice.count)):
+    for j in xrange(0,int(lattice.count[i])):
+        summation[i] += (np.log10(Avg_e2e[i]) - np.log10(lattice.e2e[i][j]))**2 
+        if ((np.log10(Avg_e2e[i]) - np.log10(lattice.e2e[i][j]))**2 == float("inf")):
+            print "check1: ", np.log10(Avg_e2e[i]), " check2: ",np.log10(lattice.e2e[i][j])
+    sig_e2e[i] = np.sqrt(1.0/(lattice.count[i]-1) * summation[i])/np.sqrt(lattice.count[i])
 
 
 #np.savetxt("test_multirun_e2e.txt", np.c_[Avg_e2e,sig_e2e], fmt ='%0.6f')  #change seed and change file name, then run
@@ -884,12 +896,13 @@ Error_e2e_run = np.sqrt((1./3)**2 * (Run_1[:,1]**2 + Run_2[:,1]**2 + Run_3[:,1]*
 
 def lin_func(x, c, m):
     return m*x + c                
-y = np.log10(Avg_e2e_run) 
+#y = np.log10(Avg_e2e_run)
+y = np.log10(Avg_e2e)  
 x = np.log10(segment_length)     
 
 plt.figure("Fig.2")
 #plt.scatter(x, y)
-plt.errorbar(x, y, xerr = 0, yerr = Error_e2e_run, fmt ='o', c = 'blue')
+plt.errorbar(x, y, xerr = 0, yerr = sig_e2e, fmt ='o', c = 'blue')
 popt1,pcov1 = curve_fit(lin_func, x, y)
 plt.plot( x, lin_func(x,*popt1), c = 'blue')
 plt.xlabel(r'$Log(segment \ lenght)$', size = '16')
@@ -944,7 +957,8 @@ plt.figure("Fig.4")
 plt.scatter(x, y)
 #plt.errorbar(segment_length, Avg_e2e_run,xerr = 0, yerr = Error_e2e_run, fmt ='o', c = 'blue')
 popt2,pcov2 = curve_fit(lin_func, x_Fit, y_Fit)
-plt.plot( x_Fit, lin_func(x_Fit,*popt2) , c = 'blue')
+x_lin_Fit = np.linspace(min(x_Fit),max(x_Fit),500)
+plt.plot( x_lin_Fit, lin_func(x_lin_Fit,*popt2) , c = 'blue')
 error2 = np.sqrt(np.diag(pcov2))
 popt2[0] = 10**(popt2[0])
 error2[0] = error2[0]*(np.log(10))*popt2[0]
@@ -988,7 +1002,8 @@ plt.figure("Fig.5")
 plt.scatter(x, y)
 #plt.errorbar(segment_length, Avg_e2e_run,xerr = 0, yerr = Error_e2e_run, fmt ='o', c = 'blue')
 popt3,pcov3 = curve_fit(lin_func, x_Fit, y_Fit)
-plt.plot( x_Fit, lin_func(x_Fit,*popt3) , c = 'blue')
+x_lin_Fit = np.linspace(min(x_Fit),max(x_Fit),500)
+plt.plot( x_lin_Fit, lin_func(x_lin_Fit,*popt3) , c = 'blue')
 error3 = np.sqrt(np.diag(pcov3))
 popt3[0] = 10**(popt3[0])
 error3[0] = error3[0]*(np.log(10))*popt3[0]
@@ -1007,7 +1022,8 @@ y_Fit = np.log10(n_Fit)
 plt.figure("Fig.6")
 plt.scatter(x, y)
 popt4,pcov4 = curve_fit(lin_func, x_Fit, y_Fit)
-plt.plot( x_Fit, lin_func(x_Fit,*popt4) , c = 'blue')
+x_lin_Fit = np.linspace(min(x_Fit),max(x_Fit),500)
+plt.plot( x_lin_Fit, lin_func(x_lin_Fit,*popt4) , c = 'blue')
 error4 = np.sqrt(np.diag(pcov4))
 popt4[0] = 10**(popt4[0])
 error4[0] = error4[0]*(np.log(10))*popt4[0]
@@ -1034,7 +1050,8 @@ for i in xrange(0, len(lattice.VS_ratio)):
 plt.figure("Fig.V/S")
 plt.scatter(x, y)
 poptVS,pcovVS = curve_fit(lin_func, x, y)
-plt.plot( x, lin_func(x,*poptVS) , c = 'blue')
+x_lin = np.linspace(min(x),max(x),500)
+plt.plot( x_lin, lin_func(x_lin,*poptVS) , c = 'blue')
 plt.xlabel(r'$Log(Loop \ Perimeter)$', size = '16')
 plt.ylabel(r'$Log(Volume \ to \ Surface \ ratio)$', size = '16')
 plt.show("Fig.V/S")
