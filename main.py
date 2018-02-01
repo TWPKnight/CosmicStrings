@@ -849,7 +849,7 @@ class SpaceCube:
                                         self.sum_e2e[e]+=R
         self.string_coords=[]    
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
-N = 40
+N = 50
 lattice = SpaceCube(N)
 lattice.xPlane()
 lattice.yPlane()
@@ -885,7 +885,7 @@ for i in xrange(0,len(lattice.count)):
     sig_e2e[i] = np.sqrt(1.0/(lattice.count[i]-1) * summation[i])/np.sqrt(lattice.count[i])
 
 
-#np.savetxt("test_multirun_e2e.txt", np.c_[Avg_e2e,sig_e2e], fmt ='%0.6f')  #change seed and change file name, then run
+#np.savetxt("test_multirun_e2e_2.txt", np.c_[Avg_e2e,sig_e2e], fmt ='%0.6f')  #change seed and change file name, then run
 Run_1 = np.loadtxt("test_multirun_e2e.txt")
 Run_2 = np.loadtxt("test_multirun_e2e_1.txt")            #RETAKE DATA for all runs
 Run_3 = np.loadtxt("test_multirun_e2e_2.txt")
@@ -904,7 +904,8 @@ plt.figure("Fig.2")
 #plt.scatter(x, y)
 plt.errorbar(x, y, xerr = 0, yerr = sig_e2e, fmt ='o', c = 'blue')
 popt1,pcov1 = curve_fit(lin_func, x, y)
-plt.plot( x, lin_func(x,*popt1), c = 'blue')
+x_lin = np.linspace(min(x)-0.1,max(x)+0.1,500)
+plt.plot( x_lin, lin_func(x_lin,*popt1) , c = 'blue')
 plt.xlabel(r'$Log(segment \ lenght)$', size = '16')
 plt.ylabel(r'$Log(end \ to \ end \ distance)$', size = '16')
 plt.title(r'$Estimation \ of \ the \ fractal \ dimension$', size = '16')
