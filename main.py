@@ -862,13 +862,11 @@ print "Percentage of closed loops", 1.0*sum(lattice.length_loop)/sum((lattice.le
 #Plot3DStrings()
 #PlotLengthHist()
 
-
 lattice.e2e = sorted(lattice.e2e, key = itemgetter(1))  
 Avg_e2e = lattice.sum_e2e/lattice.count
 log_Avg_e2e = np.log10(Avg_e2e) 
 
 sig_e2e=np.zeros(len(Avg_e2e))
-
 for i in xrange(0,len(lattice.e2e)-1):
     c = lattice.e2e[i][1]
     sig_e2e[c] += ((np.log10(lattice.e2e[i][0]) - log_Avg_e2e[c])**2)
@@ -947,12 +945,16 @@ plt.scatter(x, y)
 #plt.errorbar(segment_length, Avg_e2e_run,xerr = 0, yerr = Error_e2e_run, fmt ='o', c = 'blue')
 popt2,pcov2 = curve_fit(lin_func, x_Fit, y_Fit)
 plt.plot( x_Fit, lin_func(x_Fit,*popt2) , c = 'blue')
+error2 = np.sqrt(np.diag(pcov2))
+popt2[0] = 10**(popt2[0])
+error2[0] = error2[0]*(np.log(10))*popt2[0]
+error2[1] = error2[1]
 plt.xlabel(r'$Log(Loop \ Perimeter)$', size = '16')
 plt.ylabel(r'$Log(< Length >)$', size = '16')
 plt.title(r'$Estimation \ of \ the \ fractal \ dimension$', size = '16')
 plt.show("Fig.4")
-print "[Fig.4] A = %.3f" %(10**popt2[0]), "+/- %.3f" %(np.sqrt(np.diag(pcov2))[0] )
-print "[Fig.4] d = %.3f" %(popt2[1]), "+/- %.3f" %(np.sqrt(np.diag(pcov2))[1])
+print "[Fig.4] A = %.3f" %(popt2[0]), "+/- %.3f" %(error2[0] )
+print "[Fig.4] d = %.3f" %(popt2[1]), "+/- %.3f" %(error[1])
 
 n = []
 L_Range = []
@@ -987,11 +989,15 @@ plt.scatter(x, y)
 #plt.errorbar(segment_length, Avg_e2e_run,xerr = 0, yerr = Error_e2e_run, fmt ='o', c = 'blue')
 popt3,pcov3 = curve_fit(lin_func, x_Fit, y_Fit)
 plt.plot( x_Fit, lin_func(x_Fit,*popt3) , c = 'blue')
+error3 = np.sqrt(np.diag(pcov3))
+popt3[0] = 10**(popt3[0])
+error3[0] = error3[0]*(np.log(10))*popt3[0]
+error3[1] = error3[1]
 plt.xlabel(r'$Log(Loop \ Perimeter)$', size = '16')
 plt.ylabel(r'$Log(Density)$', size = '16')
 plt.show("Fig.5")
-print "[Fig.5] B = %.3f" %(10**popt3[0]), "+/- %.3f" %(np.sqrt(np.diag(pcov3))[0] )
-print "[Fig.5] b = %.3f" %(-popt3[1]), "+/- %.3f" %(np.sqrt(np.diag(pcov3))[1])
+print "[Fig.5] B = %.3f" %(popt3[0]), "+/- %.3f" %(error[0] )
+print "[Fig.5] b = %.3f" %(-popt3[1]), "+/- %.3f" %(error[1])
 
 x = np.log10(L_Range)
 y = np.log10(n)
@@ -1002,11 +1008,15 @@ plt.figure("Fig.6")
 plt.scatter(x, y)
 popt4,pcov4 = curve_fit(lin_func, x_Fit, y_Fit)
 plt.plot( x_Fit, lin_func(x_Fit,*popt4) , c = 'blue')
+error4 = np.sqrt(np.diag(pcov4))
+popt4[0] = 10**(popt4[0])
+error4[0] = error4[0]*(np.log(10))*popt4[0]
+error4[1] = error4[1]
 plt.xlabel(r'$Log(Loop \ Length)$', size = '16')
 plt.ylabel(r'$Log(Density)$', size = '16')
 plt.show("Fig.6")
-print "[Fig.6] C = %.3f" %(10**popt4[0]), "+/- %.3f" %(np.sqrt(np.diag(pcov4))[0] )
-print "[Fig.6] g = %.3f" %(-popt4[1]), "+/- %.3f" %(np.sqrt(np.diag(pcov4))[1])
+print "[Fig.6] C = %.3f" %(popt4[0]), "+/- %.3f" %(error[0] )
+print "[Fig.6] g = %.3f" %(-popt4[1]), "+/- %.3f" %(error[1])
 
 #x_test = np.log10(lattice.size_loop)
 #y = np.log10(lattice.VS_ratio)
