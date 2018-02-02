@@ -849,7 +849,7 @@ class SpaceCube:
                                         self.sum_e2e[e]+=R
         self.string_coords=[]    
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
-N = 50
+N = 60
 lattice = SpaceCube(N)
 lattice.xPlane()
 lattice.yPlane()
@@ -880,12 +880,12 @@ summation = np.zeros(9)
 for i in xrange(0,len(lattice.count)):
     for j in xrange(0,int(lattice.count[i])):
         summation[i] += (np.log10(Avg_e2e[i]) - np.log10(lattice.e2e[i][j]))**2 
-        if ((np.log10(Avg_e2e[i]) - np.log10(lattice.e2e[i][j]))**2 == float("inf")):
-            print "check1: ", np.log10(Avg_e2e[i]), " check2: ",np.log10(lattice.e2e[i][j])
+        #if ((np.log10(Avg_e2e[i]) - np.log10(lattice.e2e[i][j]))**2 == float("inf")):
+            #print "check1: ", np.log10(Avg_e2e[i]), " check2: ",np.log10(lattice.e2e[i][j])
     sig_e2e[i] = np.sqrt(1.0/(lattice.count[i]-1) * summation[i])/np.sqrt(lattice.count[i])
 
 
-#np.savetxt("test_multirun_e2e_2.txt", np.c_[Avg_e2e,sig_e2e], fmt ='%0.6f')  #change seed and change file name, then run
+#np.savetxt("test_multirun_e2e_2.txt", np.c_[Avg_e2e,sig_e2e], fmt ='%0.6f')  #change seed and change file name, then run 
 Run_1 = np.loadtxt("test_multirun_e2e.txt")
 Run_2 = np.loadtxt("test_multirun_e2e_1.txt")            #RETAKE DATA for all runs
 Run_3 = np.loadtxt("test_multirun_e2e_2.txt")
@@ -940,12 +940,19 @@ for i in xrange(5, max(lattice.size_loop)):
             P_Fit.append(A[select,1][0])
             L_Fit.append(sum(A[select,0])/len(A[select,0]))
 
-sig_L=np.zeros(len(Avg_L))
-for c in xrange(0,len(Avg_L)):
+#sig_L=np.zeros(len(Avg_L))
+#for c in xrange(0,len(Avg_L)):
+#    for i in xrange(0,len(count_L)):
+#        if count_L[c] != 1:
+#            sig_L[c] += ((lattice.length_loop[i]-Avg_L[c])**2) 
+#    if count_L[c] != 1:
+#        sig_L[c] = np.sqrt((1./(count_L[c]-1))*sig_L[c])/np.sqrt(count_L[c])
+sig_L=np.zeros(len(L_Fit))
+for c in xrange(0,len(L_Fit)):
     for i in xrange(0,len(count_L)):
-        if count_L[c] != 1:
-            sig_L[c] += ((lattice.length_loop[i]-Avg_L[c])**2) 
-    if count_L[c] != 1:
+        if count_L[c] >3:
+            sig_L[c] += ((lattice.length_loop[i]-L_Fit[c])**2) 
+    if count_L[c] >3:
         sig_L[c] = np.sqrt((1./(count_L[c]-1))*sig_L[c])/np.sqrt(count_L[c])
 
 
@@ -956,7 +963,7 @@ y_Fit = np.log10(L_Fit)
                                                                                                                                         
 plt.figure("Fig.4")
 plt.scatter(x, y)
-#plt.errorbar(segment_length, Avg_e2e_run,xerr = 0, yerr = Error_e2e_run, fmt ='o', c = 'blue')
+#plt.errorbar(x_Fit, y_Fit,xerr = 0, yerr = sig_L, fmt ='o', c = 'blue')
 popt2,pcov2 = curve_fit(lin_func, x_Fit, y_Fit)
 x_lin_Fit = np.linspace(min(x_Fit),max(x_Fit),500)
 plt.plot( x_lin_Fit, lin_func(x_lin_Fit,*popt2) , c = 'blue')
@@ -1001,7 +1008,7 @@ y_Fit = np.log10(n_Fit)
 
 plt.figure("Fig.5")
 plt.scatter(x, y)
-#plt.errorbar(segment_length, Avg_e2e_run,xerr = 0, yerr = Error_e2e_run, fmt ='o', c = 'blue')
+#plt.errorbar(x, y ,xerr = 0, yerr = , fmt ='o', c = 'blue')
 popt3,pcov3 = curve_fit(lin_func, x_Fit, y_Fit)
 x_lin_Fit = np.linspace(min(x_Fit),max(x_Fit),500)
 plt.plot( x_lin_Fit, lin_func(x_lin_Fit,*popt3) , c = 'blue')
