@@ -849,7 +849,7 @@ class SpaceCube:
                                         self.sum_e2e[e]+=R
         self.string_coords=[]    
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
-N = 60
+N = 50
 lattice = SpaceCube(N)
 lattice.xPlane()
 lattice.yPlane()
@@ -903,7 +903,7 @@ x = np.log10(segment_length)
 plt.figure("Fig.2")
 #plt.scatter(x, y)
 plt.errorbar(x, y, xerr = 0, yerr = sig_e2e, fmt ='o', c = 'blue')
-popt1,pcov1 = curve_fit(lin_func, x, y)
+popt1,pcov1 = curve_fit(lin_func, x, y, sigma = sig_e2e)
 x_lin = np.linspace(min(x)-0.1,max(x)+0.1,500)
 plt.plot( x_lin, lin_func(x_lin,*popt1) , c = 'blue')
 plt.xlabel(r'$Log(segment \ lenght)$', size = '16')
@@ -947,24 +947,24 @@ for i in xrange(5, max(lattice.size_loop)):
 #            sig_L[c] += ((lattice.length_loop[i]-Avg_L[c])**2) 
 #    if count_L[c] != 1:
 #        sig_L[c] = np.sqrt((1./(count_L[c]-1))*sig_L[c])/np.sqrt(count_L[c])
-sig_L=np.zeros(len(L_Fit))
-for c in xrange(0,len(L_Fit)):
-    for i in xrange(0,len(count_L)):
-        if count_L[c] >3:
-            sig_L[c] += ((lattice.length_loop[i]-L_Fit[c])**2) 
-    if count_L[c] >3:
-        sig_L[c] = np.sqrt((1./(count_L[c]-1))*sig_L[c])/np.sqrt(count_L[c])
-
 
 x = np.log10(P_Range)            
 y = np.log10(Avg_L)
 x_Fit = np.log10(P_Fit)
 y_Fit = np.log10(L_Fit)
+
+sig_L=np.zeros(len(y_Fit))
+for c in xrange(0,len(y_Fit)):
+    for i in xrange(0,len(count_L)):
+        if count_L[c] >3:
+            sig_L[c] += ((np.log10(lattice.length_loop[i])-np.log10(L_Fit[c]))**2) 
+    if count_L[c] >3:
+        sig_L[c] = np.sqrt((1./(count_L[c]-1))*sig_L[c])/np.sqrt(count_L[c])
                                                                                                                                         
 plt.figure("Fig.4")
 plt.scatter(x, y)
-#plt.errorbar(x_Fit, y_Fit,xerr = 0, yerr = sig_L, fmt ='o', c = 'blue')
-popt2,pcov2 = curve_fit(lin_func, x_Fit, y_Fit)
+plt.errorbar(x_Fit, y_Fit,xerr = 0, yerr = sig_L, fmt ='o', c = 'blue')
+popt2,pcov2 = curve_fit(lin_func, x_Fit, y_Fit, sigma = sig_L)
 x_lin_Fit = np.linspace(min(x_Fit),max(x_Fit),500)
 plt.plot( x_lin_Fit, lin_func(x_lin_Fit,*popt2) , c = 'blue')
 error2 = np.sqrt(np.diag(pcov2))
