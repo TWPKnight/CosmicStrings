@@ -896,19 +896,21 @@ Error_e2e_run = np.sqrt((1./3)**2 * (Run_1[:,1]**2 + Run_2[:,1]**2 + Run_3[:,1]*
 
 def lin_func(x, c, m):
     return m*x + c                
-#y = np.log10(Avg_e2e_run)
-y = np.log10(Avg_e2e)  
+y = np.log10(Avg_e2e_run)
+#y = np.log10(Avg_e2e)  
 x = np.log10(segment_length)     
+yerr = Error_e2e_run*10
 
 plt.figure("Fig.2")
 #plt.scatter(x, y)
-plt.errorbar(x, y, xerr = 0, yerr = sig_e2e, fmt ='o', c = 'blue')
+plt.errorbar(x, y, xerr = 0, yerr = yerr, fmt ='o', c = 'blue', label = r"$Error \times 10$")
 popt1,pcov1 = curve_fit(lin_func, x, y, sigma = sig_e2e)
 x_lin = np.linspace(min(x)-0.1,max(x)+0.1,500)
 plt.plot( x_lin, lin_func(x_lin,*popt1) , c = 'blue')
 plt.xlabel(r'$Log(segment \ lenght)$', size = '16')
 plt.ylabel(r'$Log(end \ to \ end \ distance)$', size = '16')
 plt.title(r'$Estimation \ of \ the \ fractal \ dimension$', size = '16')
+plt.legend(loc = 2)
 plt.show("Fig.2")
 error = np.sqrt(np.diag(pcov1))
 popt1[0] = 10**(popt1[0])
@@ -940,20 +942,12 @@ for i in xrange(5, max(lattice.size_loop)):
             P_Fit.append(A[select,1][0])
             L_Fit.append(sum(A[select,0])/len(A[select,0]))
 
-#sig_L=np.zeros(len(Avg_L))
-#for c in xrange(0,len(Avg_L)):
-#    for i in xrange(0,len(count_L)):
-#        if count_L[c] != 1:
-#            sig_L[c] += ((lattice.length_loop[i]-Avg_L[c])**2) 
-#    if count_L[c] != 1:
-#        sig_L[c] = np.sqrt((1./(count_L[c]-1))*sig_L[c])/np.sqrt(count_L[c])
-
 x = np.log10(P_Range)            
 y = np.log10(Avg_L)
 x_Fit = np.log10(P_Fit)
 y_Fit = np.log10(L_Fit)
 
-sig_L=np.zeros(len(y_Fit))
+sig_L=np.zeros(len(y_Fit))   #change y_Fit to Avg_L for the error on all data points
 for c in xrange(0,len(y_Fit)):
     for i in xrange(0,len(count_L)):
         if count_L[c] >3:
@@ -981,6 +975,7 @@ print "[Fig.4] d = %.3f" %(popt2[1]), "+/- %.3f" %(error[1])
 n = []
 L_Range = []
 P_Range = []  #redefine  P_Range if cutting at R_c for in the plot above
+count_P = []
 P_Fit = []
 L_Fit = []
 n_Fit = []
@@ -990,26 +985,37 @@ for i in xrange(5, max(lattice.size_loop)):
         n.append(1.0*len(A[select,1])/(N**3))
         L_Range.append(A[select,0][0])
         P_Range.append(A[select,1][0])
+        count_P.append(len(A[select,1]))
         if(len(A[select,0])>4):
             P_Fit.append(A[select,1][0])
             L_Fit.append(A[select,0][0])
             n_Fit.append(1.0*len(A[select,1])/(N**3))
-            
-l = P_Range
-beta = 0
-for i in xrange(0, len(l)):
-    beta += (np.log(l[i]/min(l)))
-beta = 1 + (len(l)/beta)
+
+                        
+#l = P_Range            #Alternative method for power law parameter estimation
+#beta = 0
+#for i in xrange(0, len(l)):
+#    beta += (np.log(l[i]/min(l)))
+#beta = 1 + (len(l)/beta)
 
 x = np.log10(P_Range)
 y = np.log10(n)
 x_Fit = np.log10(P_Fit)
 y_Fit = np.log10(n_Fit)
 
+sig_P=np.zeros(len(y_Fit))  
+for c in xrange(0,len(y_Fit)):
+    for i in xrange(0,len(count_P)):
+        if count_P[c] >3:
+            sig_P[c] += ((np.log10(lattice.size_loop[i])-np.log10(P_Fit[c]))**2) 
+    if count_P[c] >3:
+        sig_P[c] = np.sqrt((1./(count_P[c]-1))*sig_P[c])/np.sqrt(count_P[c])
+sig_n = (4.0*sig_P)/(x_Fit**5)
+
 plt.figure("Fig.5")
 plt.scatter(x, y)
-#plt.errorbar(x, y ,xerr = 0, yerr = , fmt ='o', c = 'blue')
-popt3,pcov3 = curve_fit(lin_func, x_Fit, y_Fit)
+plt.errorbar(x_Fit, y_Fit ,xerr = 0, yerr = sig_n, fmt ='o', c = 'blue')
+popt3,pcov3 = curve_fit(lin_func, x_Fit, y_Fit, sigma = sig_n)
 x_lin_Fit = np.linspace(min(x_Fit),max(x_Fit),500)
 plt.plot( x_lin_Fit, lin_func(x_lin_Fit,*popt3) , c = 'blue')
 error3 = np.sqrt(np.diag(pcov3))
@@ -1027,9 +1033,12 @@ y = np.log10(n)
 x_Fit = np.log10(L_Fit)
 y_Fit = np.log10(n_Fit)
 
+sig_n2 = sig_L*(5/2)/(x_Fit**(3/2))
+
 plt.figure("Fig.6")
 plt.scatter(x, y)
-popt4,pcov4 = curve_fit(lin_func, x_Fit, y_Fit)
+plt.errorbar(x_Fit, y_Fit ,xerr = 0, yerr = sig_n2, fmt ='o', c = 'blue')
+popt4,pcov4 = curve_fit(lin_func, x_Fit, y_Fit, sigma = sig_n2)
 x_lin_Fit = np.linspace(min(x_Fit),max(x_Fit),500)
 plt.plot( x_lin_Fit, lin_func(x_lin_Fit,*popt4) , c = 'blue')
 error4 = np.sqrt(np.diag(pcov4))
