@@ -7,13 +7,10 @@ Thomas Hyatt & Virginia d'Emilio
 
 import numpy as np
 import matplotlib.pyplot as plt
-import math
 import random
 from random import randint
 from mpl_toolkits.mplot3d import Axes3D  
 from scipy.optimize import curve_fit
-import collections
-from operator import itemgetter
 #random.seed(36964289) #Run_1
 #random.seed(963738)    #Run_2
 random.seed(3854637289)  #Run_3
@@ -849,7 +846,7 @@ class SpaceCube:
                                         self.sum_e2e[e]+=R
         self.string_coords=[]    
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
-N = 50
+N = 40
 lattice = SpaceCube(N)
 lattice.xPlane()
 lattice.yPlane()
@@ -916,8 +913,9 @@ error = np.sqrt(np.diag(pcov1))
 popt1[0] = 10**(popt1[0])
 error[0] = error[0]*(np.log(10))*popt1[0]
 error[1] = error[1]
+popt1[1]=1.0/popt1[1]
 print "[Fig.2] A = %.3f" %(popt1[0]), "+/- %.3f" %(error[0])
-print "[Fig.2] d = %.3f" %(1.0/popt1[1]), "+/- %.3f" %(error[1])
+print "[Fig.2] d = %.3f" %(popt1[1]), "+/- %.3f" %(error[1])
 
 
 Error_Range = []
@@ -951,10 +949,12 @@ sig_L=np.zeros(len(y_Fit))   #change y_Fit to Avg_L for the error on all data po
 for c in xrange(0,len(y_Fit)):
     for i in xrange(0,len(count_L)):
         if count_L[c] >3:
-            sig_L[c] += ((np.log10(lattice.length_loop[i])-np.log10(L_Fit[c]))**2) 
+            sig_L[c] += ((np.log10(lattice.length_loop[i])-np.log10(L_Fit[c]))**2)
     if count_L[c] >3:
         sig_L[c] = np.sqrt((1./(count_L[c]-1))*sig_L[c])/np.sqrt(count_L[c])
-                                                                                                                                        
+sig_L[11]+= 0.8   # because at box size N = 40, sig_L has size (y_Fit -1) and this would be zero
+#sig_L[14]+=0.9      #for N=55
+                                                                                                                                    
 plt.figure("Fig.4")
 plt.scatter(x, y)
 plt.errorbar(x_Fit, y_Fit,xerr = 0, yerr = sig_L, fmt ='o', c = 'blue')
@@ -1011,6 +1011,8 @@ for c in xrange(0,len(y_Fit)):
     if count_P[c] >3:
         sig_P[c] = np.sqrt((1./(count_P[c]-1))*sig_P[c])/np.sqrt(count_P[c])
 sig_n = (4.0*sig_P)/(x_Fit**5)
+sig_n[11]+= 0.7  # because at box size N = 40, sig_n has size (y_Fit -1) and this would be zero
+#sig_n[14]+=0.9      #for N=55
 
 plt.figure("Fig.5")
 plt.scatter(x, y)
@@ -1075,3 +1077,24 @@ plt.show("Fig.V/S")
 print "[Fig.V/S] K = %.3f" %(10**poptVS[0]), "+/- %.3f" %(np.sqrt(np.diag(pcovVS))[0] )
 print "[Fig.V/S] v = %.3f" %(poptVS[1]), "+/- %.3f" %(np.sqrt(np.diag(pcovVS))[1])
 
+#np.savetxt("gradients_60.txt", np.c_[popt1[1],popt2[1],popt3[1],popt4[1],poptVS[1]], fmt ='%0.6f')
+Size_15 = np.loadtxt("gradients_15.txt")
+Size_20 = np.loadtxt("gradients_20.txt")
+Size_25 = np.loadtxt("gradients_25.txt")
+Size_30 = np.loadtxt("gradients_30.txt")
+Size_35 = np.loadtxt("gradients_35.txt")
+Size_40 = np.loadtxt("gradients_40.txt")
+Size_45 = np.loadtxt("gradients_45.txt")
+Size_50 = np.loadtxt("gradients_50.txt")
+Size_55 = np.loadtxt("gradients_55.txt")
+Size_60 = np.loadtxt("gradients_60.txt")
+
+grad_d1 = [Size_15[0],Size_20[0], Size_25[0], Size_30[0], Size_35[0], Size_40[0], Size_45[0], Size_50[0], Size_55[0], Size_60[0]]
+grad_d2 = [Size_15[1],Size_20[1], Size_25[1], Size_30[1], Size_35[1], Size_40[1], Size_45[1], Size_50[1], Size_55[1], Size_60[1]]
+grad_b = [Size_15[2],Size_20[2], Size_25[2], Size_30[2], Size_35[2], Size_40[2], Size_45[2], Size_50[2], Size_55[2], Size_60[2]]
+grad_g = [Size_15[3],Size_20[3], Size_25[3], Size_30[3], Size_35[3], Size_40[3], Size_45[3], Size_50[3], Size_55[3], Size_60[3]]
+grad_vs = [Size_15[4],Size_20[4], Size_25[4], Size_30[4], Size_35[4], Size_40[4], Size_45[4], Size_50[4], Size_55[4], Size_60[4]]
+x_lin = np.linspace(15,50,10)
+plt.figure("Fig.Param")
+plt.scatter(x_lin, grad_d1)
+plt.show("Fig.Param")
