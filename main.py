@@ -927,8 +927,7 @@ L_Fit=[]
 A = np.zeros((len(lattice.size_loop), 2))
 A[:,0] += lattice.length_loop
 A[:,1] += lattice.size_loop
-i = 0
-
+#i = 0
 for i in xrange(5, max(lattice.size_loop)):
     select = (A[:,1] == i)
     if (len(A[select,0])!=0) and (A[select,1][0]>5):
@@ -1053,25 +1052,53 @@ plt.show("Fig.6")
 print "[Fig.6] C = %.3f" %(popt4[0]), "+/- %.3f" %(error4[0] )
 print "[Fig.6] g = %.3f" %(-popt4[1]), "+/- %.3f" %(error4[1])
 
-#x = np.log10(np.linspace(10,3000,21))
-#y = np.log10(n)
-#y_Fit = np.log10(n_Fit)
-#
-#plt.figure("Fig.7")
-#plt.scatter(x, y)
-##plt.errorbar(x_Fit, y_Fit ,xerr = 0, yerr = , fmt ='o', c = 'blue')
-#popt5,pcov5 = curve_fit(lin_func, x, y)
-#x_lin_Fit = np.linspace(min(x),max(x),500)
-#plt.plot( x_lin_Fit, lin_func(x_lin_Fit,*popt5) , c = 'blue')
-#error5 = np.sqrt(np.diag(pcov5))
-#popt5[0] = 10**(popt5[0])
-#error5[0] = error5[0]*(np.log(10))*popt5[0]
-#error5[1] = error5[1]
-#plt.xlabel(r'$Log(Segment \ Length)$', size = '16')
-#plt.ylabel(r'$Log(Density)$', size = '16')
-#plt.show("Fig.7")
-#print "[Fig.7] D = %.3f" %(popt5[0]), "+/- %.3f" %(error5[0] )
-#print "[Fig.7] d = %.3f" %(-popt5[1]), "+/- %.3f" %(error5[1])
+n_open = []
+Inf_Range = []
+M =np.zeros((len(lattice.length_inf),2))
+M[:,0] += lattice.length_inf
+nopen_Fit =[]
+Inf_Fit = []
+count_inf =[]
+for i in xrange(4, max(lattice.length_inf)):
+    select = (M[:,0] == i)
+    if (len(M[select,0])!=0):
+        n_open.append(1.0*len(M[select,0])/(N**3))
+        Inf_Range.append(M[select,0][0])
+        count_inf.append(len(M[select,0]))
+        if(len(M[select,0])>4):
+                Inf_Fit.append(M[select,0][0])
+                nopen_Fit.append(1.0*len(M[select,0])/(N**3))
+            
+            
+x = np.log10(Inf_Range)
+y = np.log10(n_open)
+y_Fit = np.log10(nopen_Fit)
+x_Fit = np.log10(Inf_Fit)
+
+sig_inf=np.zeros(len(y_Fit))  
+for c in xrange(0,len(y_Fit)):
+    for i in xrange(0,len(count_inf)):
+        if count_inf[c] >3:
+            sig_inf[c] += ((np.log10(lattice.length_inf[i])-np.log10(Inf_Fit[c]))**2) 
+    if count_inf[c] >3:
+        sig_inf[c] = np.sqrt((1./(count_inf[c]-1))*sig_inf[c])/np.sqrt(count_inf[c])
+#sig_inf = ??? 
+
+plt.figure("Fig.7")
+plt.scatter(x, y)
+#plt.errorbar(x_Fit, y_Fit ,xerr = 0, yerr = sig_inf, fmt ='o', c = 'blue')
+popt5,pcov5 = curve_fit(lin_func, x_Fit, y_Fit) #, sigma = sig_inf)
+x_lin_Fit = np.linspace(min(x_Fit),max(x_Fit),500)
+plt.plot( x_lin_Fit, lin_func(x_lin_Fit,*popt5) , c = 'blue')
+error5 = np.sqrt(np.diag(pcov5))
+popt5[0] = 10**(popt5[0])
+error5[0] = error5[0]*(np.log(10))*popt5[0]
+error5[1] = error5[1]
+plt.xlabel(r'$Log(Segment \ Length)$', size = '16')
+plt.ylabel(r'$Log(Density)$', size = '16')
+plt.show("Fig.7")
+print "[Fig.7] D = %.3f" %(popt5[0]), "+/- %.3f" %(error5[0] )
+print "[Fig.7] d = %.3f" %(-popt5[1]), "+/- %.3f" %(error5[1])
 
 #x_test = np.log10(lattice.size_loop)
 #y = np.log10(lattice.VS_ratio)
@@ -1118,7 +1145,7 @@ grad_d2 = [Size_15[1],Size_20[1], Size_25[1], Size_30[1], Size_35[1], Size_40[1]
 grad_b = [Size_15[2],Size_20[2], Size_25[2], Size_30[2], Size_35[2], Size_40[2], Size_45[2], Size_50[2], Size_55[2], Size_60[2]]
 grad_g = [Size_15[3],Size_20[3], Size_25[3], Size_30[3], Size_35[3], Size_40[3], Size_45[3], Size_50[3], Size_55[3], Size_60[3]]
 grad_vs = [Size_15[4],Size_20[4], Size_25[4], Size_30[4], Size_35[4], Size_40[4], Size_45[4], Size_50[4], Size_55[4], Size_60[4]]
-x_lin = np.linspace(15,50,10)
+x = [15,20,25,30,35,40,45,50,55,60]
 plt.figure("Fig.Param")
-plt.scatter(x_lin, grad_d1)
+plt.scatter(x, grad_d1)
 plt.show("Fig.Param")
