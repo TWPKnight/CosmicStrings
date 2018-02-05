@@ -1010,7 +1010,7 @@ for c in xrange(0,len(y_Fit)):
     if count_P[c] >3:
         sig_P[c] = np.sqrt((1./(count_P[c]-1))*sig_P[c])/np.sqrt(count_P[c])
 sig_n = (4.0*sig_P)/(x_Fit**5)
-sig_n[11]+= 0.7  # because at box size N = 40, sig_n has size (y_Fit -1) and this would be zero
+sig_n[11]+= 0.7  # because at box size N = 40, this would be zero
 #sig_n[14]+=0.9      #for N=55
 
 plt.figure("Fig.5")
@@ -1082,7 +1082,7 @@ for c in xrange(0,len(y_Fit)):
             sig_inf[c] += ((np.log10(lattice.length_inf[i])-np.log10(Inf_Fit[c]))**2) 
     if count_inf[c] >3:
         sig_inf[c] = np.sqrt((1./(count_inf[c]-1))*sig_inf[c])/np.sqrt(count_inf[c])
-#sig_inf = ??? 
+#sig_inf = ??
 
 plt.figure("Fig.7")
 plt.scatter(x, y)
@@ -1151,5 +1151,7 @@ grad_g = [Size_15[3],Size_20[3], Size_25[3], Size_30[3], Size_35[3], Size_40[3],
 grad_vs = [Size_15[4],Size_20[4], Size_25[4], Size_30[4], Size_35[4], Size_40[4], Size_45[4], Size_50[4], Size_55[4], Size_60[4], Size_65[4], Size_70[4], Size_80[4], Size_100[4]]
 x = [15,20,25,30,35,40,45,50,55,60,65,70,80,100]
 plt.figure("Fig.Param")
-plt.scatter(x, grad_vs)
+plt.scatter(x, grad_g)
 plt.show("Fig.Param")
+
+print "Fraction of the lenght of open strings", 1.0*(np.sum(lattice.length_inf))/(np.sum(lattice.length_inf)+np.sum(lattice.length_loop))  
