@@ -1127,9 +1127,15 @@ errorVS[1] = errorVS[1]
 print "[Fig.V/S] K = %.3f" %(poptVS[0]), "+/- %.3f" %(errorVS[0] )
 print "[Fig.V/S] v = %.3f" %(poptVS[1]), "+/- %.3f" %(errorVS[1])
 
-#np.savetxt("gradients_40.txt", np.c_[popt1[1],popt2[1],popt3[1],popt4[1],poptVS[1]], fmt ='%0.6f')
+#np.savetxt("gradients_125.txt", np.c_[popt1[1],popt2[1],popt3[1],popt4[1],poptVS[1],popt5[1]], fmt ='%0.6f')
+
+Size_14 = np.loadtxt("gradients_14.txt") #new
 Size_15 = np.loadtxt("gradients_15.txt")
+Size_18 = np.loadtxt("gradients_18.txt") #new
+Size_19 = np.loadtxt("gradients_19.txt") #new
 Size_20 = np.loadtxt("gradients_20.txt")
+Size_22 = np.loadtxt("gradients_22.txt") #new
+Size_24 = np.loadtxt("gradients_24.txt") #new
 Size_25 = np.loadtxt("gradients_25.txt")
 Size_30 = np.loadtxt("gradients_30.txt")
 Size_35 = np.loadtxt("gradients_35.txt")
@@ -1142,13 +1148,16 @@ Size_65 = np.loadtxt("gradients_65.txt")
 Size_70 = np.loadtxt("gradients_70.txt")
 Size_80 = np.loadtxt("gradients_80.txt")
 Size_100 = np.loadtxt("gradients_100.txt")
+Size_115 = np.loadtxt("gradients_115.txt") #new
+Size_125 = np.loadtxt("gradients_125.txt") #new
 
-grad_d1 = [Size_15[0],Size_20[0], Size_25[0], Size_30[0], Size_35[0], Size_40[0], Size_45[0], Size_50[0], Size_55[0], Size_60[0], Size_65[0], Size_70[0], Size_80[0], Size_100[0]]
-grad_d2 = [Size_15[1],Size_20[1], Size_25[1], Size_30[1], Size_35[1], Size_40[1], Size_45[1], Size_50[1], Size_55[1], Size_60[1], Size_65[1], Size_70[1], Size_80[1], Size_100[1]]
-grad_b = [Size_15[2],Size_20[2], Size_25[2], Size_30[2], Size_35[2], Size_40[2], Size_45[2], Size_50[2], Size_55[2], Size_60[2], Size_65[2], Size_70[2], Size_80[2], Size_100[2]]
-grad_g = [Size_15[3],Size_20[3], Size_25[3], Size_30[3], Size_35[3], Size_40[3], Size_45[3], Size_50[3], Size_55[3], Size_60[3], Size_65[3], Size_70[3], Size_80[3], Size_100[3]]
-grad_vs = [Size_15[4],Size_20[4], Size_25[4], Size_30[4], Size_35[4], Size_40[4], Size_45[4], Size_50[4], Size_55[4], Size_60[4], Size_65[4], Size_70[4], Size_80[4], Size_100[4]]
-x = [15,20,25,30,35,40,45,50,55,60,65,70,80,100]
+grad_d1 = [Size_14[0],Size_15[0],Size_18[0],Size_19[0],Size_20[0],Size_22[0],Size_24[0],Size_25[0],Size_30[0],Size_35[0],Size_40[0],Size_45[0],Size_50[0],Size_55[0],Size_60[0],Size_65[0],Size_70[0],Size_80[0],Size_100[0],Size_115[0],Size_125[0]]
+grad_d2 = [Size_14[1],Size_15[1],Size_18[1],Size_19[1],Size_20[1],Size_22[1],Size_24[1],Size_25[1],Size_30[1],Size_35[1],Size_40[1],Size_45[1],Size_50[1],Size_55[1],Size_60[1],Size_65[1],Size_70[1],Size_80[1],Size_100[1],Size_115[1],Size_125[1]]
+grad_b = [Size_14[2],Size_15[2],Size_18[2],Size_19[2],Size_20[2],Size_22[2],Size_24[2],Size_25[2],Size_30[2],Size_35[2],Size_40[2],Size_45[2],Size_50[2],Size_55[2],Size_60[2],Size_65[2],Size_70[2],Size_80[2],Size_100[2],Size_115[2],Size_125[2]]
+grad_g = [Size_14[3],Size_15[3],Size_18[3],Size_19[3],Size_20[3],Size_22[3],Size_24[3],Size_25[3],Size_30[3],Size_35[3],Size_40[3],Size_45[3],Size_50[3],Size_55[3],Size_60[3],Size_65[3],Size_70[3],Size_80[3],Size_100[3],Size_115[3],Size_125[3]]
+grad_vs = [Size_14[4],Size_15[4],Size_18[4],Size_19[4],Size_20[4],Size_22[4],Size_24[4],Size_25[4],Size_30[4],Size_35[4],Size_40[4],Size_45[4],Size_50[4],Size_55[4],Size_60[4],Size_65[4],Size_70[4],Size_80[4],Size_100[4],Size_115[4],Size_125[4]]
+grad_delta = [Size_14[5],Size_15[5],Size_18[5],Size_19[5],Size_20[5],Size_22[5],Size_24[5],Size_25[5],Size_30[5],Size_35[5],Size_40[5],Size_45[5],Size_50[5],Size_55[5],Size_60[5],Size_65[5],Size_70[5],Size_80[5],Size_100[5],Size_115[5],Size_125[5]]
+x = [14,15,18,19,20,22,24,25,30,35,40,45,50,55,60,65,70,80,100,115,125]
 plt.figure("Fig.Param")
 plt.scatter(x, grad_vs) #, label = 'average length vs \n loop perimeter')
 plt.title(r'$Parameter \ \nu \ as \ a \ function \ of \ box \ size$')
