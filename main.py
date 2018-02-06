@@ -1100,23 +1100,22 @@ plt.show("Fig.7")
 print "[Fig.7] D = %.3f" %(popt5[0]), "+/- %.3f" %(error5[0] )
 print "[Fig.7] d = %.3f" %(-popt5[1]), "+/- %.3f" %(error5[1])
 
-#x_test = np.log10(lattice.size_loop)
-#y = np.log10(lattice.VS_ratio)
-#test = np.nan_to_num(np.log10(lattice.VS_ratio))
-#y_test = np.log10(lattice.VS_ratio)
-
 x = []
 y = []
+x_Fit = []
+y_Fit = []
 for i in xrange(0, len(lattice.VS_ratio)):
-    if lattice.VS_ratio[i] != 0 :
-        y.append(np.log10(lattice.VS_ratio[i]))
+    if lattice.VS_ratio[i] != 0:
         x.append(np.log10(lattice.size_loop[i]))
-    
-    
+        y.append(np.log10(lattice.VS_ratio[i]))
+    if lattice.VS_ratio[i] != 0 and (lattice.size_loop[i] > 10):
+        x_Fit.append(np.log10(lattice.size_loop[i]))
+        y_Fit.append(np.log10(lattice.VS_ratio[i]))    
+
 plt.figure("Fig.V/S")
 plt.scatter(x, y)
-poptVS,pcovVS = curve_fit(lin_func, x, y)
-x_lin = np.linspace(min(x),max(x),500)
+poptVS,pcovVS = curve_fit(lin_func, x_Fit, y_Fit)
+x_lin = np.linspace(min(x_Fit),max(x_Fit),500)
 plt.plot( x_lin, lin_func(x_lin,*poptVS) , c = 'blue')
 plt.xlabel(r'$Log(Loop \ Perimeter)$', size = '16')
 plt.ylabel(r'$Log(Volume \ to \ Surface \ ratio)$', size = '16')
@@ -1151,7 +1150,11 @@ grad_g = [Size_15[3],Size_20[3], Size_25[3], Size_30[3], Size_35[3], Size_40[3],
 grad_vs = [Size_15[4],Size_20[4], Size_25[4], Size_30[4], Size_35[4], Size_40[4], Size_45[4], Size_50[4], Size_55[4], Size_60[4], Size_65[4], Size_70[4], Size_80[4], Size_100[4]]
 x = [15,20,25,30,35,40,45,50,55,60,65,70,80,100]
 plt.figure("Fig.Param")
-plt.scatter(x, grad_g)
+plt.scatter(x, grad_vs) #, label = 'average length vs \n loop perimeter')
+plt.title(r'$Parameter \ \nu \ as \ a \ function \ of \ box \ size$')
+#plt.legend(loc = 4,prop={'size': 16})
+ax = plt.axes()
+ax.set_xticks([15,20,25,30,35,40,45,50,55,60,65,70,80,90,100])
 plt.show("Fig.Param")
 
 print "Fraction of the lenght of open strings", 1.0*(np.sum(lattice.length_inf))/(np.sum(lattice.length_inf)+np.sum(lattice.length_loop))  
