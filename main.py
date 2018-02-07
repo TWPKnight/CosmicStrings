@@ -1104,18 +1104,49 @@ x = []
 y = []
 x_Fit = []
 y_Fit = []
-for i in xrange(0, len(lattice.VS_ratio)):
+for i in xrange(0, len(lattice.VS_ratio)):    
     if lattice.VS_ratio[i] != 0:
         x.append(np.log10(lattice.size_loop[i]))
         y.append(np.log10(lattice.VS_ratio[i]))
-    if lattice.VS_ratio[i] != 0 and (lattice.size_loop[i] > 10):
-        x_Fit.append(np.log10(lattice.size_loop[i]))
-        y_Fit.append(np.log10(lattice.VS_ratio[i]))    
+    #if lattice.VS_ratio[i] != 0 and (lattice.size_loop[i] > 20):   #Comment out if want to include only max value of VS_ratio
+    #    x_Fit.append(np.log10(lattice.size_loop[i]))
+    #    y_Fit.append(np.log10(lattice.VS_ratio[i]))  
+        
+V =np.zeros((len(lattice.size_loop), 2)) 
+V[:,0] += lattice.size_loop
+V[:,1] += lattice.VS_ratio        
+for i in xrange(5, max(lattice.size_loop)+1):  #Including only max values of VS_ratio, comment out for previous x_Fit, y_Fit
+    select = (V[:,0] == i)
+    if len(V[select,0])!=0:
+        if (V[select,0][0] > 10) and len(V[select,1])!=0:
+            y_Fit.append(np.log10(max(V[select, 1])))
+            x_Fit.append(np.log10(V[select,0][0]))
+  
+#VS_data_150 = np.loadtxt("VS_data_150.txt")   #VS plot for box size=150
+#x = []
+#y = []
+#x_Fit = []
+#y_Fit = []
+#size_150 = VS_data_150[:,0]
+#VS_150 = VS_data_150[:,1]
+#for i in xrange(0, len(VS_150)):           
+#    if VS_150[i] != 0:
+#        x.append(np.log10(size_150[i]))
+#        y.append(np.log10(VS_150[i]))
+##    if VS_150[i] != 0 and (size_150[i] > 30):      #Comment out if want to include only max value of VS_ratio
+##        x_Fit.append(np.log10(size_150[i]))
+##        y_Fit.append(np.log10(VS_150[i]))    
+#for i in xrange(5, int(max(size_150)+1)):  #Including only max values of VS_ratio, comment out for previous x_Fit, y_Fit
+#    select = (VS_data_150[:,0] == i)
+#    if len(VS_data_150[select,0])!=0:
+#        if (VS_data_150[select,0][0] > 30) and len(VS_data_150[select,1])!=0:
+#            y_Fit.append(np.log10(max(VS_data_150[select, 1])))
+#            x_Fit.append(np.log10(VS_data_150[select,0][0])) 
 
 plt.figure("Fig.V/S")
 plt.scatter(x, y)
 poptVS,pcovVS = curve_fit(lin_func, x_Fit, y_Fit)
-x_lin = np.linspace(min(x_Fit),max(x_Fit),500)
+x_lin = np.linspace(min(x_Fit),max(x_Fit),1000)
 plt.plot( x_lin, lin_func(x_lin,*poptVS) , c = 'blue')
 plt.xlabel(r'$Log(Loop \ Perimeter)$', size = '16')
 plt.ylabel(r'$Log(Volume \ to \ Surface \ ratio)$', size = '16')
@@ -1165,8 +1196,11 @@ grad_L_Frac = [Size_14[6],Size_15[6],Size_18[6],Size_19[6],Size_20[6],Size_22[6]
 x = [14,15,18,19,20,22,24,25,30,35,40,45,50,55,60,65,70,80,100,115,125]
 plt.figure("Fig.Param")
 plt.scatter(x, grad_L_Frac) #, label = 'average length vs \n loop perimeter')
-plt.title(r'$Parameter \ \nu \ as \ a \ function \ of \ box \ size$')
+plt.title("Parameter $\it{f}_{open}$ as a function of box size")
 #plt.legend(loc = 4,prop={'size': 16})
 ax = plt.axes()
-ax.set_xticks([15,20,25,30,35,40,45,50,55,60,65,70,80,90,100])
+ax.set_xticks([15,20,25,30,35,40,45,50,55,60,65,70,80,90,100, 125])
 plt.show("Fig.Param")
+
+
+
