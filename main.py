@@ -1126,9 +1126,13 @@ errorVS[0] = errorVS[0]*(np.log(10))*poptVS[0]
 errorVS[1] = errorVS[1]
 print "[Fig.V/S] K = %.3f" %(poptVS[0]), "+/- %.3f" %(errorVS[0] )
 print "[Fig.V/S] v = %.3f" %(poptVS[1]), "+/- %.3f" %(errorVS[1])
+#np.savetxt("VS_data_150.txt", np.c_[lattice.size_loop,lattice.VS_ratio], fmt ='%0.6f') #For when N=150 -> save this raw data
 
-#np.savetxt("gradients_125.txt", np.c_[popt1[1],popt2[1],popt3[1],popt4[1],poptVS[1],popt5[1]], fmt ='%0.6f')
+print "Fraction of the lenght of open strings", 1.0*(np.sum(lattice.length_inf))/(np.sum(lattice.length_inf)+np.sum(lattice.length_loop))
+L_Frac = 1.0*(np.sum(lattice.length_inf))/(np.sum(lattice.length_inf)+np.sum(lattice.length_loop)) 
 
+#np.savetxt("gradients_125.txt", np.c_[popt1[1],popt2[1],popt3[1],popt4[1],poptVS[1],popt5[1],L_Frac], fmt ='%0.6f')
+'''
 Size_14 = np.loadtxt("gradients_14.txt") #new
 Size_15 = np.loadtxt("gradients_15.txt")
 Size_18 = np.loadtxt("gradients_18.txt") #new
@@ -1157,13 +1161,13 @@ grad_b = [Size_14[2],Size_15[2],Size_18[2],Size_19[2],Size_20[2],Size_22[2],Size
 grad_g = [Size_14[3],Size_15[3],Size_18[3],Size_19[3],Size_20[3],Size_22[3],Size_24[3],Size_25[3],Size_30[3],Size_35[3],Size_40[3],Size_45[3],Size_50[3],Size_55[3],Size_60[3],Size_65[3],Size_70[3],Size_80[3],Size_100[3],Size_115[3],Size_125[3]]
 grad_vs = [Size_14[4],Size_15[4],Size_18[4],Size_19[4],Size_20[4],Size_22[4],Size_24[4],Size_25[4],Size_30[4],Size_35[4],Size_40[4],Size_45[4],Size_50[4],Size_55[4],Size_60[4],Size_65[4],Size_70[4],Size_80[4],Size_100[4],Size_115[4],Size_125[4]]
 grad_delta = [Size_14[5],Size_15[5],Size_18[5],Size_19[5],Size_20[5],Size_22[5],Size_24[5],Size_25[5],Size_30[5],Size_35[5],Size_40[5],Size_45[5],Size_50[5],Size_55[5],Size_60[5],Size_65[5],Size_70[5],Size_80[5],Size_100[5],Size_115[5],Size_125[5]]
+grad_L_Frac = [Size_14[6],Size_15[6],Size_18[6],Size_19[6],Size_20[6],Size_22[6],Size_24[6],Size_25[6],Size_30[6],Size_35[6],Size_40[6],Size_45[6],Size_50[6],Size_55[6],Size_60[6],Size_65[6],Size_70[6],Size_80[6],Size_100[6],Size_115[6],Size_125[6]]
 x = [14,15,18,19,20,22,24,25,30,35,40,45,50,55,60,65,70,80,100,115,125]
 plt.figure("Fig.Param")
-plt.scatter(x, grad_vs) #, label = 'average length vs \n loop perimeter')
+plt.scatter(x, grad_L_Frac) #, label = 'average length vs \n loop perimeter')
 plt.title(r'$Parameter \ \nu \ as \ a \ function \ of \ box \ size$')
 #plt.legend(loc = 4,prop={'size': 16})
 ax = plt.axes()
 ax.set_xticks([15,20,25,30,35,40,45,50,55,60,65,70,80,90,100])
 plt.show("Fig.Param")
-
-print "Fraction of the lenght of open strings", 1.0*(np.sum(lattice.length_inf))/(np.sum(lattice.length_inf)+np.sum(lattice.length_loop))  
+'''
