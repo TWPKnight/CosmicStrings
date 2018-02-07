@@ -1132,7 +1132,7 @@ print "Fraction of the lenght of open strings", 1.0*(np.sum(lattice.length_inf))
 L_Frac = 1.0*(np.sum(lattice.length_inf))/(np.sum(lattice.length_inf)+np.sum(lattice.length_loop)) 
 
 #np.savetxt("gradients_125.txt", np.c_[popt1[1],popt2[1],popt3[1],popt4[1],poptVS[1],popt5[1],L_Frac], fmt ='%0.6f')
-'''
+
 Size_14 = np.loadtxt("gradients_14.txt") #new
 Size_15 = np.loadtxt("gradients_15.txt")
 Size_18 = np.loadtxt("gradients_18.txt") #new
@@ -1170,4 +1170,3 @@ plt.title(r'$Parameter \ \nu \ as \ a \ function \ of \ box \ size$')
 ax = plt.axes()
 ax.set_xticks([15,20,25,30,35,40,45,50,55,60,65,70,80,90,100])
 plt.show("Fig.Param")
-'''
