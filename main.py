@@ -685,7 +685,7 @@ class SpaceCube:
                         self.size_loop.append(self.P)  
                 
                           
-    def follow(self,xyz_string,i,j,k,XYZ): 
+    def follow(self, xyz_strings,i,j,k,XYZ): 
         #Edge == True means looking for infinite strings
         #Edge == False means looking for closed strings
         self.string_coords.append([i,j,k])
@@ -1034,7 +1034,7 @@ y = np.log10(n)
 x_Fit = np.log10(L_Fit)
 y_Fit = np.log10(n_Fit)
 
-sig_n2 = sig_L*(5/2)/(x_Fit**(3/2))
+sig_n2 = (sig_L*(5/2))/(x_Fit**(3/2))   
 
 plt.figure("Fig.6")
 plt.scatter(x, y)
