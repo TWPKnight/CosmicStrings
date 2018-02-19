@@ -238,7 +238,7 @@ class SpaceCube:
             phase += 3
         elif (np.mod(face[3] - face[0],3) == 2): #test right-most and left-most values
             phase -= 3                       
-        for p in range(0,len(face[:]) - 1): #cycle through the rest            
+        for p in range(0,len(face[:]) - 1): #cycle through the rest        
             if (np.mod(face[p] - face[p+1],3) == 1):
                 phase += 3 
             elif (np.mod(face[p] - face[p+1],3) == 2):
@@ -1198,12 +1198,9 @@ grad_delta = [Size_14[5],Size_15[5],Size_18[5],Size_19[5],Size_20[5],Size_22[5],
 grad_L_Frac = [Size_14[6],Size_15[6],Size_18[6],Size_19[6],Size_20[6],Size_22[6],Size_24[6],Size_25[6],Size_30[6],Size_35[6],Size_40[6],Size_45[6],Size_50[6],Size_55[6],Size_60[6],Size_65[6],Size_70[6],Size_80[6],Size_90[6],Size_100[6],Size_115[6],Size_125[6]]
 x = [14,15,18,19,20,22,24,25,30,35,40,45,50,55,60,65,70,80,90,100,115,125]
 plt.figure("Fig.Param")
-plt.scatter(x, grad_L_Frac) #, label = 'average length vs \n loop perimeter')
+plt.scatter(x, grad_vs) #, label = 'average length vs \n loop perimeter')
 plt.title("Parameter $\it{f}_{open}$ as a function of box size")
 #plt.legend(loc = 4,prop={'size': 16})
 ax = plt.axes()
 ax.set_xticks([15,20,25,30,35,40,45,50,55,60,65,70,80,90,100, 125])
 plt.show("Fig.Param")
-
-
-
