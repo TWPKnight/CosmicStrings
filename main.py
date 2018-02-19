@@ -846,7 +846,7 @@ class SpaceCube:
                                         self.sum_e2e[e]+=R
         self.string_coords=[]    
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
-N = 40
+N = 14
 lattice = SpaceCube(N)
 lattice.xPlane()
 lattice.yPlane()
@@ -951,7 +951,7 @@ for c in xrange(0,len(y_Fit)):
             sig_L[c] += ((np.log10(lattice.length_loop[i])-np.log10(L_Fit[c]))**2)
     if count_L[c] >3:
         sig_L[c] = np.sqrt((1./(count_L[c]-1))*sig_L[c])/np.sqrt(count_L[c])
-sig_L[11]+= 0.8   # because at box size N = 40, sig_L has size (y_Fit -1) and this would be zero
+#sig_L[11]+= 0.8   # because at box size N = 40, sig_L has size (y_Fit -1) and this would be zero
 #sig_L[14]+=0.9      #for N=55
 #sig_L[26]+= 1.2        #for N=90
                                                                                                                                     
@@ -1011,7 +1011,7 @@ for c in xrange(0,len(y_Fit)):
     if count_P[c] >3:
         sig_P[c] = np.sqrt((1./(count_P[c]-1))*sig_P[c])/np.sqrt(count_P[c])
 sig_n = (4.0*sig_P)/(x_Fit**5)
-sig_n[11]+= 0.7  # because at box size N = 40, this would be zero
+#sig_n[11]+= 0.7  # because at box size N = 40, this would be zero
 #sig_n[14]+=0.9      #for N=55
 #sig_n[20]+=0.4         #for N=90
 
@@ -1164,7 +1164,7 @@ print "[Fig.V/S] v = %.3f" %(poptVS[1]), "+/- %.3f" %(errorVS[1])
 print "Fraction of the lenght of open strings", 1.0*(np.sum(lattice.length_inf))/(np.sum(lattice.length_inf)+np.sum(lattice.length_loop))
 L_Frac = 1.0*(np.sum(lattice.length_inf))/(np.sum(lattice.length_inf)+np.sum(lattice.length_loop)) 
 
-#np.savetxt("gradients_90.txt", np.c_[popt1[1],popt2[1],popt3[1],popt4[1],poptVS[1],popt5[1],L_Frac], fmt ='%0.6f')
+np.savetxt("gradients_14.txt", np.c_[popt1[1],popt2[1],popt3[1],popt4[1],poptVS[1],popt5[1],L_Frac], fmt ='%0.6f')
 
 Size_14 = np.loadtxt("gradients_14.txt") #new
 Size_15 = np.loadtxt("gradients_15.txt")
