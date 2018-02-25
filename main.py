@@ -1164,7 +1164,7 @@ print "[Fig.V/S] v = %.3f" %(poptVS[1]), "+/- %.3f" %(errorVS[1])
 print "Fraction of the lenght of open strings", 1.0*(np.sum(lattice.length_inf))/(np.sum(lattice.length_inf)+np.sum(lattice.length_loop))
 L_Frac = 1.0*(np.sum(lattice.length_inf))/(np.sum(lattice.length_inf)+np.sum(lattice.length_loop)) 
 
-np.savetxt("gradients_14.txt", np.c_[popt1[1],popt2[1],popt3[1],popt4[1],poptVS[1],popt5[1],L_Frac], fmt ='%0.6f')
+#np.savetxt("gradients_14.txt", np.c_[popt1[1],popt2[1],popt3[1],popt4[1],poptVS[1],popt5[1],L_Frac], fmt ='%0.6f')
 
 Size_14 = np.loadtxt("gradients_14.txt") #new
 Size_15 = np.loadtxt("gradients_15.txt")
