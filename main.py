@@ -1110,10 +1110,10 @@ for i in xrange(0, len(lattice.VS_ratio)):
     if lattice.VS_ratio[i] != 0:
         x.append(np.log10(lattice.size_loop[i]))
         y.append(np.log10(lattice.VS_ratio[i]))
-    #if lattice.VS_ratio[i] != 0 and (lattice.size_loop[i] > 20):   #Comment out if want to include only max value of VS_ratio
-    #    x_Fit.append(np.log10(lattice.size_loop[i]))
-    #    y_Fit.append(np.log10(lattice.VS_ratio[i]))  
-        
+     #if lattice.VS_ratio[i] != 0 and (lattice.size_loop[i] > 20):   #Comment out if want to include only max value of VS_ratio
+     #   x_Fit.append(np.log10(lattice.size_loop[i]))
+     #   y_Fit.append(np.log10(lattice.VS_ratio[i]))  
+    #    
 V =np.zeros((len(lattice.size_loop), 2)) 
 V[:,0] += lattice.size_loop
 V[:,1] += lattice.VS_ratio        
