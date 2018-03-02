@@ -951,7 +951,7 @@ for c in xrange(0,len(y_Fit)):
             sig_L[c] += ((np.log10(lattice.length_loop[i])-np.log10(L_Fit[c]))**2)
     if count_L[c] >3:
         sig_L[c] = np.sqrt((1./(count_L[c]-1))*sig_L[c])/np.sqrt(count_L[c])
-#sig_L[11]+= 0.8   # because at box size N = 40, sig_L has size (y_Fit -1) and this would be zero
+sig_L[11]+= 0.8   # because at box size N = 40, sig_L has size (y_Fit -1) and this would be zero
 #sig_L[14]+=0.9      #for N=55
 #sig_L[26]+= 1.2        #for N=90
                                                                                                                                     
@@ -1011,7 +1011,7 @@ for c in xrange(0,len(y_Fit)):
     if count_P[c] >3:
         sig_P[c] = np.sqrt((1./(count_P[c]-1))*sig_P[c])/np.sqrt(count_P[c])
 sig_n = (4.0*sig_P)/(x_Fit**5)
-#sig_n[11]+= 0.7  # because at box size N = 40, this would be zero
+sig_n[11]+= 0.7  # because at box size N = 40, this would be zero
 #sig_n[14]+=0.9      #for N=55
 #sig_n[20]+=0.4         #for N=90
 
@@ -1110,7 +1110,7 @@ for i in xrange(0, len(lattice.VS_ratio)):
     if lattice.VS_ratio[i] != 0:
         x.append(np.log10(lattice.size_loop[i]))
         y.append(np.log10(lattice.VS_ratio[i]))
-     #if lattice.VS_ratio[i] != 0 and (lattice.size_loop[i] > 20):   #Comment out if want to include only max value of VS_ratio
+     #if lattice.VS_ratio[i] != 0 and (lattice.size_loop[i] > 10):   #Comment out if want to include only max value of VS_ratio
      #   x_Fit.append(np.log10(lattice.size_loop[i]))
      #   y_Fit.append(np.log10(lattice.VS_ratio[i]))  
     #    
