@@ -284,7 +284,7 @@ class SpaceCube:
         print "Probability of no strings/cell = ", (1.0*n0)/((N-1)**3)
         print "Probability of one string/cell", (1.0*n1)/((N-1)**3)
         print "Probability of two strings/cell", (1.0*n2)/((N-1)**3)
-        print "three strings/cell = ",n3     
+        print "Probability of three strings/cell",(1.0*n3)/((N-1)**3) 
         print "Avg number of strings/unit cell:", (1.0*(n1+n2))/((N-1)**3)
         
     def followFunc(self, XYZ, i,j,k):
