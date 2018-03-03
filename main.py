@@ -917,8 +917,6 @@ popt1[1]=1.0/popt1[1]
 print "[Fig.2] A = %.3f" %(popt1[0]), "+/- %.3f" %(error[0])
 print "[Fig.2] d = %.3f" %(popt1[1]), "+/- %.3f" %(error[1])
 
-
-Error_Range = []
 Avg_L = []
 P_Range = []
 count_L=[]
