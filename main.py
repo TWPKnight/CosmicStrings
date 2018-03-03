@@ -1033,7 +1033,6 @@ x = np.log10(L_Range)
 y = np.log10(n)
 x_Fit = np.log10(L_Fit)
 y_Fit = np.log10(n_Fit)
-
 sig_n2 = (sig_L*(5/2))/(x_Fit**(3/2))   
 
 plt.figure("Fig.6")
@@ -1110,8 +1109,7 @@ for i in xrange(0, len(lattice.VS_ratio)):
         y.append(np.log10(lattice.VS_ratio[i]))
      #if lattice.VS_ratio[i] != 0 and (lattice.size_loop[i] > 10):   #Comment out if want to include only max value of VS_ratio
      #   x_Fit.append(np.log10(lattice.size_loop[i]))
-     #   y_Fit.append(np.log10(lattice.VS_ratio[i]))  
-    #    
+     #   y_Fit.append(np.log10(lattice.VS_ratio[i]))   
 V =np.zeros((len(lattice.size_loop), 2)) 
 V[:,0] += lattice.size_loop
 V[:,1] += lattice.VS_ratio        
@@ -1121,7 +1119,7 @@ for i in xrange(5, max(lattice.size_loop)+1):  #Including only max values of VS_
         if (V[select,0][0] > 10) and len(V[select,1])!=0:
             y_Fit.append(np.log10(max(V[select, 1])))
             x_Fit.append(np.log10(V[select,0][0]))
-  
+
 #VS_data_150 = np.loadtxt("VS_data_150.txt")   #VS plot for box size=150
 #x = []
 #y = []
